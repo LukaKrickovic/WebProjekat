@@ -1,7 +1,7 @@
 package Model;
 import Model.Address;
 
-public class Location {
+public class Location extends Model{
 
 	private String Latitude;
 	private String Longitude;
@@ -9,7 +9,9 @@ public class Location {
 	
 	// Constructors
 	
-	public Location() {}
+	public Location() {
+		super();
+	}
 	
 	public Location(String latitude, String longitude, Address address) {
 		super();

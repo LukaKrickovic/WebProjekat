@@ -1,26 +1,24 @@
 package Model;
 
-public class Address {
+public class Address extends Model{
 
 	private String Street;
-	private String Address;
+	private String Number;
 	private String Municipality;
 	private String ZipCode;
-	private boolean isDeleted;
 	
 	//	Constructors
 	
 	public Address() {
-		isDeleted = false;
+		super();
 	}
 
-	public Address(String street, String address, String municipality, String zipCode) {
+	public Address(String street, String number, String municipality, String zipCode) {
 		super();
 		Street = street;
-		Address = address;
+		Number = number;
 		Municipality = municipality;
 		ZipCode = zipCode;
-		isDeleted = false;
 	}
 
 	//	Getters and Setters
@@ -33,12 +31,12 @@ public class Address {
 		Street = street;
 	}
 
-	public String getAddress() {
-		return Address;
+	public String getNumber() {
+		return Number;
 	}
 
-	public void setAddress(String address) {
-		Address = address;
+	public void setNumber(String number) {
+		Number = Number;
 	}
 
 	public String getMunicipality() {
@@ -57,12 +55,6 @@ public class Address {
 		ZipCode = zipCode;
 	}
 
-	public boolean isDeleted() {
-		return isDeleted;
-	}
 
-	public void setDeleted(boolean isDeleted) {
-		this.isDeleted = isDeleted;
-	}
 	
 }
