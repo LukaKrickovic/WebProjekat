@@ -4,7 +4,7 @@ import Model.Guest;
 public class ApartmentComment extends Model{
 
 	private Guest Guest;
-	private Apartment Apartment;
+	private Unit Unit;
 	private String Text;
 	private double Grade;
 
@@ -14,10 +14,10 @@ public class ApartmentComment extends Model{
 		super();
 	}
 
-	public ApartmentComment(Guest guest, Model.Apartment apartment, String text, double grade) {
+	public ApartmentComment(Guest guest, Unit unit, String text, double grade) {
 		super();
 		Guest = guest;
-		Apartment = apartment;
+		Unit = unit;
 		Text = text;
 		Grade = grade;
 	}
@@ -32,12 +32,12 @@ public class ApartmentComment extends Model{
 		Guest = guest;
 	}
 
-	public Apartment getApartment() {
-		return this.Apartment;
+	public Unit getApartment() {
+		return this.Unit;
 	}
 
-	public void setApartment(Apartment apartment) {
-		this.Apartment = apartment;
+	public void setApartment(Unit unit) {
+		this.Unit = unit;
 	}
 
 	public String getText() {
