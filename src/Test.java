@@ -19,6 +19,7 @@ public class Test {
 		
 		staticFiles.externalLocation(new File("./static").getCanonicalPath());
 		webSocket("/ws", WsHandler.class);
+		
 		get("/spark/demo/test", (req, res) -> {
 			return "Works";
 		});
