@@ -1,21 +1,23 @@
 package Model;
 
+import java.util.List;
+
 public class Host extends User {
 
-	private Unit availableUnits;
+	private List<Unit> availableUnits;
 
 	public Host() {}
 	
-	public Host(Unit availableUnits) {
+	public Host(List<Unit> availableUnits) {
 		super();
 		this.availableUnits = availableUnits;
 	}
 
-	public Unit getAvailableUnits() {
+	public List<Unit> getAvailableUnits() {
 		return availableUnits;
 	}
 
-	public void setAvailableUnits(Unit availableUnits) {
+	public void setAvailableUnits(List<Unit> availableUnits) {
 		this.availableUnits = availableUnits;
 	}
 	

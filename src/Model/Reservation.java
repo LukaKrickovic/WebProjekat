@@ -13,12 +13,11 @@ public class Reservation extends Model{
 	private String message;
 	private Guest guest;
 	private ReservationStatus reservationStatus;
-	private List<Reservation> reservations;
 	
 	public Reservation() {}
 	
 	public Reservation(Unit unit, Date startDate, int length, double price, String message, Guest guest,
-			ReservationStatus reservationStatus, List<Reservation> reservations) {
+			ReservationStatus reservationStatus) {
 		super();
 		this.unit = unit;
 		this.startDate = startDate;
@@ -27,7 +26,6 @@ public class Reservation extends Model{
 		this.message = message;
 		this.guest = guest;
 		this.reservationStatus = reservationStatus;
-		this.reservations = reservations;
 	}
 
 	public Unit getUnit() {
@@ -85,14 +83,5 @@ public class Reservation extends Model{
 	public void setReservationStatus(ReservationStatus reservationStatus) {
 		this.reservationStatus = reservationStatus;
 	}
-
-	public List<Reservation> getReservations() {
-		return reservations;
-	}
-
-	public void setReservations(List<Reservation> reservations) {
-		this.reservations = reservations;
-	}
-	
 	
 }

@@ -1,6 +1,7 @@
 package Model;
 
 import java.time.LocalTime;
+import java.util.List;
 
 import Enums.RoomType;
 import Enums.Status;
@@ -16,13 +17,16 @@ public class Unit extends Model{
 	private LocalTime checkoutTime;
 	private Status status;
 	private ApartmentComment apartmentComment;
+	private List<Amenity> amenities;
+	private List<Reservation> reservations;
 	
-	//DODATI INICIJALNO VREME PRIJAVE/ODJAVE
+	//TODO: DODATI INICIJALNO VREME PRIJAVE/ODJAVE
 	
 	public Unit() {}
 	
 	public Unit(RoomType roomType, int numOfRooms, int numOfGuests, Location location, Host host, double pricePerNight,
-			LocalTime checkinTime, LocalTime checkoutTime, Status status, ApartmentComment apartmentComment) {
+			LocalTime checkinTime, LocalTime checkoutTime, Status status, ApartmentComment apartmentComment, 
+			List<Amenity> amenities, List<Reservation> reservations) {
 		super();
 		this.roomType = roomType;
 		this.numOfRooms = numOfRooms;
@@ -34,6 +38,8 @@ public class Unit extends Model{
 		this.checkoutTime = checkoutTime;
 		this.status = status;
 		this.apartmentComment = apartmentComment;
+		this.amenities = amenities;
+		this.reservations = reservations;
 	}
 
 	public RoomType getRoomType() {
@@ -114,6 +120,22 @@ public class Unit extends Model{
 
 	public void setApartmentComment(ApartmentComment apartmentComment) {
 		this.apartmentComment = apartmentComment;
+	}
+
+	public List<Amenity> getAmenities() {
+		return amenities;
+	}
+
+	public void setAmenities(List<Amenity> amenities) {
+		this.amenities = amenities;
+	}
+
+	public List<Reservation> getReservations() {
+		return reservations;
+	}
+
+	public void setReservations(List<Reservation> reservations) {
+		this.reservations = reservations;
 	}
 	
 	
