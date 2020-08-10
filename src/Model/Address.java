@@ -6,11 +6,12 @@ public class Address {
 	private String Address;
 	private String Municipality;
 	private String ZipCode;
+	private boolean isDeleted;
 	
 	//	Constructors
 	
 	public Address() {
-		
+		isDeleted = false;
 	}
 
 	public Address(String street, String address, String municipality, String zipCode) {
@@ -19,6 +20,7 @@ public class Address {
 		Address = address;
 		Municipality = municipality;
 		ZipCode = zipCode;
+		isDeleted = false;
 	}
 
 	//	Getters and Setters
@@ -54,7 +56,13 @@ public class Address {
 	public void setZipCode(String zipCode) {
 		ZipCode = zipCode;
 	}
-	
-	
+
+	public boolean isDeleted() {
+		return isDeleted;
+	}
+
+	public void setDeleted(boolean isDeleted) {
+		this.isDeleted = isDeleted;
+	}
 	
 }
