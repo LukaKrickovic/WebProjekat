@@ -13,6 +13,20 @@ public class User extends Model{
 	
 	public User() {}
 	
+	
+	
+	public User(Id id, String username, String password, String name, String surname, Gender gender, Roles role) {
+		super(id);
+		this.username = username;
+		this.password = password;
+		this.name = name;
+		this.surname = surname;
+		this.gender = gender;
+		this.role = role;
+	}
+
+
+
 	public User(String username, String password, String name, String surname, Gender gender, Roles role) {
 		super();
 		this.username = username;

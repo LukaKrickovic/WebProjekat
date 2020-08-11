@@ -41,6 +41,24 @@ public class Unit extends Model{
 		this.amenities = amenities;
 		this.reservations = reservations;
 	}
+	
+	public Unit(Id id, RoomType roomType, int numOfRooms, int numOfGuests, Location location, Host host, double pricePerNight,
+			LocalTime checkinTime, LocalTime checkoutTime, Status status, ApartmentComment apartmentComment, 
+			List<Amenity> amenities, List<Reservation> reservations) {
+		super(id);
+		this.roomType = roomType;
+		this.numOfRooms = numOfRooms;
+		this.numOfGuests = numOfGuests;
+		this.location = location;
+		this.host = host;
+		this.pricePerNight = pricePerNight;
+		this.checkinTime = checkinTime;
+		this.checkoutTime = checkoutTime;
+		this.status = status;
+		this.apartmentComment = apartmentComment;
+		this.amenities = amenities;
+		this.reservations = reservations;
+	}
 
 	public RoomType getRoomType() {
 		return roomType;

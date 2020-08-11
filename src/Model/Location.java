@@ -20,6 +20,13 @@ public class Location extends Model{
 		this.address = address;
 	}
 	
+	public Location(Id id, String latitude, String longitude, Address address) {
+		super(id);
+		this.latitude = latitude;
+		this.longitude = longitude;
+		this.address = address;
+	}
+	
 	//	Getters and Setters
 
 	public String getLatitude() {

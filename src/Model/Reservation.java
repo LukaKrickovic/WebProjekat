@@ -27,6 +27,18 @@ public class Reservation extends Model{
 		this.guest = guest;
 		this.reservationStatus = reservationStatus;
 	}
+	
+	public Reservation(Id id, Unit unit, Date startDate, int length, double price, String message, Guest guest,
+			ReservationStatus reservationStatus) {
+		super(id);
+		this.unit = unit;
+		this.startDate = startDate;
+		this.length = length;
+		this.price = price;
+		this.message = message;
+		this.guest = guest;
+		this.reservationStatus = reservationStatus;
+	}
 
 	public Unit getUnit() {
 		return unit;

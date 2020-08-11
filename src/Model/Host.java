@@ -2,11 +2,26 @@ package model;
 
 import java.util.List;
 
+import enums.Gender;
+import enums.Roles;
+
 public class Host extends User {
 
 	private List<Unit> availableUnits;
 
-	public Host() {}
+	public Host() {
+		super();
+	}
+	
+	public Host(Id id, List<Unit> availableUnits, String username, String password, String name, String surname, Gender gender, Roles role) {
+		super(id, username, password, name, surname, gender, role);
+		this.availableUnits = availableUnits;
+	}	
+	
+	public Host(List<Unit> availableUnits, String username, String password, String name, String surname, Gender gender, Roles role) {
+		super(username, password, name, surname, gender, role);
+		this.availableUnits = availableUnits;
+	}	
 	
 	public Host(List<Unit> availableUnits) {
 		super();

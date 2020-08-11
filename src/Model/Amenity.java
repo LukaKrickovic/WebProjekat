@@ -1,6 +1,6 @@
 package model;
 
-public class Amenity {
+public class Amenity extends Model{
 
 	// Ne nasledjuje Model jer se ne brise logicki nego fizicki
 	
@@ -12,6 +12,12 @@ public class Amenity {
 	
 	public Amenity(String description, boolean value) {
 		super();
+		this.description = description;
+		this.value = value;
+	}
+	
+	public Amenity(Id id, String description, boolean value) {
+		super(id);
 		this.description = description;
 		this.value = value;
 	}

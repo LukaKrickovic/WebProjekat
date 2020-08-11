@@ -21,6 +21,14 @@ public class ApartmentComment extends Model{
 		this.text = text;
 		this.grade = grade;
 	}
+	
+	public ApartmentComment(Id id, Guest guest, Unit unit, String text, double grade) {
+		super(id);
+		this.guest = guest;
+		this.unit = unit;
+		this.text = text;
+		this.grade = grade;
+	}
 
 	//	Getters and Setters
 	
