@@ -1,12 +1,12 @@
-package Model;
-import Model.Guest;
+package model;
+import model.Guest;
 
 public class ApartmentComment extends Model{
 
-	private Guest Guest;
-	private Unit Unit;
-	private String Text;
-	private double Grade;
+	private Guest guest;
+	private Unit unit;
+	private String text;
+	private double grade;
 
 	//	Constructors
 	
@@ -16,45 +16,44 @@ public class ApartmentComment extends Model{
 
 	public ApartmentComment(Guest guest, Unit unit, String text, double grade) {
 		super();
-		Guest = guest;
-		Unit = unit;
-		Text = text;
-		Grade = grade;
+		this.guest = guest;
+		this.unit = unit;
+		this.text = text;
+		this.grade = grade;
 	}
 
 	//	Getters and Setters
 	
 	public Guest getGuest() {
-		return Guest;
+		return guest;
 	}
 
 	public void setGuest(Guest guest) {
-		Guest = guest;
+		this.guest = guest;
 	}
 
-	public Unit getApartment() {
-		return this.Unit;
+	public Unit getUnit() {
+		return unit;
 	}
 
-	public void setApartment(Unit unit) {
-		this.Unit = unit;
+	public void setUnit(Unit unit) {
+		this.unit = unit;
 	}
 
 	public String getText() {
-		return Text;
+		return text;
 	}
 
 	public void setText(String text) {
-		Text = text;
+		this.text = text;
 	}
 
 	public double getGrade() {
-		return Grade;
+		return grade;
 	}
 
 	public void setGrade(double grade) {
-		Grade = grade;
+		this.grade = grade;
 	}
-	
 	
 }

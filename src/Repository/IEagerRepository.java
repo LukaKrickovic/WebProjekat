@@ -1,7 +1,7 @@
-package Repository;
+package repository;
 
 public interface IEagerRepository<T, ID> {
 
-	public T GetAllEager();
-	public T GetEagerById(ID id);
+	public T getAllEager();
+	public T getEagerById(ID id);
 }

@@ -1,7 +1,7 @@
-package Model;
+package model;
 
-import Enums.Gender;
-import Enums.Roles;
+import enums.Gender;
+import enums.Roles;
 
 public class User extends Model{
 	private String username;

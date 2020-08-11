@@ -1,11 +1,11 @@
-package Model;
+package model;
 
 public class Address extends Model{
 
-	private String Street;
-	private String Number;
-	private String Municipality;
-	private String ZipCode;
+	private String street;
+	private String number;
+	private String municipality;
+	private String zipCode;
 	
 	//	Constructors
 	
@@ -13,48 +13,64 @@ public class Address extends Model{
 		super();
 	}
 
+	
+
 	public Address(String street, String number, String municipality, String zipCode) {
 		super();
-		Street = street;
-		Number = number;
-		Municipality = municipality;
-		ZipCode = zipCode;
+		this.street = street;
+		this.number = number;
+		this.municipality = municipality;
+		this.zipCode = zipCode;
 	}
+
 
 	//	Getters and Setters
-	
+
 	public String getStreet() {
-		return Street;
+		return street;
 	}
+
+
 
 	public void setStreet(String street) {
-		Street = street;
+		this.street = street;
 	}
+
+
 
 	public String getNumber() {
-		return Number;
+		return number;
 	}
+
+
 
 	public void setNumber(String number) {
-		Number = Number;
+		this.number = number;
 	}
+
+
 
 	public String getMunicipality() {
-		return Municipality;
+		return municipality;
 	}
+
+
 
 	public void setMunicipality(String municipality) {
-		Municipality = municipality;
+		this.municipality = municipality;
 	}
+
+
 
 	public String getZipCode() {
-		return ZipCode;
+		return zipCode;
 	}
+
+
 
 	public void setZipCode(String zipCode) {
-		ZipCode = zipCode;
+		this.zipCode = zipCode;
 	}
-
 
 	
 }

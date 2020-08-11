@@ -1,39 +1,43 @@
-package Model;
+package model;
 
 public class Amenity {
 
 	// Ne nasledjuje Model jer se ne brise logicki nego fizicki
 	
-	private String Description;
-	private boolean Value;
+	private String description;
+	private boolean value;
 	
 	
 	//	Constructors
 	
 	public Amenity(String description, boolean value) {
 		super();
-		Description = description;
-		Value = value;
+		this.description = description;
+		this.value = value;
 	}
+
+
 
 	//	Getters and Setters
 	
 	public String getDescription() {
-		return Description;
+		return description;
 	}
+
 
 	public void setDescription(String description) {
-		Description = description;
+		this.description = description;
 	}
+
 
 	public boolean isValue() {
-		return Value;
+		return value;
 	}
 
+
 	public void setValue(boolean value) {
-		Value = value;
+		this.value = value;
 	}
-	
 	
 	
 }

@@ -1,9 +1,9 @@
-package Model;
+package model;
 
 import java.util.Date;
 import java.util.List;
 
-import Enums.ReservationStatus;
+import enums.ReservationStatus;
 
 public class Reservation extends Model{
 	private Unit unit;

@@ -1,10 +1,10 @@
-package Model;
+package model;
 
 import java.time.LocalTime;
 import java.util.List;
 
-import Enums.RoomType;
-import Enums.Status;
+import enums.RoomType;
+import enums.Status;
 
 public class Unit extends Model{
 	private RoomType roomType;

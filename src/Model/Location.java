@@ -1,11 +1,11 @@
-package Model;
-import Model.Address;
+package model;
+import model.Address;
 
 public class Location extends Model{
 
-	private String Latitude;
-	private String Longitude;
-	private Address Address;
+	private String latitude;
+	private String longitude;
+	private Address address;
 	
 	// Constructors
 	
@@ -15,38 +15,37 @@ public class Location extends Model{
 	
 	public Location(String latitude, String longitude, Address address) {
 		super();
-		Latitude = latitude;
-		Longitude = longitude;
-		Address = address;
+		this.latitude = latitude;
+		this.longitude = longitude;
+		this.address = address;
 	}
-
 	
 	//	Getters and Setters
-	
+
 	public String getLatitude() {
-		return Latitude;
+		return latitude;
 	}
 
 	public void setLatitude(String latitude) {
-		Latitude = latitude;
+		this.latitude = latitude;
 	}
 
 	public String getLongitude() {
-		return Longitude;
+		return longitude;
 	}
 
 	public void setLongitude(String longitude) {
-		Longitude = longitude;
+		this.longitude = longitude;
 	}
 
 	public Address getAddress() {
-		return Address;
+		return address;
 	}
 
 	public void setAddress(Address address) {
-		Address = address;
+		this.address = address;
 	}
-	
-	
+
+
 	
 }
