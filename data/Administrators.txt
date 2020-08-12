@@ -1,0 +1,3 @@
+{"username":"admin","password":"admin","name":"Luka","surname":"Krickovic","gender":"MALE","role":"ADMINISTRATOR","isDeleted":false,"id":{"prefix":"A","suffix":0}}
+{"username":"gari","password":"admin1","name":"Luka1","surname":"Krickovic1","gender":"MALE","role":"ADMINISTRATOR","isDeleted":false,"id":{"prefix":"A","suffix":1}}
+

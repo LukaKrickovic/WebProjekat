@@ -13,14 +13,14 @@ public class Guest extends User{
 		super();
 	}
 	
-	public Guest(Id id, List<Unit> rentedUnits, List<Reservation> reservations, String username, String password, String name, String surname, Gender gender, Roles role) {
-		super(id, username, password, name, surname, gender, role);
+	public Guest(Id id, List<Unit> rentedUnits, List<Reservation> reservations, String username, String password, String name, String surname, Gender gender) {
+		super(id, username, password, name, surname, gender, Roles.GUEST);
 		this.rentedUnits = rentedUnits;
 		this.reservations = reservations;
 	}
 	
-	public Guest(List<Unit> rentedUnits, List<Reservation> reservations, String username, String password, String name, String surname, Gender gender, Roles role) {
-		super(username, password, name, surname, gender, role);
+	public Guest(List<Unit> rentedUnits, List<Reservation> reservations, String username, String password, String name, String surname, Gender gender) {
+		super(username, password, name, surname, gender, Roles.GUEST);
 		this.rentedUnits = rentedUnits;
 		this.reservations = reservations;
 	}

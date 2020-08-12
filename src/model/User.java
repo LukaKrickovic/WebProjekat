@@ -81,9 +81,6 @@ public class User extends Model{
 		return role;
 	}
 
-	public void setRole(Roles role) {
-		this.role = role;
-	}
 	
 	
 	

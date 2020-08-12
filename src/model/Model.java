@@ -24,6 +24,19 @@ public class Model {
 		isDeleted = false;
 		return this;
 	}
+
+	public Id getId() {
+		return id;
+	}
+
+	public void setId(Id id) {
+		this.id = id;
+	}
+
+	public boolean isDeleted() {
+		return isDeleted;
+	}
+
 	
 	
 }
