@@ -12,6 +12,7 @@ import stream.Stream;
 public class WriterTest {
 
 	public static void main(String[] args) {
+		
 /*
 		File file = new File("/data/Administrators.txt");
 		System.out.println(file.getAbsolutePath());
