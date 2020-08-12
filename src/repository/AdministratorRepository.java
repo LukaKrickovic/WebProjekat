@@ -4,11 +4,13 @@ import java.io.File;
 import java.util.ArrayList;
 
 import converters.AdministratorConverter;
+import enums.Gender;
 import model.Administrator;
+import model.Guest;
 import model.Id;
 import stream.Stream;
 
-public class AdministratorRepository implements IRepository<Administrator, Id>{
+public class AdministratorRepository implements IRepository<Administrator, Id>, IUserRepository<Administrator, Id>{
 
 	private Stream stream;
 	private AdministratorConverter administratorConverter;
@@ -72,6 +74,56 @@ public class AdministratorRepository implements IRepository<Administrator, Id>{
 	public void delete(Administrator entity) {
 		entity.Delete();
 		update(entity);
+	}
+
+	@Override
+	public Administrator getUserByUsername(String username) {
+		ArrayList<Administrator> allAdministrators= (ArrayList)getAll();
+		for(Administrator temp : allAdministrators) {
+			if(temp.getUsername().equals(username))
+				return temp;
+		}
+		
+		return null;
+	}
+
+	@Override
+	public Iterable<Administrator> getUsersByName(String name) {
+		ArrayList<Administrator> retVal = new ArrayList<Administrator>();
+		ArrayList<Administrator> allAdministrators= (ArrayList)getAll();
+		for(Administrator temp : allAdministrators) {
+			if(temp.getName().equals(name)) {
+				retVal.add(temp);
+			}
+		}
+		
+		return retVal;
+	}
+
+	@Override
+	public Iterable<Administrator> getUsersBySurname(String surname) {
+		ArrayList<Administrator> retVal = new ArrayList<Administrator>();
+		ArrayList<Administrator> allAdministrators= (ArrayList)getAll();
+		for(Administrator temp : allAdministrators) {
+			if(temp.getSurname().equals(surname)) {
+				retVal.add(temp);
+			}
+		}
+		
+		return retVal;
+	}
+
+	@Override
+	public Iterable<Administrator> getUsersByGender(Gender gender) {
+		ArrayList<Administrator> retVal = new ArrayList<Administrator>();
+		ArrayList<Administrator> allAdministrators= (ArrayList)getAll();
+		for(Administrator temp : allAdministrators) {
+			if(temp.getGender().equals(gender)) {
+				retVal.add(temp);
+			}
+		}
+		
+		return retVal;
 	}
 
 	

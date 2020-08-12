@@ -4,12 +4,14 @@ import java.io.File;
 import java.util.ArrayList;
 
 import converters.HostConverter;
+import enums.Gender;
 import model.Administrator;
+import model.Guest;
 import model.Host;
 import model.Id;
 import stream.Stream;
 
-public class HostRepository implements IRepository<Host, Id>{
+public class HostRepository implements IRepository<Host, Id>, IUserRepository<Host, Id>{
 
 	private Stream stream;
 	private HostConverter hostConverter;
@@ -75,5 +77,56 @@ public class HostRepository implements IRepository<Host, Id>{
 		update(entity);
 		
 	}
+
+	@Override
+	public Host getUserByUsername(String username) {
+		ArrayList<Host> allHosts= (ArrayList)getAll();
+		for(Host temp : allHosts) {
+			if(temp.getUsername().equals(username))
+				return temp;
+		}
+		
+		return null;
+	}
+
+	@Override
+	public Iterable<Host> getUsersByName(String name) {
+		ArrayList<Host> retVal = new ArrayList<Host>();
+		ArrayList<Host> allHosts= (ArrayList)getAll();
+		for(Host temp : allHosts) {
+			if(temp.getName().equals(name)) {
+				retVal.add(temp);
+			}
+		}
+		
+		return retVal;
+	}
+
+	@Override
+	public Iterable<Host> getUsersBySurname(String surname) {
+		ArrayList<Host> retVal = new ArrayList<Host>();
+		ArrayList<Host> allHosts= (ArrayList)getAll();
+		for(Host temp : allHosts) {
+			if(temp.getSurname().equals(surname)) {
+				retVal.add(temp);
+			}
+		}
+		
+		return retVal;
+	}
+
+	@Override
+	public Iterable<Host> getUsersByGender(Gender gender) {
+		ArrayList<Host> retVal = new ArrayList<Host>();
+		ArrayList<Host> allHosts= (ArrayList)getAll();
+		for(Host temp : allHosts) {
+			if(temp.getGender().equals(gender)) {
+				retVal.add(temp);
+			}
+		}
+		
+		return retVal;
+	}
+	
 
 }
