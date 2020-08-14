@@ -13,6 +13,10 @@ public class Host extends User {
 		super();
 	}
 	
+	public Host(Id id) {
+		super(id);
+	}
+	
 	public Host(Id id, List<Unit> availableUnits, String username, String password, String name, String surname, Gender gender) {
 		super(id, username, password, name, surname, gender, Roles.HOST);
 		this.availableUnits = availableUnits;

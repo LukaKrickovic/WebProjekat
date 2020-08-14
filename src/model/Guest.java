@@ -9,6 +9,10 @@ public class Guest extends User{
 	private List<Unit> rentedUnits;
 	private List<Reservation> reservations;
 	
+	public Guest(Id id) {
+		super(id);
+	}
+	
 	public Guest() {
 		super();
 	}

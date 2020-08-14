@@ -10,6 +10,10 @@ public class ApartmentComment extends Model{
 
 	//	Constructors
 	
+	public ApartmentComment(Id id) {
+		super(id);
+	}
+	
 	public ApartmentComment() {
 		super();
 	}

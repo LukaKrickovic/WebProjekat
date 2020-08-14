@@ -11,9 +11,13 @@ public class User extends Model{
 	private Gender gender;
 	private Roles role;
 	
-	public User() {}
+	public User() {
+		super();
+	}
 	
-	
+	public User(Id id) {
+		super(id);
+	}
 	
 	public User(Id id, String username, String password, String name, String surname, Gender gender, Roles role) {
 		super(id);

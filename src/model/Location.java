@@ -13,6 +13,10 @@ public class Location extends Model{
 		super();
 	}
 	
+	public Location(Id id) {
+		super(id);
+	}
+	
 	public Location(String latitude, String longitude, Address address) {
 		super();
 		this.latitude = latitude;

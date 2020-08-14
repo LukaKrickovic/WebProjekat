@@ -22,7 +22,13 @@ public class Unit extends Model{
 	private List<String> imageSources;
 	
 	
-	public Unit() {}
+	public Unit() {
+		super();
+	}
+	
+	public Unit(Id id) {
+		super(id);
+	}
 	
 	public Unit(RoomType roomType, int numOfRooms, int numOfGuests, Location location, Host host, double pricePerNight,
 			LocalTime checkinTime, LocalTime checkoutTime, Status status, ApartmentComment apartmentComment, 

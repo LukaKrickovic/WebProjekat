@@ -9,6 +9,10 @@ public class Administrator extends User{
 		super();
 	}
 	
+	public Administrator(Id id) {
+		super(id);
+	}
+	
 	public Administrator(Id id, String username, String password, String name, String surname, Gender gender) {
 		super(id, username, password, name, surname, gender, Roles.ADMINISTRATOR);
 	}

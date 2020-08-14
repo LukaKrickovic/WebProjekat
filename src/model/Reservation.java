@@ -14,7 +14,13 @@ public class Reservation extends Model{
 	private Guest guest;
 	private ReservationStatus reservationStatus;
 	
-	public Reservation() {}
+	public Reservation() {
+		super();
+	}
+	
+	public Reservation(Id id) {
+		super(id);
+	}
 	
 	public Reservation(Unit unit, Date startDate, int length, double price, String message, Guest guest,
 			ReservationStatus reservationStatus) {

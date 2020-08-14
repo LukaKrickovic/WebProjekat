@@ -13,7 +13,9 @@ public class Address extends Model{
 		super();
 	}
 
-	
+	public Address(Id id) {
+		super(id);
+	}
 
 	public Address(String street, String number, String municipality, String zipCode) {
 		super();

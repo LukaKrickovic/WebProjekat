@@ -1,12 +1,12 @@
 package model;
 
-public class Amenity extends Model{
-
-	// Ne nasledjuje Model jer se ne brise logicki nego fizicki
-	
+public class Amenity extends Model{	
 	private String description;
 	private boolean value;
 	
+	public Amenity(Id id) {
+		super(id);
+	}
 	
 	//	Constructors
 	
