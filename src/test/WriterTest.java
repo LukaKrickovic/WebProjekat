@@ -60,7 +60,7 @@ public class WriterTest {
 		UnitRepository ur = new UnitRepository(new Stream(), gr);
 		ReservationRepository rR = new ReservationRepository(new Stream(), ur, gr);
 		
-		GuestSequencer gs = new UnittSequencer();
+		GuestSequencer gs = new GuestSequencer();
 		ArrayList<Unit> rentedUnits = new ArrayList<Unit>();
 		/*
 		Unit u1 = new Unit(new UnitSequencer().initialize(), RoomType.APARTMENT, 4, 4, new Location(new Id("L", 0)), new Host(new HostSequencer().initialize()), 

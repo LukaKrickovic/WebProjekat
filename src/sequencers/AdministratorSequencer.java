@@ -4,7 +4,7 @@ import model.Id;
 
 public class AdministratorSequencer extends Sequencer implements ISequencer{
 
-	private String administratorPrefix = "A";
+	public static String administratorPrefix = "A";
 	
 	public AdministratorSequencer() {
 		super();

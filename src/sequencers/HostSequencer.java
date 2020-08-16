@@ -4,7 +4,7 @@ import model.Id;
 
 public class HostSequencer extends Sequencer implements ISequencer{
 
-	private String hostPrefix = "H";
+	public static String hostPrefix = "H";
 	
 	public HostSequencer() {
 		super();

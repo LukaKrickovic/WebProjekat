@@ -126,6 +126,21 @@ public class AdministratorRepository implements IRepository<Administrator, Id>, 
 		return retVal;
 	}
 
+	@Override
+	public Iterable<Administrator> getUsersByNameAndSurname(String name, String surname) {
+		ArrayList<Administrator> retVal = new ArrayList<Administrator>();
+		ArrayList<Administrator> allAdministrators= (ArrayList)getAll();
+		for(Administrator temp : allAdministrators) {
+			if(temp.getName().equals(name)) {
+				if(temp.getSurname().equals(surname)) {
+					retVal.add(temp);	
+				}	
+			}
+		}
+		
+		return retVal;
+	}
+
 	
 	
 }

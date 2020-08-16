@@ -3,7 +3,7 @@ import model.Id;
 
 public class GuestSequencer extends Sequencer implements ISequencer {
 
-	private String guestPrefix = "G";
+	public static String guestPrefix = "G";
 	
 	public GuestSequencer() {
 		super();

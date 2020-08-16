@@ -5,6 +5,7 @@ import java.util.ArrayList;
 
 import converters.GuestConverter;
 import enums.Gender;
+import model.Administrator;
 import model.Guest;
 import model.Id;
 import model.Unit;
@@ -140,6 +141,22 @@ public class GuestRepository implements IRepository<Guest, Id>, IUserRepository<
 			if(temp.getRentedUnits().contains(unit))
 				retVal.add(temp);
 		}
+		return retVal;
+	}
+
+
+	@Override
+	public Iterable<Guest> getUsersByNameAndSurname(String name, String surname) {
+		ArrayList<Guest> retVal = new ArrayList<Guest>();
+		ArrayList<Guest> allGuests= (ArrayList)getAll();
+		for(Guest temp : allGuests) {
+			if(temp.getName().equals(name)) {
+				if(temp.getSurname().equals(surname)) {
+					retVal.add(temp);	
+				}	
+			}
+		}
+		
 		return retVal;
 	}
 

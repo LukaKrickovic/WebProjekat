@@ -1,5 +1,7 @@
 package model;
 
+import java.util.ArrayList;
+
 import enums.Gender;
 import enums.Roles;
 
@@ -10,6 +12,7 @@ public class User extends Model{
 	private String surname;
 	private Gender gender;
 	private Roles role;
+	private ArrayList<User> searchHistory;
 	
 	public User() {
 		super();
@@ -27,6 +30,7 @@ public class User extends Model{
 		this.surname = surname;
 		this.gender = gender;
 		this.role = role;
+		this.searchHistory = new ArrayList<User>();
 	}
 
 
@@ -39,6 +43,7 @@ public class User extends Model{
 		this.surname = surname;
 		this.gender = gender;
 		this.role = role;
+		this.searchHistory = new ArrayList<User>();
 	}
 
 	public String getUsername() {
@@ -85,8 +90,12 @@ public class User extends Model{
 		return role;
 	}
 
-	
-	
-	
+	public ArrayList<User> getSearchHistory() {
+		return searchHistory;
+	}
+
+	public void setSearchHistory(ArrayList<User> searchHistory) {
+		this.searchHistory = searchHistory;
+	}
 	
 }

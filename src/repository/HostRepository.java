@@ -127,6 +127,21 @@ public class HostRepository implements IRepository<Host, Id>, IUserRepository<Ho
 		
 		return retVal;
 	}
+
+	@Override
+	public Iterable<Host> getUsersByNameAndSurname(String name, String surname) {
+		ArrayList<Host> retVal = new ArrayList<Host>();
+		ArrayList<Host> allHosts= (ArrayList)getAll();
+		for(Host temp : allHosts) {
+			if(temp.getName().equals(name)) {
+				if(temp.getSurname().equals(surname)) {
+					retVal.add(temp);	
+				}	
+			}
+		}
+		
+		return retVal;
+	}
 	
 
 }
