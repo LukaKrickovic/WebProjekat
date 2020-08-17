@@ -15,7 +15,7 @@ public class UnitSearchCriteria {
 	
 	private UnitService unitService;
 	
-	private String dateString, cityString, countryString, priceLowerString, priceUpperString, roomCountLowerString, roomCOuntUpperString, peopleCountString;
+	private String dateString, cityString, countryString, priceLowerString, priceUpperString, roomCountLowerString, roomCountUpperString, peopleCountString;
 
 	public UnitSearchCriteria(String cityString, String countryString, String priceLowerString, String priceUpperString,
 			String roomCountLowerString, String roomCOuntUpperString, String peopleCountString, UnitService unitService) {
@@ -25,7 +25,7 @@ public class UnitSearchCriteria {
 		this.priceLowerString = priceLowerString;
 		this.priceUpperString = priceUpperString;
 		this.roomCountLowerString = roomCountLowerString;
-		this.roomCOuntUpperString = roomCOuntUpperString;
+		this.roomCountUpperString = roomCountUpperString;
 		this.peopleCountString = peopleCountString;
 		this.unitService = unitService;
 	}
