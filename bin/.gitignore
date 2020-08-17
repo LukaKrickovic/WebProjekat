@@ -8,3 +8,7 @@
 /enums/
 /model/
 /repository/
+/exceptions/
+/services/
+/util/
+/validations/

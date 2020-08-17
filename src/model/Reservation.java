@@ -8,11 +8,14 @@ import enums.ReservationStatus;
 public class Reservation extends Model{
 	private Unit unit;
 	private Date startDate;
+	private Date endDate;
 	private int length;
 	private double price;
 	private String message;
 	private Guest guest;
 	private ReservationStatus reservationStatus;
+	
+	// TODO: mozda da stavimo hosta kao polje? da bi smo mogli da proverimo da li je rezervacija njegova
 	
 	public Reservation() {
 		super();
@@ -22,11 +25,12 @@ public class Reservation extends Model{
 		super(id);
 	}
 	
-	public Reservation(Unit unit, Date startDate, int length, double price, String message, Guest guest,
+	public Reservation(Unit unit, Date startDate, Date endDate, int length, double price, String message, Guest guest,
 			ReservationStatus reservationStatus) {
 		super();
 		this.unit = unit;
 		this.startDate = startDate;
+		this.endDate = endDate;
 		this.length = length;
 		this.price = price;
 		this.message = message;
@@ -34,11 +38,12 @@ public class Reservation extends Model{
 		this.reservationStatus = reservationStatus;
 	}
 	
-	public Reservation(Id id, Unit unit, Date startDate, int length, double price, String message, Guest guest,
+	public Reservation(Id id, Unit unit, Date startDate, Date endDate, int length, double price, String message, Guest guest,
 			ReservationStatus reservationStatus) {
 		super(id);
 		this.unit = unit;
 		this.startDate = startDate;
+		this.endDate = endDate;
 		this.length = length;
 		this.price = price;
 		this.message = message;
@@ -60,6 +65,16 @@ public class Reservation extends Model{
 
 	public void setStartDate(Date startDate) {
 		this.startDate = startDate;
+	}
+	
+	
+
+	public Date getEndDate() {
+		return endDate;
+	}
+
+	public void setEndDate(Date endDate) {
+		this.endDate = endDate;
 	}
 
 	public int getLength() {

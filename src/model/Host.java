@@ -7,7 +7,7 @@ import enums.Roles;
 
 public class Host extends User {
 
-	private List<Unit> availableUnits;
+	private List<Unit> allUnits;
 
 	public Host() {
 		super();
@@ -17,27 +17,27 @@ public class Host extends User {
 		super(id);
 	}
 	
-	public Host(Id id, List<Unit> availableUnits, String username, String password, String name, String surname, Gender gender) {
+	public Host(Id id, List<Unit> allUnits, String username, String password, String name, String surname, Gender gender) {
 		super(id, username, password, name, surname, gender, Roles.HOST);
-		this.availableUnits = availableUnits;
+		this.allUnits = allUnits;
 	}	
 	
 	public Host(List<Unit> availableUnits, String username, String password, String name, String surname, Gender gender) {
 		super(username, password, name, surname, gender, Roles.HOST);
-		this.availableUnits = availableUnits;
+		this.allUnits = availableUnits;
 	}	
 	
-	public Host(List<Unit> availableUnits) {
+	public Host(List<Unit> allUnits) {
 		super();
-		this.availableUnits = availableUnits;
+		this.allUnits = allUnits;
 	}
 
-	public List<Unit> getAvailableUnits() {
-		return availableUnits;
+	public List<Unit> getAllUnits() {
+		return allUnits;
 	}
 
-	public void setAvailableUnits(List<Unit> availableUnits) {
-		this.availableUnits = availableUnits;
+	public void setAllUnits(List<Unit> allUnits) {
+		this.allUnits = allUnits;
 	}
 	
 	
