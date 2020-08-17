@@ -34,7 +34,6 @@ public class UnitRepository implements IRepository<Unit, Id>{
 	private Iterable<Unit> bindWithReservations(Iterable<Unit> allUnits){
 		ArrayList<Unit> retVal = new ArrayList<Unit>();
 		for(Unit temp : allUnits) {
-			// TODO: Get reservations by unit u reservationRepository
 			temp.setReservations(reservationRepository.getReservationsByUnit(temp));
 			retVal.add(temp);
 		}

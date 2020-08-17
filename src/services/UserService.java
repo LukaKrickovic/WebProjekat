@@ -148,8 +148,8 @@ public class UserService {
 	private String[] parseInput(String input) {
 		return input.split(" ");
 	}
-	
-	private void update(User user) {
+	/*
+	public void update(User user) {
 		if(user.getRole().equals(Roles.ADMINISTRATOR))
 			administratorRepository.update((Administrator) user);
 		else if(user.getRole().equals(Roles.GUEST))
@@ -157,4 +157,14 @@ public class UserService {
 		else
 			hostRepository.update((Host) user);
 	}
+	*/
+	public Iterable<User> hostSearch(String input) {
+		Iterable<User> allResults = getSearchResults(input);
+		ArrayList<User> retVal = new ArrayList<User>();
+		for(User temp : allResults) {
+			retVal.add(temp);
+		}
+		return retVal;
+	}
+	
 }

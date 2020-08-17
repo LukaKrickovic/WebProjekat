@@ -4,8 +4,9 @@ public class Address extends Model{
 
 	private String street;
 	private String number;
-	private String municipality;
+	private String city;
 	private String zipCode;
+	private String country;
 	
 	//	Constructors
 	
@@ -17,12 +18,13 @@ public class Address extends Model{
 		super(id);
 	}
 
-	public Address(String street, String number, String municipality, String zipCode) {
+	public Address(String street, String number, String city, String zipCode, String country) {
 		super();
 		this.street = street;
 		this.number = number;
-		this.municipality = municipality;
+		this.city = city;
 		this.zipCode = zipCode;
+		this.country = country;
 	}
 
 
@@ -52,14 +54,14 @@ public class Address extends Model{
 
 
 
-	public String getMunicipality() {
-		return municipality;
+	public String getCity() {
+		return city;
 	}
 
 
 
-	public void setMunicipality(String municipality) {
-		this.municipality = municipality;
+	public void setCity(String city) {
+		this.city = city;
 	}
 
 
@@ -74,5 +76,14 @@ public class Address extends Model{
 		this.zipCode = zipCode;
 	}
 
+	public String getCountry() {
+		return country;
+	}
+
+	public void setCountry(String country) {
+		this.country = country;
+	}
+
+	
 	
 }

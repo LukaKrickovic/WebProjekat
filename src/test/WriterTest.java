@@ -1,20 +1,6 @@
 package test;
 
-import java.util.ArrayList;
-
-import enums.RoomType;
-import model.Guest;
-import model.Host;
 import model.Id;
-import model.Location;
-import model.Unit;
-import repository.GuestRepository;
-import repository.ReservationRepository;
-import repository.UnitRepository;
-import sequencers.GuestSequencer;
-import sequencers.HostSequencer;
-import sequencers.UnitSequencer;
-import stream.Stream;
 
 public class WriterTest {
 
@@ -54,7 +40,7 @@ public class WriterTest {
 		a2.setUsername("gari");
 		ar.update(a2);
 		ar.getAll();
-		*/
+		
 		
 		GuestRepository gr = new GuestRepository(new Stream());
 		UnitRepository ur = new UnitRepository(new Stream(), gr);
@@ -62,12 +48,14 @@ public class WriterTest {
 		
 		GuestSequencer gs = new GuestSequencer();
 		ArrayList<Unit> rentedUnits = new ArrayList<Unit>();
-		/*
+		
 		Unit u1 = new Unit(new UnitSequencer().initialize(), RoomType.APARTMENT, 4, 4, new Location(new Id("L", 0)), new Host(new HostSequencer().initialize()), 
 				);
-		rentedUnits.add(e)*/
+		rentedUnits.add(e)
 		
 		Guest g1 = new Guest(gs.initialize(), )
+		*/
+		
 		
 	}
 
