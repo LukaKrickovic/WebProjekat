@@ -1,7 +1,9 @@
 package repository;
 
 import java.io.File;
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collection;
 
 import converters.UnitConverter;
 import model.ApartmentComment;
@@ -95,6 +97,56 @@ public class UnitRepository implements IRepository<Unit, Id>{
 	public void delete(Unit entity) {
 		entity.Delete();
 		update(entity);
+	}
+
+
+
+	public ArrayList<Unit> getByDates(LocalDate startDate, LocalDate endDate) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public ArrayList<Unit> getByLocation(String cityString, String countryString) {
+		ArrayList<Unit> results = new ArrayList<Unit>();
+		results = checkLocation(cityString, countryString, results);
+		return null;
+	}
+
+	private ArrayList<Unit> checkLocation(String cityString, String countryString, ArrayList<Unit> results) {
+		for(Unit temp : getAll()) {
+			if(temp.getLocation().getAddress().getCountry().equals(countryString) && temp.getLocation().getAddress().getCity().equals(cityString)) {
+				results.add(temp);
+			}
+		}
+		return results;
+	}
+
+
+	public ArrayList<Unit> getByPrice(double priceLower, double priceUpper) {
+		ArrayList<Unit> retVal = new ArrayList<Unit>();
+		for(Unit temp : getAll()) {
+			if(temp.getPricePerNight() >= priceLower && temp.getPricePerNight() <= priceUpper)
+				retVal.add(temp);
+		}
+		return retVal;
+	}
+
+	public ArrayList<Unit> getByRoomCount(int roomCountLower, int roomCountUpper) {
+		ArrayList<Unit> retVal = new ArrayList<Unit>();
+		for(Unit temp : getAll()) {
+			if(temp.getNumOfRooms() >= roomCountLower && temp.getNumOfRooms() <= roomCountUpper)
+				retVal.add(temp);
+		}
+		return retVal;
+	}
+
+	public ArrayList<Unit> getByPeopleCount(int peopleCount) {
+		ArrayList<Unit> retVal = new ArrayList<Unit>();
+		for(Unit temp : getAll()) {
+			if(temp.getNumOfGuests() == peopleCount)
+				retVal.add(temp);
+		}
+		return retVal;
 	}
 
 }
