@@ -3,11 +3,11 @@ package repository;
 import java.io.File;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.Date;
 
 import converters.UnitConverter;
-import model.ApartmentComment;
 import model.Id;
+import model.Reservation;
 import model.Unit;
 import stream.Stream;
 
@@ -101,9 +101,27 @@ public class UnitRepository implements IRepository<Unit, Id>{
 
 
 
-	public ArrayList<Unit> getByDates(LocalDate startDate, LocalDate endDate) {
-		// TODO Auto-generated method stub
-		return null;
+	public ArrayList<Unit> getByDates(Date startDate, Date endDate) {
+		ArrayList<Unit> retVal = new ArrayList<Unit>();
+		for(Unit temp : getAll()) {
+			for(Reservation reservation : temp.getReservations()) {
+				if(checkDates(startDate, endDate, reservation))
+					retVal.add(temp);
+			}
+		}
+		
+		return retVal;
+	}
+
+	private boolean checkDates(Date startDate, Date endDate, Reservation reservation) {
+		if(reservation.getStartDate().equals(startDate) && (reservation.getEndDate().equals(endDate)))
+			return false;
+		else if(reservation.getStartDate().after(startDate) && reservation.getEndDate().before(endDate))
+			return false;
+		else if(reservation.getStartDate().equals(startDate))
+			return false;
+		
+		return true;
 	}
 
 	public ArrayList<Unit> getByLocation(String cityString, String countryString) {

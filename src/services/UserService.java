@@ -1,8 +1,8 @@
 package services;
 
 import java.util.ArrayList;
-import java.util.Collection;
 
+import enums.Gender;
 import enums.Roles;
 import exceptions.UserUpdateValidationException;
 import model.Administrator;
@@ -103,6 +103,37 @@ public class UserService {
 			return administratorRepository.getById(id);
 	}
 	
+	public Iterable<User> searchByCriteria(String input, Roles role, Gender gender) {
+		ArrayList<User> retVal = (ArrayList)getSearchResults(input);
+
+		retVal = filterByGender(gender, retVal);
+		retVal = filterByRole(role, retVal);
+		
+		return retVal;
+	}
+
+	private ArrayList<User> filterByGender(Gender gender, ArrayList<User> retVal) {
+		if(gender != null) {
+			for(User temp : retVal) {
+				if(!temp.getGender().equals(gender))
+					retVal.remove(temp);
+			}
+		}
+		return retVal;
+	}
+
+	private ArrayList<User> filterByRole(Roles role, ArrayList<User> retVal) {
+		if(role != null) {
+			for(User temp : retVal) {
+				if(!temp.getRole().equals(role)) {
+					retVal.remove(role);
+				}
+			}
+		}
+		
+		return retVal;
+	}
+	
 	public Iterable<User> getSearchResults(String input){
 		String[] inputBits = parseInput(input.trim().toLowerCase());
 		ArrayList<User> results = new ArrayList<User>();
@@ -111,14 +142,35 @@ public class UserService {
 			results.addAll((ArrayList<User>)getUsersByNameAndSurname(inputBits[0], inputBits[1]));
 		} else {
 			for(String temp : inputBits) {
-				results.addAll((ArrayList)getUserByName(temp));
-				results.addAll((ArrayList) getUsersBySurname(temp));
+				results.add(getUserByUsername(temp));
+				results.addAll(getUserByName(temp));
+				results.addAll(getUsersBySurname(temp));
 			}
 		}
-		return results;
+		return unique(results);
+	}
+	
+
+	private User getUserByUsername(String temp) {
+		ArrayList<User> retVal = new ArrayList<User>(); 
+		if(hostRepository.getUserByUsername(temp) != null)
+			return hostRepository.getUserByUsername(temp);
+		else if (guestRepository.getUserByUsername(temp) != null)
+			return guestRepository.getUserByUsername(temp);
+		else 
+			return administratorRepository.getUserByUsername(temp);
 	}
 
-	private Iterable<User> getUsersByNameAndSurname(String s1, String s2) {
+	private Iterable<User> unique(ArrayList<User> results) {
+		ArrayList<User> retVal = new ArrayList<User>();
+		for(User temp : results) {
+			if(!retVal.contains(temp))
+				retVal.add(temp);
+		}
+		return retVal;
+	}
+
+	private ArrayList<User> getUsersByNameAndSurname(String s1, String s2) {
 		ArrayList<User> results = new ArrayList<User>();
 		results.addAll((ArrayList)hostRepository.getUsersByNameAndSurname(s1, s2));
 		results.addAll((ArrayList)guestRepository.getUsersByNameAndSurname(s1, s2));
@@ -129,7 +181,7 @@ public class UserService {
 		return results;
 	}
 	
-	private Iterable<User> getUsersBySurname(String temp) {
+	private ArrayList<User> getUsersBySurname(String temp) {
 		ArrayList<User> results = new ArrayList<User>();
 		results.addAll((ArrayList)hostRepository.getUsersBySurname(temp));
 		results.addAll((ArrayList)guestRepository.getUsersBySurname(temp));
@@ -137,7 +189,7 @@ public class UserService {
 		return results;
 	}
 
-	private Iterable<User> getUserByName(String temp) {
+	private ArrayList<User> getUserByName(String temp) {
 		ArrayList<User> results = new ArrayList<User>();
 		results.addAll((ArrayList)hostRepository.getUsersByName(temp));
 		results.addAll((ArrayList)guestRepository.getUsersByName(temp));
@@ -148,16 +200,7 @@ public class UserService {
 	private String[] parseInput(String input) {
 		return input.split(" ");
 	}
-	/*
-	public void update(User user) {
-		if(user.getRole().equals(Roles.ADMINISTRATOR))
-			administratorRepository.update((Administrator) user);
-		else if(user.getRole().equals(Roles.GUEST))
-			guestRepository.update((Guest) user);
-		else
-			hostRepository.update((Host) user);
-	}
-	*/
+
 	public Iterable<User> hostSearch(String input) {
 		Iterable<User> allResults = getSearchResults(input);
 		ArrayList<User> retVal = new ArrayList<User>();
