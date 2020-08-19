@@ -8,6 +8,7 @@ import enums.Roles;
 public class Host extends User {
 
 	private List<Unit> allUnits;
+	private List<Reservation> allReservations;
 
 	public Host() {
 		super();
@@ -17,19 +18,22 @@ public class Host extends User {
 		super(id);
 	}
 	
-	public Host(Id id, List<Unit> allUnits, String username, String password, String name, String surname, Gender gender) {
+	public Host(Id id, List<Unit> allUnits, List<Reservation> allReservations, String username, String password, String name, String surname, Gender gender) {
 		super(id, username, password, name, surname, gender, Roles.HOST);
 		this.allUnits = allUnits;
+		this.allReservations = allReservations;
 	}	
 	
-	public Host(List<Unit> availableUnits, String username, String password, String name, String surname, Gender gender) {
+	public Host(List<Unit> availableUnits, List<Reservation> allReservations, String username, String password, String name, String surname, Gender gender) {
 		super(username, password, name, surname, gender, Roles.HOST);
 		this.allUnits = availableUnits;
+		this.allReservations = allReservations;
 	}	
 	
-	public Host(List<Unit> allUnits) {
+	public Host(List<Unit> allUnits, List<Reservation> allReservations) {
 		super();
 		this.allUnits = allUnits;
+		this.allReservations = allReservations;
 	}
 
 	public List<Unit> getAllUnits() {
@@ -38,6 +42,14 @@ public class Host extends User {
 
 	public void setAllUnits(List<Unit> allUnits) {
 		this.allUnits = allUnits;
+	}
+
+	public List<Reservation> getAllReservations() {
+		return allReservations;
+	}
+
+	public void setAllReservations(List<Reservation> allReservations) {
+		this.allReservations = allReservations;
 	}
 	
 	
