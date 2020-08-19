@@ -1,6 +1,7 @@
 package model;
 
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import enums.RoomType;
@@ -16,7 +17,7 @@ public class Unit extends Model{
 	private LocalTime checkinTime;
 	private LocalTime checkoutTime;
 	private Status status;
-	private ApartmentComment apartmentComment;
+	private List<ApartmentComment> apartmentComment;
 	private List<Amenity> amenities;
 	private List<Reservation> reservations;
 	private List<String> imageSources;
@@ -31,7 +32,7 @@ public class Unit extends Model{
 	}
 	
 	public Unit(RoomType roomType, int numOfRooms, int numOfGuests, Location location, Host host, double pricePerNight,
-			LocalTime checkinTime, LocalTime checkoutTime, Status status, ApartmentComment apartmentComment, 
+			LocalTime checkinTime, LocalTime checkoutTime, Status status, List<ApartmentComment> apartmentComment, 
 			List<Amenity> amenities, List<Reservation> reservations, List<String> imageSources) {
 		super();
 		this.roomType = roomType;
@@ -50,7 +51,7 @@ public class Unit extends Model{
 	}
 	
 	public Unit(RoomType roomType, int numOfRooms, int numOfGuests, Location location, Host host, double pricePerNight,
-			Status status, ApartmentComment apartmentComment, 
+			Status status, List<ApartmentComment> apartmentComment, 
 			List<Amenity> amenities, List<Reservation> reservations, List<String> imageSources) {
 		super();
 		this.roomType = roomType;
@@ -69,7 +70,7 @@ public class Unit extends Model{
 	}
 	
 	public Unit(Id id, RoomType roomType, int numOfRooms, int numOfGuests, Location location, Host host, double pricePerNight,
-			LocalTime checkinTime, LocalTime checkoutTime, Status status, ApartmentComment apartmentComment, 
+			LocalTime checkinTime, LocalTime checkoutTime, Status status, List<ApartmentComment> apartmentComment, 
 			List<Amenity> amenities, List<Reservation> reservations, List<String> imageSources) {
 		super(id);
 		this.roomType = roomType;
@@ -88,7 +89,25 @@ public class Unit extends Model{
 	}
 	
 	public Unit(Id id, RoomType roomType, int numOfRooms, int numOfGuests, Location location, Host host, double pricePerNight,
-			Status status, ApartmentComment apartmentComment, 
+			LocalTime checkinTime, LocalTime checkoutTime, Status status) {
+		super(id);
+		this.roomType = roomType;
+		this.numOfRooms = numOfRooms;
+		this.numOfGuests = numOfGuests;
+		this.location = location;
+		this.host = host;
+		this.pricePerNight = pricePerNight;
+		this.checkinTime = checkinTime;
+		this.checkoutTime = checkoutTime;
+		this.status = status;
+		this.apartmentComment = new ArrayList<ApartmentComment>();
+		this.amenities = new ArrayList<Amenity>();
+		this.reservations = new ArrayList<Reservation>();
+		this.imageSources = new ArrayList<String>();
+	}
+	
+	public Unit(Id id, RoomType roomType, int numOfRooms, int numOfGuests, Location location, Host host, double pricePerNight,
+			Status status, List<ApartmentComment> apartmentComment, 
 			List<Amenity> amenities, List<Reservation> reservations, List<String> imageSources) {
 		super(id);
 		this.roomType = roomType;
@@ -178,11 +197,11 @@ public class Unit extends Model{
 		this.status = status;
 	}
 
-	public ApartmentComment getApartmentComment() {
+	public List<ApartmentComment> getApartmentComment() {
 		return apartmentComment;
 	}
 
-	public void setApartmentComment(ApartmentComment apartmentComment) {
+	public void setApartmentComment(List<ApartmentComment> apartmentComment) {
 		this.apartmentComment = apartmentComment;
 	}
 

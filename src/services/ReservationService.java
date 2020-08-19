@@ -1,8 +1,6 @@
 package services;
 
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.util.Date;
+import java.time.LocalDate;
 
 import enums.ReservationStatus;
 import enums.Roles;
@@ -105,10 +103,10 @@ public class ReservationService {
 		if(user.getRole().equals(Roles.HOST)) {
 			if(reservation.getUnit().getHost().getId().equals(user.getId())) {
 				
-				LocalDateTime now = LocalDateTime.now();
-				Date nowDate = Date.from(now.atZone(ZoneId.systemDefault()).toInstant());
+				LocalDate now = LocalDate.now();
+				//Date nowDate = Date.from(now.atZone(ZoneId.systemDefault()).toInstant());
 				
-				if(reservation.getEndDate().compareTo(nowDate) < 0) {
+				if(reservation.getEndDate().isBefore(now)) {
 					reservation.setReservationStatus(ReservationStatus.COMPLETED);
 					reservationRepository.update(reservation);
 				} else {

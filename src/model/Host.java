@@ -1,5 +1,6 @@
 package model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import enums.Gender;
@@ -23,6 +24,12 @@ public class Host extends User {
 		this.allUnits = allUnits;
 		this.allReservations = allReservations;
 	}	
+	
+	public Host(Id id, String username, String password, String name, String surname, Gender gender) {
+		super(id, username, password, name, surname, gender, Roles.HOST);
+		this.allUnits = new ArrayList<Unit>();
+		this.allReservations = new ArrayList<Reservation>();
+	}
 	
 	public Host(List<Unit> availableUnits, List<Reservation> allReservations, String username, String password, String name, String surname, Gender gender) {
 		super(username, password, name, surname, gender, Roles.HOST);

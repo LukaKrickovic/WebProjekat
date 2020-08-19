@@ -3,9 +3,10 @@ package repository;
 import java.io.File;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Date;
 
 import converters.UnitConverter;
+import model.ApartmentComment;
+import model.Host;
 import model.Id;
 import model.Reservation;
 import model.Unit;
@@ -15,23 +16,56 @@ public class UnitRepository implements IRepository<Unit, Id>{
 
 	private Stream stream;
 	private UnitConverter unitConverter;
-	private String unitFilePath = "data/ApartmentComments.txt";
+	private String unitFilePath = "data/Units.txt";
 	private File unitFile;
 	private ReservationRepository reservationRepository;
+	private HostRepository hostRepository;
+	private ApartmentCommentRepository apartmentCommentRepository;
 	
-	public UnitRepository(Stream stream, ReservationRepository reservationRepository) {
+	public UnitRepository(Stream stream, ReservationRepository reservationRepository, HostRepository hostRepository, ApartmentCommentRepository apartmentCommentRepository) {
 		this.stream = stream;
 		unitFile = new File(unitFilePath);
 		unitConverter = new UnitConverter();
 		this.reservationRepository = reservationRepository;
+		this.hostRepository = hostRepository;
+		this.apartmentCommentRepository = apartmentCommentRepository;
 	}
 	
-	public UnitRepository(Stream stream, GuestRepository guestRepository) {
+	public UnitRepository(Stream stream, GuestRepository guestRepository, HostRepository hostRepository, ApartmentCommentRepository apartmentCommentRepository) {
 		this.stream = stream;
 		unitFile = new File(unitFilePath);
 		unitConverter = new UnitConverter();
 		this.reservationRepository = new ReservationRepository(this.stream, this, guestRepository);
+		this.hostRepository = hostRepository;
+		this.apartmentCommentRepository = apartmentCommentRepository;
 	}
+
+	private Iterable<Unit> bindWithHost(Iterable<Unit> allUnits){
+		ArrayList<Unit> retVal = new ArrayList<Unit>();
+		for(Unit temp : allUnits) {
+			Host tempHost = temp.getHost();
+			Id tempId = tempHost.getId();
+			tempHost = hostRepository.getById(tempId);
+			temp.setHost(tempHost);
+			retVal.add(temp);
+		}
+		return retVal;
+	}
+	
+	private Iterable<Unit> bindWithApartmentComment(Iterable<Unit> allUnits){
+		ArrayList<Unit> retVal = new ArrayList<Unit>();
+		
+		for(Unit temp : allUnits) {
+			ArrayList<ApartmentComment> comments = new ArrayList<ApartmentComment>();
+			for(ApartmentComment comment : temp.getApartmentComment()) {
+				comments.add(apartmentCommentRepository.getById(comment.getId()));
+			}
+			temp.setApartmentComment(comments);
+			retVal.add(temp);
+		}
+		return retVal;
+	}
+	
 	
 	private Iterable<Unit> bindWithReservations(Iterable<Unit> allUnits){
 		ArrayList<Unit> retVal = new ArrayList<Unit>();
@@ -62,7 +96,9 @@ public class UnitRepository implements IRepository<Unit, Id>{
 		ArrayList<String> allUnitsString = (ArrayList)stream.readFromFile(unitFile);
 		ArrayList<Unit> allUnits= new ArrayList<Unit>();
 		for(String temp : allUnitsString) {
-			allUnits.add(unitConverter.ConvertFromJSON(temp));
+			if(!unitConverter.ConvertFromJSON(temp).isDeleted()) {
+				allUnits.add(unitConverter.ConvertFromJSON(temp));
+			}
 		}
 		return allUnits;
 	}
@@ -70,8 +106,22 @@ public class UnitRepository implements IRepository<Unit, Id>{
 	@Override
 	public Iterable<Unit> getAll() {
 		ArrayList<Unit> allUnits = (ArrayList)getAllUnbound();
-		allUnits = (ArrayList) bindWithReservations(allUnits);
+		if(empty(allUnits)) {
+			return new ArrayList<Unit>();
+		}
+		allUnits = (ArrayList<Unit>) bindWithReservations(allUnits);
+		allUnits = (ArrayList<Unit>) bindWithApartmentComment(allUnits);
+		allUnits = (ArrayList<Unit>) bindWithHost(allUnits);
 		return allUnits;
+	}
+
+	private boolean empty(ArrayList<Unit> allUnits) {
+		for(Unit temp : allUnits) {
+			if(!temp.isDeleted()) {
+				return false;
+			}
+		}
+		return true;
 	}
 
 	@Override
@@ -87,7 +137,7 @@ public class UnitRepository implements IRepository<Unit, Id>{
 				backup.append("\n");
 			}
 		}
-		
+		backup.deleteCharAt(backup.length()-1);
 		stream.blankOutFile(unitFile);
 		stream.writeToFile(backup.toString(), unitFile);
 		
@@ -101,7 +151,7 @@ public class UnitRepository implements IRepository<Unit, Id>{
 
 
 
-	public ArrayList<Unit> getByDates(Date startDate, Date endDate) {
+	public ArrayList<Unit> getByDates(LocalDate startDate, LocalDate endDate) {
 		ArrayList<Unit> retVal = new ArrayList<Unit>();
 		for(Unit temp : getAll()) {
 			for(Reservation reservation : temp.getReservations()) {
@@ -113,10 +163,10 @@ public class UnitRepository implements IRepository<Unit, Id>{
 		return retVal;
 	}
 
-	private boolean checkDates(Date startDate, Date endDate, Reservation reservation) {
+	private boolean checkDates(LocalDate startDate, LocalDate endDate, Reservation reservation) {
 		if(reservation.getStartDate().equals(startDate) && (reservation.getEndDate().equals(endDate)))
 			return false;
-		else if(reservation.getStartDate().after(startDate) && reservation.getEndDate().before(endDate))
+		else if(reservation.getStartDate().isAfter(startDate) && reservation.getEndDate().isBefore(endDate))
 			return false;
 		else if(reservation.getStartDate().equals(startDate))
 			return false;
@@ -127,7 +177,7 @@ public class UnitRepository implements IRepository<Unit, Id>{
 	public ArrayList<Unit> getByLocation(String cityString, String countryString) {
 		ArrayList<Unit> results = new ArrayList<Unit>();
 		results = checkLocation(cityString, countryString, results);
-		return null;
+		return results;
 	}
 
 	private ArrayList<Unit> checkLocation(String cityString, String countryString, ArrayList<Unit> results) {

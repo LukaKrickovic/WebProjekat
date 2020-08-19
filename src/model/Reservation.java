@@ -1,14 +1,14 @@
 package model;
 
+import java.time.LocalDate;
 import java.util.Date;
-import java.util.List;
 
 import enums.ReservationStatus;
 
 public class Reservation extends Model{
 	private Unit unit;
-	private Date startDate;
-	private Date endDate;
+	private LocalDate startDate;
+	private LocalDate endDate;
 	private int length;
 	private double price;
 	private String message;
@@ -25,7 +25,7 @@ public class Reservation extends Model{
 		super(id);
 	}
 	
-	public Reservation(Unit unit, Date startDate, Date endDate, int length, double price, String message, Guest guest,
+	public Reservation(Unit unit, LocalDate startDate, LocalDate endDate, int length, double price, String message, Guest guest,
 			ReservationStatus reservationStatus) {
 		super();
 		this.unit = unit;
@@ -38,7 +38,7 @@ public class Reservation extends Model{
 		this.reservationStatus = reservationStatus;
 	}
 	
-	public Reservation(Id id, Unit unit, Date startDate, Date endDate, int length, double price, String message, Guest guest,
+	public Reservation(Id id, Unit unit, LocalDate startDate, LocalDate endDate, int length, double price, String message, Guest guest,
 			ReservationStatus reservationStatus) {
 		super(id);
 		this.unit = unit;
@@ -59,21 +59,21 @@ public class Reservation extends Model{
 		this.unit = unit;
 	}
 
-	public Date getStartDate() {
+	public LocalDate getStartDate() {
 		return startDate;
 	}
 
-	public void setStartDate(Date startDate) {
+	public void setStartDate(LocalDate startDate) {
 		this.startDate = startDate;
 	}
 	
 	
 
-	public Date getEndDate() {
+	public LocalDate getEndDate() {
 		return endDate;
 	}
 
-	public void setEndDate(Date endDate) {
+	public void setEndDate(LocalDate endDate) {
 		this.endDate = endDate;
 	}
 

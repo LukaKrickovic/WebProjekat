@@ -32,8 +32,7 @@ public class HostRepository implements IRepository<Host, Id>, IUserRepository<Ho
 
 	@Override
 	public Host getById(Id id) {
-		ArrayList<Host> allHosts= new ArrayList<Host>();
-		for(Host temp : allHosts) {
+		for(Host temp : getAll()) {
 			if(temp.getId().equals(id)) {
 				return temp;
 			}
@@ -47,7 +46,9 @@ public class HostRepository implements IRepository<Host, Id>, IUserRepository<Ho
 		ArrayList<String> allHostsString = (ArrayList)stream.readFromFile(hostFile);
 		ArrayList<Host> allHosts= new ArrayList<Host>();
 		for(String temp : allHostsString) {
-			allHosts.add(hostConverter.ConvertFromJSON(temp));
+			if(!hostConverter.ConvertFromJSON(temp).isDeleted()) {
+				allHosts.add(hostConverter.ConvertFromJSON(temp));
+			}
 		}
 		return allHosts;
 	}

@@ -79,7 +79,8 @@ public class ApartmentCommentRepository implements IRepository<ApartmentComment,
 		ArrayList<String> allCommentsString = (ArrayList)stream.readFromFile(apartmentCommentFile);
 		ArrayList<ApartmentComment> allComments= new ArrayList<ApartmentComment>();
 		for(String temp : allCommentsString) {
-			allComments.add(apartmentCommentConverter.ConvertFromJSON(temp));
+			if(!apartmentCommentConverter.ConvertFromJSON(temp).isDeleted())
+				allComments.add(apartmentCommentConverter.ConvertFromJSON(temp));
 		}
 		return allComments;
 	}

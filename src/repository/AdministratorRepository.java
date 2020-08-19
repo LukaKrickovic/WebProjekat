@@ -46,7 +46,9 @@ public class AdministratorRepository implements IRepository<Administrator, Id>, 
 		ArrayList<String> allAdministratorsString = (ArrayList)stream.readFromFile(administratorFile);
 		ArrayList<Administrator> allAdministrators = new ArrayList<Administrator>();
 		for(String temp : allAdministratorsString) {
-			allAdministrators.add(administratorConverter.ConvertFromJSON(temp));
+			if(!administratorConverter.ConvertFromJSON(temp).isDeleted()) {
+				allAdministrators.add(administratorConverter.ConvertFromJSON(temp));
+			}
 		}
 		return allAdministrators;
 	}

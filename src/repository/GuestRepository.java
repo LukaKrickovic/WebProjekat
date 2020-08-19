@@ -74,7 +74,8 @@ public class GuestRepository implements IRepository<Guest, Id>, IUserRepository<
 		ArrayList<String> allGuestsString = (ArrayList)stream.readFromFile(guestFile);
 		ArrayList<Guest> allGuests= new ArrayList<Guest>();
 		for(String temp : allGuestsString) {
-			allGuests.add(guestConverter.ConvertFromJSON(temp));
+			if(!guestConverter.ConvertFromJSON(temp).isDeleted())
+				allGuests.add(guestConverter.ConvertFromJSON(temp));
 		}
 		return allGuests;
 	}

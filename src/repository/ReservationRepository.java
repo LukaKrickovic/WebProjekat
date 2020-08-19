@@ -23,6 +23,8 @@ public class ReservationRepository implements IRepository<Reservation, Id>{
 		this.stream = stream;
 		this.unitRepository = unitRepository;
 		this.guestRepository = guestRepository;
+		reservationConverter = new ReservationConverter();
+		reservationFile = new File(reservationFilePath);
 	}
 	
 	private Iterable<Reservation> bindWithUnits(Iterable<Reservation> allReservations){
@@ -45,6 +47,7 @@ public class ReservationRepository implements IRepository<Reservation, Id>{
 	
 	@Override
 	public Reservation create(Reservation entity) {
+
 		stream.writeToFile(reservationConverter.ConvertToJSON(entity), reservationFile);
 		return entity;
 	}
@@ -63,7 +66,8 @@ public class ReservationRepository implements IRepository<Reservation, Id>{
 		ArrayList<String> allReservationsString = (ArrayList)stream.readFromFile(reservationFile);
 		ArrayList<Reservation> allReservations= new ArrayList<Reservation>();
 		for(String temp : allReservationsString) {
-			allReservations.add(reservationConverter.ConvertFromJSON(temp));
+			if(!reservationConverter.ConvertFromJSON(temp).isDeleted())
+				allReservations.add(reservationConverter.ConvertFromJSON(temp));
 		}
 		return allReservations;
 	}
