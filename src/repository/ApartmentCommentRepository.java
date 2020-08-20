@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.ArrayList;
 
 import converters.ApartmentCommentConverter;
+import exceptions.IdWriteException;
 import model.ApartmentComment;
 import model.Guest;
 import model.Id;
@@ -49,16 +50,28 @@ public class ApartmentCommentRepository implements IRepository<ApartmentComment,
 
 	@Override
 	public ApartmentComment create(ApartmentComment entity) {
-		stream.writeToFile(apartmentCommentConverter.ConvertToJSON(entity), apartmentCommentFile);
-		return entity;
+		try {
+			checkId(entity.getId());
+			stream.writeToFile(apartmentCommentConverter.ConvertToJSON(entity), apartmentCommentFile);
+			return entity;
+		} catch (IdWriteException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+
+
+	private void checkId(Id id) throws IdWriteException{
+		if(getById(id) != null)
+			throw new IdWriteException("ApartmentComment id already in use: " + id.toString());
 	}
 
 
 
 	@Override
 	public ApartmentComment getById(Id id) {
-		ArrayList<ApartmentComment> allComments = (ArrayList)getAll();
-		for(ApartmentComment temp : allComments) {
+		for(ApartmentComment temp : getAll()) {
 			if(temp.getId().equals(id))
 				return temp;
 		}

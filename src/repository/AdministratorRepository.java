@@ -5,6 +5,7 @@ import java.util.ArrayList;
 
 import converters.AdministratorConverter;
 import enums.Gender;
+import exceptions.IdWriteException;
 import model.Administrator;
 import model.Guest;
 import model.Id;
@@ -25,14 +26,25 @@ public class AdministratorRepository implements IRepository<Administrator, Id>, 
 	
 	@Override
 	public Administrator create(Administrator entity) {
-		stream.writeToFile(administratorConverter.ConvertToJSON(entity), administratorFile);
-		return entity;
+		try {
+			checkId(entity.getId());
+			stream.writeToFile(administratorConverter.ConvertToJSON(entity), administratorFile);
+			return entity;
+		} catch (IdWriteException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	private void checkId(Id id) throws IdWriteException{
+		if(getById(id) != null)
+			throw new IdWriteException("Administrator id already in use: " + id.toString());
+		
 	}
 
 	@Override
 	public Administrator getById(Id id) {
-		ArrayList<Administrator> allAdministrators = new ArrayList<Administrator>();
-		for(Administrator temp : allAdministrators) {
+		for(Administrator temp : getAll()) {
 			if(temp.getId().equals(id)) {
 				return temp;
 			}

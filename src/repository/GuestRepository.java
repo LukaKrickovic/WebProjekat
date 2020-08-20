@@ -5,6 +5,7 @@ import java.util.ArrayList;
 
 import converters.GuestConverter;
 import enums.Gender;
+import exceptions.IdWriteException;
 import model.Administrator;
 import model.Guest;
 import model.Id;
@@ -26,14 +27,26 @@ public class GuestRepository implements IRepository<Guest, Id>, IUserRepository<
 
 	@Override
 	public Guest create(Guest entity) {
-		stream.writeToFile(guestConverter.ConvertToJSON(entity), guestFile);
-		return entity;
+		try {
+			checkId(entity.getId());
+			stream.writeToFile(guestConverter.ConvertToJSON(entity), guestFile);
+			return entity;
+		} catch (IdWriteException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
 	}
+
+	private void checkId(Id id) throws IdWriteException{
+		if(getById(id) != null)
+			throw new IdWriteException("Guest id already in use: " + id.toString());
+	}
+
 
 	@Override
 	public Guest getById(Id id) {
-		ArrayList<Guest> allGuests= new ArrayList<Guest>();
-		for(Guest temp : allGuests) {
+		for(Guest temp : getAll()) {
 			if(temp.getId().equals(id)) {
 				return temp;
 			}

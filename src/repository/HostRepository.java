@@ -5,6 +5,7 @@ import java.util.ArrayList;
 
 import converters.HostConverter;
 import enums.Gender;
+import exceptions.IdWriteException;
 import model.Administrator;
 import model.Guest;
 import model.Host;
@@ -26,8 +27,19 @@ public class HostRepository implements IRepository<Host, Id>, IUserRepository<Ho
 	
 	@Override
 	public Host create(Host entity) {
-		stream.writeToFile(hostConverter.ConvertToJSON(entity), hostFile);
-		return entity;
+		try {
+			checkId(entity.getId());
+			stream.writeToFile(hostConverter.ConvertToJSON(entity), hostFile);
+			return entity;
+		} catch (IdWriteException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	private void checkId(Id id) throws IdWriteException {
+		if(getById(id) != null)
+			throw new IdWriteException("Host id already in use: " + id.toString());
 	}
 
 	@Override

@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 
 import converters.UnitConverter;
+import exceptions.IdWriteException;
 import model.ApartmentComment;
 import model.Host;
 import model.Id;
@@ -78,14 +79,24 @@ public class UnitRepository implements IRepository<Unit, Id>{
 	
 	@Override
 	public Unit create(Unit entity) {
-		stream.writeToFile(unitConverter.ConvertToJSON(entity), unitFile);
-		return entity;
+		try {
+			checkId(entity.getId());
+			stream.writeToFile(unitConverter.ConvertToJSON(entity), unitFile);
+			return entity;
+		} catch (IdWriteException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	private void checkId(Id id) throws IdWriteException {
+		if(getById(id) != null)
+			throw new IdWriteException("Unit id already in use: " + id.toString());
 	}
 
 	@Override
 	public Unit getById(Id id) {
-		ArrayList<Unit> allUnits = (ArrayList)getAll();
-		for(Unit temp : allUnits) {
+		for(Unit temp : getAll()) {
 			if(temp.getId().equals(id))
 				return temp;
 		}

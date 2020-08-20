@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import converters.ReservationConverter;
+import exceptions.IdWriteException;
 import model.Id;
 import model.Reservation;
 import model.Unit;
@@ -47,15 +48,25 @@ public class ReservationRepository implements IRepository<Reservation, Id>{
 	
 	@Override
 	public Reservation create(Reservation entity) {
+		try {
+			checkId(entity.getId());
+			stream.writeToFile(reservationConverter.ConvertToJSON(entity), reservationFile);
+			return entity;
+		} catch (IdWriteException e) {
+			e.printStackTrace();
+		}
+		
+		return null;
+	}
 
-		stream.writeToFile(reservationConverter.ConvertToJSON(entity), reservationFile);
-		return entity;
+	private void checkId(Id id) throws IdWriteException {
+		if(getById(id) != null)
+			throw new IdWriteException("Reservation id already in use: " + id.toString());
 	}
 
 	@Override
 	public Reservation getById(Id id) {
-		ArrayList<Reservation> allReservations= (ArrayList)getAll();
-		for(Reservation temp : allReservations) {
+		for(Reservation temp : getAll()) {
 			if(temp.getId().equals(id))
 				return temp;
 		}
