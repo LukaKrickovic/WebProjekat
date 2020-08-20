@@ -9,16 +9,19 @@ import model.ApartmentComment;
 import model.Host;
 import model.Reservation;
 import model.Unit;
+import util.UnitAndResRepositoryStrings;
 
 public class UnitConverter {
 
 	public UnitConverter() {}
 	
 	public String ConvertToJSON(Unit entity) {
-		entity.setReservations(saveReservationIds(entity.getReservations()));
 		entity.setHost(saveHostId(entity.getHost()));
 		entity.setApartmentComment(saveApartmentComment(entity.getApartmentComment()));
-		return new Gson().toJson(entity);
+		// TODO: Nije znalo da napravi JSON od Unita u update pozivu!
+		String JSON = new Gson().toJson(entity);
+		System.out.println(JSON);
+		return UnitAndResRepositoryStrings.unitString + JSON;
 	}
 	
 	private List<ApartmentComment> saveApartmentComment(List<ApartmentComment> apartmentComments) {
@@ -42,6 +45,7 @@ public class UnitConverter {
 	}
 
 	public Unit ConvertFromJSON(String JSON) {
-		return new Gson().fromJson(JSON, Unit.class);
+		System.out.println(JSON);
+		return (new Gson().fromJson(JSON, Unit.class));
 	}
 }

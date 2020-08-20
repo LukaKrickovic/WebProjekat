@@ -40,7 +40,19 @@ public class UnitRepository implements IRepository<Unit, Id>{
 		this.hostRepository = hostRepository;
 		this.apartmentCommentRepository = apartmentCommentRepository;
 	}
+	
+	
 
+	public ReservationRepository getReservationRepository() {
+		return reservationRepository;
+	}
+
+	/*
+	public void setReservationRepository(ReservationRepository reservationRepository) {
+		this.reservationRepository = reservationRepository;
+	}
+
+*/
 	private Iterable<Unit> bindWithHost(Iterable<Unit> allUnits){
 		ArrayList<Unit> retVal = new ArrayList<Unit>();
 		for(Unit temp : allUnits) {

@@ -5,6 +5,7 @@ import com.google.gson.Gson;
 import model.Guest;
 import model.Reservation;
 import model.Unit;
+import util.UnitAndResRepositoryStrings;
 
 public class ReservationConverter {
 
@@ -12,8 +13,7 @@ public class ReservationConverter {
 	
 	public String ConvertToJSON(Reservation entity) {
 		entity.setGuest(saveGuestId(entity.getGuest()));
-		entity.setUnit(saveUnitId(entity.getUnit()));
-		return new Gson().toJson(entity);
+		return UnitAndResRepositoryStrings.reservationString + new Gson().toJson(entity);
 	}
 	
 	private Unit saveUnitId(Unit unit) {

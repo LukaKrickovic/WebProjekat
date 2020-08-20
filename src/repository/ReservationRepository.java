@@ -28,14 +28,27 @@ public class ReservationRepository implements IRepository<Reservation, Id>{
 		reservationFile = new File(reservationFilePath);
 	}
 	
+	/*
 	private Iterable<Reservation> bindWithUnits(Iterable<Reservation> allReservations){
 		ArrayList<Reservation> retVal = new ArrayList<Reservation>();
 		for(Reservation temp : allReservations) {
+			System.out.println(((ArrayList<Reservation>)allReservations).size() + " Rezervacija");
+			temp.setUnit(unitRepository.getById(temp.getUnit().getId()));
+			retVal.add(temp);
+		}
+		return retVal;
+	}*/
+	
+	private Iterable<Reservation> bindWithUnits(Iterable<Reservation> allReservations){
+		ArrayList<Reservation> retVal = new ArrayList<Reservation>();
+		for(Reservation temp : allReservations) {
+
 			temp.setUnit(unitRepository.getById(temp.getUnit().getId()));
 			retVal.add(temp);
 		}
 		return retVal;
 	}
+	
 	
 	private Iterable<Reservation> bindWithGuests(Iterable<Reservation> allReservations){
 		ArrayList<Reservation> retVal = new ArrayList<Reservation>();
@@ -74,9 +87,13 @@ public class ReservationRepository implements IRepository<Reservation, Id>{
 	}
 
 	public Iterable<Reservation> getAllUnbound() {
-		ArrayList<String> allReservationsString = (ArrayList)stream.readFromFile(reservationFile);
+		ArrayList<String> allReservationsString = (ArrayList<String>)stream.readFromFile(reservationFile);
+		
+		System.out.println("There are: " + allReservationsString.size() + " strings");
 		ArrayList<Reservation> allReservations= new ArrayList<Reservation>();
+		
 		for(String temp : allReservationsString) {
+			System.out.println("Reading line");
 			if(!reservationConverter.ConvertFromJSON(temp).isDeleted())
 				allReservations.add(reservationConverter.ConvertFromJSON(temp));
 		}
@@ -85,9 +102,12 @@ public class ReservationRepository implements IRepository<Reservation, Id>{
 	
 	@Override
 	public Iterable<Reservation> getAll() {
-		ArrayList<Reservation> allReservations= (ArrayList)getAllUnbound();
-		allReservations= (ArrayList) bindWithUnits(allReservations);
-		allReservations= (ArrayList) bindWithGuests(allReservations);
+		System.out.println(unitRepository.getByPeopleCount(8));
+		System.out.println("Pre UNBOUND");
+		ArrayList<Reservation> allReservations = (ArrayList<Reservation>)getAllUnbound();
+		System.out.println("Nabavio Unbound");
+		allReservations = (ArrayList<Reservation>) bindWithUnits(allReservations);
+		allReservations = (ArrayList<Reservation>) bindWithGuests(allReservations);
 		return allReservations;
 	}
 

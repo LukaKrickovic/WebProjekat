@@ -1,7 +1,9 @@
 package test;
 
+import java.awt.List;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.ArrayList;
 
 import enums.Gender;
 import enums.ReservationStatus;
@@ -17,6 +19,7 @@ import repository.ApartmentCommentRepository;
 import repository.GuestRepository;
 import repository.HostRepository;
 import repository.ReservationRepository;
+import repository.UnitAndReservationRepository;
 import repository.UnitRepository;
 import sequencers.GuestSequencer;
 import sequencers.HostSequencer;
@@ -34,9 +37,10 @@ public class RepositoryTest {
 	HostRepository hr = new HostRepository(stream);
 	ApartmentCommentRepository arc = new ApartmentCommentRepository(stream, gr);
 	
-	UnitRepository ur = new UnitRepository(stream, gr, hr, arc);
+	//UnitRepository ur = new UnitRepository(stream, gr, hr, arc);
 	
-	ReservationRepository rr = new ReservationRepository(stream, ur, gr);
+	//ReservationRepository rr = new ReservationRepository(stream, ur, gr);
+	//ReservationRepository rr = ur.getReservationRepository();
 	
 	Location l1 = new Location("44.000", "45.000", new Address("Tolstojeva", "15", "Novi Sad", "21000", "Srbijica"));
 	
@@ -57,10 +61,26 @@ public class RepositoryTest {
 	hr.create(h1);
 	gr.create(g1);
 	
-	ur.create(unit1);
+	//ur.create(unit1);
+	
+	UnitAndReservationRepository urr = new UnitAndReservationRepository(stream, hr, arc, gr);
+	
+	urr.create(unit1);
+	
+	Reservation res1 = new Reservation(new ReservationSequencer().initialize(), unit1, LocalDate.of(2020, 8, 18), LocalDate.of(2020, 8, 20), 2, 40, "Porukica", g1, ReservationStatus.ACCEPTED);
+	//rr.create(res1);
+	urr.create(res1);
+	
+	ArrayList<Reservation> res = new ArrayList<Reservation>(); 
+	res.add(res1);
+	
+	unit1.setReservations(res);
+	urr.update(unit1);
+	//System.out.println(((ArrayList<Unit>)urr.getAll()).get(0).getId());
+	//urr.update(unit1);
 	//ur.getByDates(LocalDate.of(2020, 8, 18), LocalDate.of(2020, 8, 19));
-	unit1.setCheckinTime(LocalTime.of(10, 15));
-	ur.update(unit1);
+	//unit1.setCheckinTime(LocalTime.of(10, 15));
+	//ur.update(unit1);
 	//ur.delete(unit1);
 	/*
 	System.out.println(ur.getAll());
@@ -72,12 +92,11 @@ public class RepositoryTest {
 	System.out.println(ur.getByRoomCount(0, 10));
 	*/
 	
-	Reservation res1 = new Reservation(new ReservationSequencer().initialize(), unit1, LocalDate.of(2020, 8, 18), LocalDate.of(2020, 8, 20), 2, 40, "Porukica", g1, ReservationStatus.ACCEPTED);
-	rr.create(res1);
+	//Iterable<Reservation> allRes = rr.getAll();
 	
-	System.out.println(rr.getAll());
+	//System.out.println(allRes);
 	
-	rr.getReservationsByUnit(unit1);
+	//rr.getReservationsByUnit(unit1);
 	
 	}
 }
