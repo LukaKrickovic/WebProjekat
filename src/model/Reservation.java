@@ -1,7 +1,7 @@
 package model;
 
 import java.time.LocalDate;
-import java.util.Date;
+import java.time.temporal.ChronoUnit;
 
 import enums.ReservationStatus;
 
@@ -45,6 +45,32 @@ public class Reservation extends Model{
 		this.startDate = startDate;
 		this.endDate = endDate;
 		this.length = length;
+		this.price = price;
+		this.message = message;
+		this.guest = guest;
+		this.reservationStatus = reservationStatus;
+	}
+	
+	public Reservation(Id id, Unit unit, LocalDate startDate, int length, double price, String message, Guest guest,
+			ReservationStatus reservationStatus) {
+		super(id);
+		this.unit = unit;
+		this.startDate = startDate;
+		this.endDate = startDate.plusDays(length);
+		this.length = length;
+		this.price = price;
+		this.message = message;
+		this.guest = guest;
+		this.reservationStatus = reservationStatus;
+	}
+	
+	public Reservation(Id id, Unit unit, LocalDate startDate, LocalDate endDate, double price, String message, Guest guest,
+			ReservationStatus reservationStatus) {
+		super(id);
+		this.unit = unit;
+		this.startDate = startDate;
+		this.endDate = endDate;
+		this.length = (int)ChronoUnit.DAYS.between(startDate, endDate);
 		this.price = price;
 		this.message = message;
 		this.guest = guest;

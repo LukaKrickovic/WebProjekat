@@ -15,7 +15,7 @@ import stream.Stream;
 public class GuestRepository implements IRepository<Guest, Id>, IUserRepository<Guest, Id>{	
 	private Stream stream;
 	private GuestConverter guestConverter;
-	private String guestFilePath = "data/Guests.txt";
+	private String guestFilePath = "data/Guests.dat";
 	private File guestFile;
 	
 	public GuestRepository(Stream stream) {

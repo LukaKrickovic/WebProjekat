@@ -16,7 +16,7 @@ public class HostRepository implements IRepository<Host, Id>, IUserRepository<Ho
 
 	private Stream stream;
 	private HostConverter hostConverter;
-	private String hostFilePath = "data/Hosts.txt";
+	private String hostFilePath = "data/Hosts.dat";
 	private File hostFile;
 	
 	public HostRepository(Stream stream) {

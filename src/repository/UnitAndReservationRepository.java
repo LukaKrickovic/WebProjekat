@@ -15,13 +15,14 @@ import model.Host;
 import model.Id;
 import model.Reservation;
 import model.Unit;
+import sequencers.ReservationSequencer;
 import stream.Stream;
 import util.UnitAndResRepositoryStrings;
 
 public class UnitAndReservationRepository implements IRepository<Unit, Id>{
 	private Stream stream;
 	private UnitConverter unitConverter;
-	private String unitAndResFilePath = "data/UnitsAndReservations.txt";
+	private String unitAndResFilePath = "data/UnitsAndReservations.dat";
 	private File unitAndResFile;
 	private HostRepository hostRepository;
 	private ApartmentCommentRepository apartmentCommentRepository;
@@ -243,8 +244,9 @@ public class UnitAndReservationRepository implements IRepository<Unit, Id>{
 		update(entity);
 	}
 	
-	public void update(Reservation entity) {
-		ArrayList<Reservation> allReservations= (ArrayList)getAll();
+	/*
+	public void updateReservation(Reservation entity) {
+		ArrayList<Reservation> allReservations= (ArrayList<Reservation>)getAllReservations();
 		StringBuilder backup = new StringBuilder();
 		for(Reservation temp : allReservations) {
 			if(!temp.getId().equals(entity.getId())) {
@@ -260,10 +262,31 @@ public class UnitAndReservationRepository implements IRepository<Unit, Id>{
 		stream.writeToFile(backup.toString(), unitAndResFile);
 		
 	}
+	*/
+	
+	public void updateReservation(Reservation entity) {
+		ArrayList<Reservation> allReservations = (ArrayList<Reservation>)getAllReservations();
+		ArrayList<Unit> allUnits = (ArrayList<Unit>)getAll();
+		
+		stream.blankOutFile(unitAndResFile);
+		
+		create(entity);
+		
+		for(Reservation temp : allReservations) {
+			if(!temp.getId().equals(entity.getId())) {
+				create(temp);
+			}
+		}
+		
+		for(Unit unit : allUnits) {
+			create(unit);
+		}
+		
+	}
 
 	public void delete(Reservation entity) {
 		entity.Delete();
-		update(entity);
+		updateReservation(entity);
 	}
 	
 	public List<Reservation> getReservationsByUnit(Unit unit) {

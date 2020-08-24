@@ -14,7 +14,7 @@ public class ApartmentCommentRepository implements IRepository<ApartmentComment,
 
 	private Stream stream;
 	private ApartmentCommentConverter apartmentCommentConverter;
-	private String apartmentCommentFilePath = "data/ApartmentComments.txt";
+	private String apartmentCommentFilePath = "data/ApartmentComments.dat";
 	private File apartmentCommentFile;
 	private GuestRepository guestRepository;
 	private UnitRepository unitRepository;

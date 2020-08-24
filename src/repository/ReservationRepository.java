@@ -15,7 +15,7 @@ public class ReservationRepository implements IRepository<Reservation, Id>{
 
 	private Stream stream;
 	private ReservationConverter reservationConverter;
-	private String reservationFilePath = "data/Reservations.txt";
+	private String reservationFilePath = "data/Reservations.dat";
 	private File reservationFile;
 	private UnitRepository unitRepository;
 	private GuestRepository guestRepository;

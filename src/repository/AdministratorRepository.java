@@ -15,7 +15,7 @@ public class AdministratorRepository implements IRepository<Administrator, Id>, 
 
 	private Stream stream;
 	private AdministratorConverter administratorConverter;
-	private String administratorFilePath = "data/Administrators.txt";
+	private String administratorFilePath = "data/Administrators.dat";
 	private File administratorFile;
 	
 	public AdministratorRepository(Stream stream) {
@@ -67,7 +67,7 @@ public class AdministratorRepository implements IRepository<Administrator, Id>, 
 
 	@Override
 	public void update(Administrator entity) {
-		ArrayList<Administrator> allAdministrators = (ArrayList)getAll();
+		ArrayList<Administrator> allAdministrators = (ArrayList<Administrator>)getAll();
 		StringBuilder backup = new StringBuilder();
 		for(Administrator temp : allAdministrators) {
 			if(!temp.getId().equals(entity.getId())) {
