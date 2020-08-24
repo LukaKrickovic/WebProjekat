@@ -1,14 +1,13 @@
 package repository;
 
 import java.io.File;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
 import converters.ReservationConverter;
 import exceptions.IdWriteException;
-import model.Id;
-import model.Reservation;
-import model.Unit;
+import model.*;
 import stream.Stream;
 
 public class ReservationRepository implements IRepository<Reservation, Id>{
@@ -27,7 +26,6 @@ public class ReservationRepository implements IRepository<Reservation, Id>{
 		reservationConverter = new ReservationConverter();
 		reservationFile = new File(reservationFilePath);
 	}
-	
 	/*
 	private Iterable<Reservation> bindWithUnits(Iterable<Reservation> allReservations){
 		ArrayList<Reservation> retVal = new ArrayList<Reservation>();
@@ -37,12 +35,11 @@ public class ReservationRepository implements IRepository<Reservation, Id>{
 			retVal.add(temp);
 		}
 		return retVal;
-	}*/
-	
+	}
+	*/
 	private Iterable<Reservation> bindWithUnits(Iterable<Reservation> allReservations){
 		ArrayList<Reservation> retVal = new ArrayList<Reservation>();
 		for(Reservation temp : allReservations) {
-
 			temp.setUnit(unitRepository.getById(temp.getUnit().getId()));
 			retVal.add(temp);
 		}
@@ -89,11 +86,11 @@ public class ReservationRepository implements IRepository<Reservation, Id>{
 	public Iterable<Reservation> getAllUnbound() {
 		ArrayList<String> allReservationsString = (ArrayList<String>)stream.readFromFile(reservationFile);
 		
-		System.out.println("There are: " + allReservationsString.size() + " strings");
+		//System.out.println("There are: " + allReservationsString.size() + " strings");
 		ArrayList<Reservation> allReservations= new ArrayList<Reservation>();
 		
 		for(String temp : allReservationsString) {
-			System.out.println("Reading line");
+			//System.out.println("Reading line");
 			if(!reservationConverter.ConvertFromJSON(temp).isDeleted())
 				allReservations.add(reservationConverter.ConvertFromJSON(temp));
 		}
@@ -102,10 +99,10 @@ public class ReservationRepository implements IRepository<Reservation, Id>{
 	
 	@Override
 	public Iterable<Reservation> getAll() {
-		System.out.println(unitRepository.getByPeopleCount(8));
-		System.out.println("Pre UNBOUND");
+		//System.out.println(unitRepository.getByPeopleCount(8));
+		//System.out.println("Pre UNBOUND");
 		ArrayList<Reservation> allReservations = (ArrayList<Reservation>)getAllUnbound();
-		System.out.println("Nabavio Unbound");
+		//System.out.println("Nabavio Unbound");
 		allReservations = (ArrayList<Reservation>) bindWithUnits(allReservations);
 		allReservations = (ArrayList<Reservation>) bindWithGuests(allReservations);
 		return allReservations;
@@ -124,7 +121,8 @@ public class ReservationRepository implements IRepository<Reservation, Id>{
 				backup.append("\n");
 			}
 		}
-		
+
+		backup.deleteCharAt(backup.length()-1);
 		stream.blankOutFile(reservationFile);
 		stream.writeToFile(backup.toString(), reservationFile);
 		
@@ -137,12 +135,84 @@ public class ReservationRepository implements IRepository<Reservation, Id>{
 	}
 
 	public List<Reservation> getReservationsByUnit(Unit unit) {
-		ArrayList<Reservation> allReservations = (ArrayList)getAll();
 		ArrayList<Reservation> retVal = new ArrayList<Reservation>();
-		for(Reservation temp : allReservations) {
-			if(temp.getUnit().equals(unit)) {
+		for(Reservation temp : getAll()) {
+			if(temp.getUnit().getId().equals(unit.getId())) {
 				retVal.add(temp);
 			}
+		}
+		return retVal;
+	}
+
+	public List<Unit> getUnitsByDate(LocalDate startDate, LocalDate endDate){
+		List<Unit> allUnits = (ArrayList<Unit>)unitRepository.getAll();
+		List<Unit> retVal = new ArrayList<Unit>();
+		for(Unit temp : allUnits){
+			if(checkIfUnitIsAvailable(temp, startDate, endDate))
+				retVal.add(temp);
+		}
+		return retVal;
+	}
+
+	public boolean checkIfUnitIsAvailable(Unit unit, LocalDate startDate, LocalDate endDate){
+		List<Reservation> allReservationsForUnit = getReservationsByUnit(unit);
+		for(Reservation temp : allReservationsForUnit){
+			if(overlapping(temp, startDate, endDate))
+				return false;
+		}
+		return true;
+	}
+
+	private boolean overlapping(Reservation reservation, LocalDate startDate, LocalDate endDate) {
+		if(reservation.getStartDate().equals(startDate) && (reservation.getEndDate().equals(endDate)))
+			return true;
+		else if(reservation.getStartDate().isAfter(startDate) && reservation.getEndDate().isBefore(endDate))
+			return true;
+		else if(reservation.getStartDate().equals(startDate))
+			return true;
+
+		return false;
+	}
+
+
+	public Iterable<Unit> getUnitsByGuest(Guest guest){
+		List<Unit> retVal = new ArrayList<Unit>();
+		for(Unit temp : unitRepository.getAll()){
+			for(Reservation reservation : getReservationsByUnit(temp)){
+				if(reservation.getGuest().getId().equals(guest.getId())){
+					retVal.add(temp);
+					break;
+				}
+			}
+		}
+		return retVal;
+	}
+
+	public Iterable<Reservation> getReservationsByGuest(Guest guest){
+		List<Reservation> retVal = new ArrayList<Reservation>();
+		for(Reservation temp : getAll()){
+			if(temp.getGuest().getId().equals(guest.getId()))
+				retVal.add(temp);
+		}
+		return retVal;
+	}
+
+	public Iterable<Guest> getGuestsByRentedUnit(Unit unit){
+		ArrayList<Guest> retVal = new ArrayList<Guest>();
+		for(Guest temp : guestRepository.getAll()){
+			for(Unit tempUnit : getUnitsByGuest(temp)){
+				if(tempUnit.getId().equals(unit.getId()))
+					retVal.add(temp);
+			}
+		}
+		return retVal;
+	}
+
+	public List<Reservation> getReservationsByHost(Host host){
+		List<Reservation> retVal = new ArrayList<Reservation>();
+		for(Reservation temp : getAll()){
+			if(temp.getUnit().getHost().getId().equals(host.getId()))
+				retVal.add(temp);
 		}
 		return retVal;
 	}

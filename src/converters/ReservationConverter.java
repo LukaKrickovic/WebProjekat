@@ -13,7 +13,8 @@ public class ReservationConverter {
 	
 	public String ConvertToJSON(Reservation entity) {
 		entity.setGuest(saveGuestId(entity.getGuest()));
-		return UnitAndResRepositoryStrings.reservationString + new Gson().toJson(entity);
+		entity.setUnit(saveUnitId(entity.getUnit()));
+		return new Gson().toJson(entity);
 	}
 	
 	private Unit saveUnitId(Unit unit) {

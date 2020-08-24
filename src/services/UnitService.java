@@ -8,16 +8,19 @@ import enums.Status;
 import model.Id;
 import model.Unit;
 import model.User;
+import repository.ReservationRepository;
 import repository.UnitRepository;
 import util.UnitSearchCriteria;
 
 public class UnitService {
 
 	private UnitRepository unitRepository;
+	private ReservationRepository reservationRepository;
 
-	public UnitService(UnitRepository unitRepository) {
+	public UnitService(UnitRepository unitRepository, ReservationRepository reservationRepository) {
 		super();
 		this.unitRepository = unitRepository;
+		this.reservationRepository = reservationRepository;
 	}
 	
 	public Unit getUnitById(Id id) {
@@ -141,7 +144,7 @@ public class UnitService {
 
 	private ArrayList<Unit> checkDate(UnitSearchCriteria unitSearchCriteria, ArrayList<Unit> retVal) {
 		if(unitSearchCriteria.getStartDate() != null && unitSearchCriteria.getEndDate() != null) {
-			retVal.addAll(unitRepository.getByDates(unitSearchCriteria.getStartDate(), unitSearchCriteria.getEndDate()));
+			retVal.addAll(reservationRepository.getUnitsByDate(unitSearchCriteria.getStartDate(), unitSearchCriteria.getEndDate()));
 		}
 		return retVal;
 	}

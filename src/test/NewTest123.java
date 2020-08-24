@@ -41,7 +41,7 @@ public class NewTest123 {
 	Reservation res1 = new Reservation(new ReservationSequencer().initialize(), unit1, LocalDate.of(2020, 8, 22), LocalDate.of(2020, 8, 23), 1, 200, "Vozdra", 
 			g1, ReservationStatus.ACCEPTED);
 	
-	UnitAndReservationRepository urr = new UnitAndReservationRepository(stream, hostRepository, apartmentCommentRepository, guestRepository);
+	//UnitAndReservationRepository urr = new UnitAndReservationRepository(stream, hostRepository, apartmentCommentRepository, guestRepository);
 	
 	
 	

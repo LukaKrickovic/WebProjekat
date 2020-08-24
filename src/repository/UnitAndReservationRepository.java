@@ -19,7 +19,7 @@ import sequencers.ReservationSequencer;
 import stream.Stream;
 import util.UnitAndResRepositoryStrings;
 
-public class UnitAndReservationRepository implements IRepository<Unit, Id>{
+public class UnitAndReservationRepository {//implements IRepository<Unit, Id>{
 	private Stream stream;
 	private UnitConverter unitConverter;
 	private String unitAndResFilePath = "data/UnitsAndReservations.dat";
@@ -29,7 +29,7 @@ public class UnitAndReservationRepository implements IRepository<Unit, Id>{
 	
 	private ReservationConverter reservationConverter;
 	private GuestRepository guestRepository;
-	
+	/*
 	public UnitAndReservationRepository(Stream stream, HostRepository hostRepository,
 			ApartmentCommentRepository apartmentCommentRepository, GuestRepository guestRepository) {
 		super();
@@ -262,7 +262,7 @@ public class UnitAndReservationRepository implements IRepository<Unit, Id>{
 		stream.writeToFile(backup.toString(), unitAndResFile);
 		
 	}
-	*/
+
 	
 	public void updateReservation(Reservation entity) {
 		ArrayList<Reservation> allReservations = (ArrayList<Reservation>)getAllReservations();
@@ -375,4 +375,5 @@ public class UnitAndReservationRepository implements IRepository<Unit, Id>{
 		}
 		return retVal;
 	}
+	*/
 }

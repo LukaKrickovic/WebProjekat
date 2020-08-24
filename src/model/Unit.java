@@ -17,9 +17,7 @@ public class Unit extends Model{
 	private LocalTime checkinTime;
 	private LocalTime checkoutTime;
 	private Status status;
-	private List<ApartmentComment> apartmentComment;
 	private List<Amenity> amenities;
-	private List<Reservation> reservations;
 	private List<String> imageSources;
 	
 	
@@ -32,8 +30,7 @@ public class Unit extends Model{
 	}
 	
 	public Unit(RoomType roomType, int numOfRooms, int numOfGuests, Location location, Host host, double pricePerNight,
-			LocalTime checkinTime, LocalTime checkoutTime, Status status, List<ApartmentComment> apartmentComment, 
-			List<Amenity> amenities, List<Reservation> reservations, List<String> imageSources) {
+			LocalTime checkinTime, LocalTime checkoutTime, Status status, List<Amenity> amenities, List<String> imageSources) {
 		super();
 		this.roomType = roomType;
 		this.numOfRooms = numOfRooms;
@@ -44,15 +41,12 @@ public class Unit extends Model{
 		this.checkinTime = checkinTime;
 		this.checkoutTime = checkoutTime;
 		this.status = status;
-		this.apartmentComment = apartmentComment;
 		this.amenities = amenities;
-		this.reservations = reservations;
 		this.imageSources = imageSources;
 	}
 	
 	public Unit(RoomType roomType, int numOfRooms, int numOfGuests, Location location, Host host, double pricePerNight,
-			Status status, List<ApartmentComment> apartmentComment, 
-			List<Amenity> amenities, List<Reservation> reservations, List<String> imageSources) {
+			Status status, List<Amenity> amenities, List<String> imageSources) {
 		super();
 		this.roomType = roomType;
 		this.numOfRooms = numOfRooms;
@@ -63,15 +57,12 @@ public class Unit extends Model{
 		this.checkinTime = LocalTime.of(14, 0);
 		this.checkoutTime = LocalTime.of(10, 0);
 		this.status = status;
-		this.apartmentComment = apartmentComment;
 		this.amenities = amenities;
-		this.reservations = reservations;
 		this.imageSources = imageSources;
 	}
 	
 	public Unit(Id id, RoomType roomType, int numOfRooms, int numOfGuests, Location location, Host host, double pricePerNight,
-			LocalTime checkinTime, LocalTime checkoutTime, Status status, List<ApartmentComment> apartmentComment, 
-			List<Amenity> amenities, List<Reservation> reservations, List<String> imageSources) {
+			LocalTime checkinTime, LocalTime checkoutTime, Status status, List<Amenity> amenities, List<String> imageSources) {
 		super(id);
 		this.roomType = roomType;
 		this.numOfRooms = numOfRooms;
@@ -82,9 +73,7 @@ public class Unit extends Model{
 		this.checkinTime = checkinTime;
 		this.checkoutTime = checkoutTime;
 		this.status = status;
-		this.apartmentComment = apartmentComment;
 		this.amenities = amenities;
-		this.reservations = reservations;
 		this.imageSources = imageSources;
 	}
 	
@@ -100,15 +89,12 @@ public class Unit extends Model{
 		this.checkinTime = checkinTime;
 		this.checkoutTime = checkoutTime;
 		this.status = status;
-		this.apartmentComment = new ArrayList<ApartmentComment>();
 		this.amenities = new ArrayList<Amenity>();
-		this.reservations = new ArrayList<Reservation>();
 		this.imageSources = new ArrayList<String>();
 	}
 	
 	public Unit(Id id, RoomType roomType, int numOfRooms, int numOfGuests, Location location, Host host, double pricePerNight,
-			Status status, List<ApartmentComment> apartmentComment, 
-			List<Amenity> amenities, List<Reservation> reservations, List<String> imageSources) {
+			Status status, List<Amenity> amenities, List<String> imageSources) {
 		super(id);
 		this.roomType = roomType;
 		this.numOfRooms = numOfRooms;
@@ -119,9 +105,7 @@ public class Unit extends Model{
 		this.checkinTime = LocalTime.of(14, 0);
 		this.checkoutTime = LocalTime.of(10, 0);
 		this.status = status;
-		this.apartmentComment = apartmentComment;
 		this.amenities = amenities;
-		this.reservations = reservations;
 		this.imageSources = imageSources;
 	}
 
@@ -197,30 +181,6 @@ public class Unit extends Model{
 		this.status = status;
 	}
 
-	public List<ApartmentComment> getApartmentComment() {
-		return apartmentComment;
-	}
-
-	public void setApartmentComment(List<ApartmentComment> apartmentComment) {
-		this.apartmentComment = apartmentComment;
-	}
-
-	public List<Amenity> getAmenities() {
-		return amenities;
-	}
-
-	public void setAmenities(List<Amenity> amenities) {
-		this.amenities = amenities;
-	}
-
-	public List<Reservation> getReservations() {
-		return reservations;
-	}
-
-	public void setReservations(List<Reservation> reservations) {
-		this.reservations = reservations;
-	}
-
 	public List<String> getImageSources() {
 		return imageSources;
 	}
@@ -228,8 +188,11 @@ public class Unit extends Model{
 	public void setImageSources(List<String> imageSources) {
 		this.imageSources = imageSources;
 	}
-	
-	
-	
-	
+
+	public List<Amenity> getAmenities() {
+		return amenities;
+	}
+	public void setAmenities(List<Amenity> amenities) {
+		this.amenities = amenities;
+	}
 }

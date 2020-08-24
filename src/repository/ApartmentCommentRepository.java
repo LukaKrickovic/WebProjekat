@@ -2,12 +2,14 @@ package repository;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
 
 import converters.ApartmentCommentConverter;
 import exceptions.IdWriteException;
 import model.ApartmentComment;
 import model.Guest;
 import model.Id;
+import model.Unit;
 import stream.Stream;
 
 public class ApartmentCommentRepository implements IRepository<ApartmentComment, Id>{
@@ -17,13 +19,13 @@ public class ApartmentCommentRepository implements IRepository<ApartmentComment,
 	private String apartmentCommentFilePath = "data/ApartmentComments.dat";
 	private File apartmentCommentFile;
 	private GuestRepository guestRepository;
-	private UnitRepository unitRepository;
 	
 	public ApartmentCommentRepository(Stream stream, GuestRepository guestRepository) {
 		this.stream = stream;
 		apartmentCommentConverter = new ApartmentCommentConverter();
 		apartmentCommentFile = new File(apartmentCommentFilePath);
 		this.guestRepository = guestRepository;
+
 	}
 	
 	
@@ -36,16 +38,17 @@ public class ApartmentCommentRepository implements IRepository<ApartmentComment,
 		}
 		return retVal;
 	}
-	
+
+	/*
 	private Iterable<ApartmentComment> bindWithUnit(Iterable<ApartmentComment> allComments){
 		ArrayList<ApartmentComment> retVal = new ArrayList<ApartmentComment>();
 		for(ApartmentComment temp : allComments) {
-			temp.setUnit(unitRepository.getById(temp.getUnit().getId()));
+			temp.setUnit(unitAndReservationRepository.getById(temp.getUnit().getId()));
 			retVal.add(temp);
 		}
 		return retVal;
 	}
-
+	*/
 
 
 	@Override
@@ -84,7 +87,6 @@ public class ApartmentCommentRepository implements IRepository<ApartmentComment,
 	public Iterable<ApartmentComment> getAll() {
 		ArrayList<ApartmentComment> allComments = (ArrayList)getAllUnbound();
 		allComments = (ArrayList) bindWithGuest(allComments);
-		allComments = (ArrayList) bindWithUnit(allComments);
 		return allComments;
 	}
 
@@ -111,7 +113,8 @@ public class ApartmentCommentRepository implements IRepository<ApartmentComment,
 				backup.append("\n");
 			}
 		}
-		
+
+		backup.deleteCharAt(backup.length()-1);
 		stream.blankOutFile(apartmentCommentFile);
 		stream.writeToFile(backup.toString(), apartmentCommentFile);
 	}
@@ -124,6 +127,14 @@ public class ApartmentCommentRepository implements IRepository<ApartmentComment,
 		update(entity);
 		
 	}
-	
+
+	public List<ApartmentComment> getApartmentCommentsByUnit(Unit unit){
+		List<ApartmentComment> retVal = new ArrayList<ApartmentComment>();
+		for(ApartmentComment temp : getAll()){
+			if(temp.getUnit().getId().equals(unit.getId()))
+				retVal.add(temp);
+		}
+		return retVal;
+	}
 
 }

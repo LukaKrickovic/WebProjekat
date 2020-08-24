@@ -1,6 +1,8 @@
 package services;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 import enums.ReservationStatus;
 import enums.Roles;
@@ -37,7 +39,7 @@ public class ReservationService {
 	}
 	
 	public Iterable<Reservation> getAllReservationsOfGuest(Guest guest) {
-		return guest.getReservations();
+		return reservationRepository.getReservationsByGuest(guest);
 	}
 	
 	public void cancelReservationByGuest(Reservation reservation, User user) {
@@ -60,7 +62,7 @@ public class ReservationService {
 	//host
 	
 	public Iterable<Reservation> getAllReservationsOfHost(Host host) {
-		return host.getAllReservations();
+		return reservationRepository.getReservationsByHost(host);
 	}
 
 	public void acceptReservationByHost(Reservation reservation, User user) {
@@ -120,6 +122,6 @@ public class ReservationService {
 			System.out.println("Uloga nije HOST");
 		}
 	}
-	
+
 	
 }
