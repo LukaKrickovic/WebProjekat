@@ -33,7 +33,7 @@ import stream.Stream;
 public class RepositoryTest {
 
 	public static void main(String[] args) {
-	
+	/*
 	Stream stream = new Stream();
 	
 	GuestRepository gr = new GuestRepository(stream);
@@ -58,34 +58,35 @@ public class RepositoryTest {
 	*/
 
 	//ApartmentComment ac = new ApartmentComment(new ApartmentCommentSequencer().initialize(), g1, null, "Text", 5.0);
-	
+	/*
 	Unit unit1 = new Unit(new UnitSequencer().initialize(), RoomType.APARTMENT, 4, 8, l1, h1, 40, LocalTime.of(14, 0), LocalTime.of(15, 0, 0, 0),Status.ACTIVE);
 	
 	
 	
 	//ur.create(unit1);
 	
-	UnitAndReservationRepository urr = new UnitAndReservationRepository(stream, hr, arc, gr);
+	//UnitAndReservationRepository urr = new UnitAndReservationRepository(stream, hr, arc, gr);
 	
+	*/
 	
-	Reservation res1 = new Reservation(new ReservationSequencer().initialize(), unit1, LocalDate.of(2020, 8, 18), LocalDate.of(2020, 8, 20), 2, 40, "Porukica", g1, ReservationStatus.ACCEPTED);
+	//Reservation res1 = new Reservation(new ReservationSequencer().initialize(), unit1, LocalDate.of(2020, 8, 18), LocalDate.of(2020, 8, 20), 2, 40, "Porukica", g1, ReservationStatus.ACCEPTED);
 	//rr.create(res1);
-	hr.create(h1);
+	//hr.create(h1);
 	
-	ArrayList<Reservation> res = new ArrayList<Reservation>(); 
-	res.add(res1);
+	//ArrayList<Reservation> res = new ArrayList<Reservation>(); 
+	//res.add(res1);
 	
 	//g1.setReservations(res);
 	
-	gr.create(g1);
-	urr.create(unit1);
-	urr.create(res1);
+	//gr.create(g1);
+	//urr.create(unit1);
+	//urr.create(res1);
 	
 	
 	
-	unit1.setReservations(res);
+	//unit1.setReservations(res);
 	//urr.update(unit1);
-	System.out.println(((ArrayList<Unit>)urr.getAll()).get(0).getId());
+	//System.out.println(((ArrayList<Unit>)urr.getAll()).get(0).getId());
 	//urr.delete(unit1);
 	//urr.delete(res1);
 //	urr.getByDates(LocalDate.of(2020, 8, 18), LocalDate.of(2020, 8, 20));
@@ -93,13 +94,13 @@ public class RepositoryTest {
 //	urr.getByPeopleCount(8);
 //	urr.getByPrice(0, 500);
 //	urr.getByRoomCount(0, 10);
-	res1.setLength(4);
-	urr.updateReservation(res1);
+	//res1.setLength(4);
+	//urr.updateReservation(res1);
 	
-	AdministratorRepository ar = new AdministratorRepository(stream);
-	Administrator admin = new Administrator(new AdministratorSequencer().initialize(), "admin", "admin", "Luka", "Krickovic", Gender.NONBINARY);
-	ar.create(admin);
-	ar.update(admin);
+	//AdministratorRepository ar = new AdministratorRepository(stream);
+	//Administrator admin = new Administrator(new AdministratorSequencer().initialize(), "admin", "admin", "Luka", "Krickovic", Gender.NONBINARY);
+	//ar.create(admin);
+	//ar.update(admin);
 	
 	//System.out.println(((ArrayList<Unit>)urr.getAll()).get(0).getId());
 	//urr.update(unit1);
@@ -122,6 +123,6 @@ public class RepositoryTest {
 	//System.out.println(allRes);
 	
 	//rr.getReservationsByUnit(unit1);
-	
+
 	}
 }
