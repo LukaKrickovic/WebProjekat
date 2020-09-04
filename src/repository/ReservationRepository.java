@@ -122,7 +122,8 @@ public class ReservationRepository implements IRepository<Reservation, Id>{
 			}
 		}
 
-		backup.deleteCharAt(backup.length()-1);
+		if(backup.length() > 0)
+			backup.deleteCharAt(backup.length()-1);
 		stream.blankOutFile(reservationFile);
 		stream.writeToFile(backup.toString(), reservationFile);
 		
@@ -192,6 +193,15 @@ public class ReservationRepository implements IRepository<Reservation, Id>{
 		List<Reservation> retVal = new ArrayList<Reservation>();
 		for(Reservation temp : getAll()){
 			if(temp.getGuest().getId().equals(guest.getId()))
+				retVal.add(temp);
+		}
+		return retVal;
+	}
+
+	public Iterable<Reservation> getReservationsByGuestUsername(String username){
+		List<Reservation> retVal = new ArrayList<Reservation>();
+		for(Reservation temp : getAll()){
+			if(temp.getGuest().getUsername().equals(username))
 				retVal.add(temp);
 		}
 		return retVal;

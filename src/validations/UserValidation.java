@@ -17,13 +17,18 @@ public class UserValidation implements IValidation<User>{
 		try {
 			validateUsername(entity.getUsername());
 			validatePassword(entity.getPassword());
-			validateName(entity.getName());
-			validateSurname(entity.getSurname());
+			validateNameAndSurname(entity.getName() + " " + entity.getSurname());
 		} catch (UserValidationException e) {
 			e.printStackTrace();
 		}
 	}
-	
+
+	private void validateNameAndSurname(String nameAndSurname) throws UserValidationException {
+		if(!Pattern.matches(Regexes.nameAndSurnamePattern, nameAndSurname)) {
+			throw new UserValidationException("Name and Surname are not valid!");
+		}
+	}
+/*
 	private void validateSurname(String surname) throws UserValidationException {
 		if(!Pattern.matches(Regexes.surnamePattern, surname)) {
 			throw new UserValidationException("Surname is not valid!");
@@ -36,7 +41,7 @@ public class UserValidation implements IValidation<User>{
 		}
 		
 	}
-
+*/
 	private void validatePassword(String password) throws UserValidationException {
 		if(!Pattern.matches(Regexes.passwordPattern, password)) {
 			throw new UserValidationException("Password is not valid!");

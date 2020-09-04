@@ -69,7 +69,8 @@ public class GuestRepository implements IRepository<Guest, Id>, IUserRepository<
 			}
 		}
 
-		backup.deleteCharAt(backup.length()-1);
+		if(backup.length() > 0)
+			backup.deleteCharAt(backup.length()-1);
 		stream.blankOutFile(guestFile);
 		stream.writeToFile(backup.toString(), guestFile);
 	}
@@ -154,8 +155,8 @@ public class GuestRepository implements IRepository<Guest, Id>, IUserRepository<
 		ArrayList<Guest> retVal = new ArrayList<Guest>();
 		ArrayList<Guest> allGuests= (ArrayList)getAll();
 		for(Guest temp : allGuests) {
-			if(temp.getName().equals(name)) {
-				if(temp.getSurname().equals(surname)) {
+			if(temp.getName().equalsIgnoreCase(name)) {
+				if(temp.getSurname().equalsIgnoreCase(surname)) {
 					retVal.add(temp);	
 				}	
 			}

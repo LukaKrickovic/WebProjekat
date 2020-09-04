@@ -112,21 +112,23 @@ public class UserService {
 		return retVal;
 	}
 
-	private ArrayList<User> filterByGender(Gender gender, ArrayList<User> retVal) {
+	private ArrayList<User> filterByGender(Gender gender, ArrayList<User> results) {
+		ArrayList<User> retVal = new ArrayList<User>();
 		if(gender != null) {
-			for(User temp : retVal) {
-				if(!temp.getGender().equals(gender))
-					retVal.remove(temp);
+			for(User temp : results) {
+				if(temp.getGender().equals(gender))
+					retVal.add(temp);
 			}
 		}
 		return retVal;
 	}
 
-	private ArrayList<User> filterByRole(Roles role, ArrayList<User> retVal) {
+	private ArrayList<User> filterByRole(Roles role, ArrayList<User> results) {
+		ArrayList<User> retVal = new ArrayList<User>();
 		if(role != null) {
-			for(User temp : retVal) {
-				if(!temp.getRole().equals(role)) {
-					retVal.remove(role);
+			for(User temp : results) {
+				if(temp.getRole().equals(role)) {
+					retVal.add(temp);
 				}
 			}
 		}
@@ -198,7 +200,7 @@ public class UserService {
 	}
 
 	private String[] parseInput(String input) {
-		return input.split(" ");
+		return input.split("\\s+");
 	}
 
 	public Iterable<User> hostSearch(String input) {

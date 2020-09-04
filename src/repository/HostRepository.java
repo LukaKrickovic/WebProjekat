@@ -79,7 +79,8 @@ public class HostRepository implements IRepository<Host, Id>, IUserRepository<Ho
 			}
 		}
 
-		backup.deleteCharAt(backup.length()-1);
+		if(backup.length() > 0)
+			backup.deleteCharAt(backup.length()-1);
 		stream.blankOutFile(hostFile);
 		stream.writeToFile(backup.toString(), hostFile);
 		

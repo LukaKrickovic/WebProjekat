@@ -108,7 +108,9 @@ public class UnitRepository implements IRepository<Unit, Id>{
 				backup.append("\n");
 			}
 		}
-		backup.deleteCharAt(backup.length()-1);
+
+		if(backup.length() > 0)
+			backup.deleteCharAt(backup.length()-1);
 		stream.blankOutFile(unitFile);
 		stream.writeToFile(backup.toString(), unitFile);
 		

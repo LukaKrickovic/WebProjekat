@@ -79,7 +79,8 @@ public class AdministratorRepository implements IRepository<Administrator, Id>, 
 			}
 		}
 
-		backup.deleteCharAt(backup.length()-1);
+		if(backup.length() > 0)
+			backup.deleteCharAt(backup.length()-1);
 		stream.blankOutFile(administratorFile);
 		stream.writeToFile(backup.toString(), administratorFile);
 		

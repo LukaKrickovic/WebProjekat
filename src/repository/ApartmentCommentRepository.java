@@ -114,7 +114,8 @@ public class ApartmentCommentRepository implements IRepository<ApartmentComment,
 			}
 		}
 
-		backup.deleteCharAt(backup.length()-1);
+		if(backup.length() > 0)
+			backup.deleteCharAt(backup.length()-1);
 		stream.blankOutFile(apartmentCommentFile);
 		stream.writeToFile(backup.toString(), apartmentCommentFile);
 	}

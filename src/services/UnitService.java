@@ -96,7 +96,7 @@ public class UnitService {
 				result.add(temp);
 			}
 		}
-		return null;
+		return result;
 	}
 
 	private ArrayList<Unit> checkPeopleCount(UnitSearchCriteria unitSearchCriteria, ArrayList<Unit> retVal) {
@@ -136,7 +136,7 @@ public class UnitService {
 	}
 
 	private ArrayList<Unit> checkLocation(UnitSearchCriteria unitSearchCriteria, ArrayList<Unit> retVal) {
-		if(unitSearchCriteria.getCityString() != null && unitSearchCriteria.getCountryString() != null) {
+		if(!unitSearchCriteria.getCityString().isEmpty() && !unitSearchCriteria.getCountryString().isEmpty()) {
 			retVal.addAll(unitRepository.getByLocation(unitSearchCriteria.getCityString(), unitSearchCriteria.getCountryString()));
 		}
 		return retVal;
