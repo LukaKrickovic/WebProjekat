@@ -37,5 +37,14 @@ public class SparkController {
         UnitService unitService = new UnitService(unitRepository, reservationRepository);
         UserService userService = new UserService(hostRepository, guestRepository, administratorRepository);
 
+        /*
+        get("/home", (req, res) -> {
+            return index.html;
+        });*/
+
+        post("/book-form", (req, res) -> {
+            System.out.println("WORKS");
+            return "Works";
+        });
     }
 }
