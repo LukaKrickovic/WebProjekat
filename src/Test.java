@@ -23,6 +23,9 @@ public class Test {
 		get("/spark/demo/test", (req, res) -> {
 			return "Works";
 		});
+		get("book-form", (req, res) -> {
+			return "Works";
+		});
 	}
 
 }

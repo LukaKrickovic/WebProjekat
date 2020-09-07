@@ -16,18 +16,46 @@ public class UnitSearchCriteria {
 	
 	private String dateString, cityString, countryString, priceLowerString, priceUpperString, roomCountLowerString, roomCountUpperString, peopleCountString;
 
-	public UnitSearchCriteria(String startDate, String endDate, String cityString, String countryString, String priceLowerString, String priceUpperString,
-			String roomCountLowerString, String roomCOuntUpperString, String peopleCountString) {
+	public UnitSearchCriteria(LocalDate startDate, LocalDate endDate, String cityString, String countryString, String priceLowerString, String priceUpperString,
+							  String roomCountLowerString, String roomCountUpperString, String peopleCountString) {
 		super();
-		this.startDate = convertToDate(startDate);
-		this.endDate = convertToDate(endDate);
+		if(startDate != null)
+			this.startDate = startDate;
+		if(endDate != null)
+			this.endDate = endDate;
 		this.cityString = cityString;
 		this.countryString = countryString;
-		this.priceLower = convertToDouble(priceLowerString);
-		this.priceUpper = convertToDouble(priceUpperString);
-		this.roomCountLower = convertToInt(roomCountLowerString);
-		this.roomCountUpper = convertToInt(roomCountUpperString);
-		this.peopleCount = convertToInt(peopleCountString);
+		if(!priceLowerString.isEmpty())
+			this.priceLower = convertToDouble(priceLowerString);
+		if(!priceUpperString.isEmpty())
+			this.priceUpper = convertToDouble(priceUpperString);
+		if(!roomCountLowerString.isEmpty())
+			this.roomCountLower = convertToInt(roomCountLowerString);
+		if(!roomCountUpperString.isEmpty())
+			this.roomCountUpper = convertToInt(roomCountUpperString);
+		if(!peopleCountString.isEmpty())
+			this.peopleCount = convertToInt(peopleCountString);
+	}
+
+	public UnitSearchCriteria(String startDate, String endDate, String cityString, String countryString, String priceLowerString, String priceUpperString,
+			String roomCountLowerString, String roomCountUpperString, String peopleCountString) {
+		super();
+		if(!startDate.isEmpty())
+			this.startDate = convertToDate(startDate);
+		if(!endDate.isEmpty())
+			this.endDate = convertToDate(endDate);
+		this.cityString = cityString;
+		this.countryString = countryString;
+		if(!priceLowerString.isEmpty())
+			this.priceLower = convertToDouble(priceLowerString);
+		if(!priceUpperString.isEmpty())
+			this.priceUpper = convertToDouble(priceUpperString);
+		if(!roomCountLowerString.isEmpty())
+			this.roomCountLower = convertToInt(roomCountLowerString);
+		if(!roomCountUpperString.isEmpty())
+			this.roomCountUpper = convertToInt(roomCountUpperString);
+		if(!peopleCountString.isEmpty())
+			this.peopleCount = convertToInt(peopleCountString);
 	}
 
 	private LocalDate convertToDate(String string) {

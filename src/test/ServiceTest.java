@@ -86,6 +86,7 @@ public class ServiceTest {
 		System.out.println(reservationRepository.getUnitsByDate(LocalDate.of(2020, 8, 18), LocalDate.of(2020, 8, 19)) + " ByDate");
 		System.out.println(reservationRepository.getUnitsByGuest(guest1) + " ByGuest");
 		System.out.println(reservationRepository.getGuestsByRentedUnit(unit1) + " GuestByUnit");
+		System.out.println(reservationRepository.getReservationsByGuestUsername("guest") + " ResByUsername");
 
 		unit1.setStatus(Status.ACTIVE);
 		unitRepository.update(unit1);

@@ -6,10 +6,8 @@ import java.util.List;
 
 import converters.ApartmentCommentConverter;
 import exceptions.IdWriteException;
-import model.ApartmentComment;
-import model.Guest;
-import model.Id;
-import model.Unit;
+import model.*;
+import sequencers.ApartmentCommentSequencer;
 import stream.Stream;
 
 public class ApartmentCommentRepository implements IRepository<ApartmentComment, Id>{
@@ -114,7 +112,8 @@ public class ApartmentCommentRepository implements IRepository<ApartmentComment,
 			}
 		}
 
-		backup.deleteCharAt(backup.length()-1);
+		if(backup.length() > 0)
+			backup.deleteCharAt(backup.length()-1);
 		stream.blankOutFile(apartmentCommentFile);
 		stream.writeToFile(backup.toString(), apartmentCommentFile);
 	}
@@ -135,6 +134,21 @@ public class ApartmentCommentRepository implements IRepository<ApartmentComment,
 				retVal.add(temp);
 		}
 		return retVal;
+	}
+
+	@Override
+	public Id findHighestId() {
+		ArrayList<ApartmentComment> allApartmentComments = (ArrayList<ApartmentComment>) getAll();
+		if(allApartmentComments.isEmpty()){
+			return new ApartmentCommentSequencer().initialize();
+		}
+		Id highestId = allApartmentComments.get(0).getId();
+		for(ApartmentComment temp : allApartmentComments){
+			if(temp.getId().getSuffix() > highestId.getSuffix()){
+				highestId = temp.getId();
+			}
+		}
+		return highestId;
 	}
 
 }

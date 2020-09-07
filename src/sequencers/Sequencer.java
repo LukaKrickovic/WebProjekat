@@ -20,5 +20,6 @@ public class Sequencer {
 	public Id next(Id id) {
 		return new Id(id.getPrefix(), incrementSuffix(id));
 	}
+
 	
 }

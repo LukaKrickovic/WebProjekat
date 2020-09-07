@@ -18,6 +18,6 @@ public class AdministratorSequencer extends Sequencer implements ISequencer{
 	@Override
 	public Id next(Id id) {
 		return new Id(administratorPrefix, incrementSuffix(id));
-	}	
-	
+	}
+
 }

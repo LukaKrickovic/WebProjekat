@@ -8,6 +8,7 @@ import java.util.List;
 import converters.ReservationConverter;
 import exceptions.IdWriteException;
 import model.*;
+import sequencers.ReservationSequencer;
 import stream.Stream;
 
 public class ReservationRepository implements IRepository<Reservation, Id>{
@@ -122,7 +123,8 @@ public class ReservationRepository implements IRepository<Reservation, Id>{
 			}
 		}
 
-		backup.deleteCharAt(backup.length()-1);
+		if(backup.length() > 0)
+			backup.deleteCharAt(backup.length()-1);
 		stream.blankOutFile(reservationFile);
 		stream.writeToFile(backup.toString(), reservationFile);
 		
@@ -197,6 +199,15 @@ public class ReservationRepository implements IRepository<Reservation, Id>{
 		return retVal;
 	}
 
+	public Iterable<Reservation> getReservationsByGuestUsername(String username){
+		List<Reservation> retVal = new ArrayList<Reservation>();
+		for(Reservation temp : getAll()){
+			if(temp.getGuest().getUsername().equals(username))
+				retVal.add(temp);
+		}
+		return retVal;
+	}
+
 	public Iterable<Guest> getGuestsByRentedUnit(Unit unit){
 		ArrayList<Guest> retVal = new ArrayList<Guest>();
 		for(Guest temp : guestRepository.getAll()){
@@ -215,6 +226,21 @@ public class ReservationRepository implements IRepository<Reservation, Id>{
 				retVal.add(temp);
 		}
 		return retVal;
+	}
+
+	@Override
+	public Id findHighestId() {
+		ArrayList<Reservation> allReservations = (ArrayList<Reservation>) getAll();
+		if(allReservations.isEmpty())
+			return new ReservationSequencer().initialize();
+
+		Id highestId = allReservations.get(0).getId();
+		for(Reservation temp : allReservations){
+			if(temp.getId().getSuffix() > highestId.getSuffix()){
+				highestId = temp.getId();
+			}
+		}
+		return highestId;
 	}
 
 }

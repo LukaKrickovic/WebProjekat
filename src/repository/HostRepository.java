@@ -10,6 +10,7 @@ import model.Administrator;
 import model.Guest;
 import model.Host;
 import model.Id;
+import sequencers.HostSequencer;
 import stream.Stream;
 
 public class HostRepository implements IRepository<Host, Id>, IUserRepository<Host, Id>{
@@ -79,7 +80,8 @@ public class HostRepository implements IRepository<Host, Id>, IUserRepository<Ho
 			}
 		}
 
-		backup.deleteCharAt(backup.length()-1);
+		if(backup.length() > 0)
+			backup.deleteCharAt(backup.length()-1);
 		stream.blankOutFile(hostFile);
 		stream.writeToFile(backup.toString(), hostFile);
 		
@@ -156,6 +158,20 @@ public class HostRepository implements IRepository<Host, Id>, IUserRepository<Ho
 		
 		return retVal;
 	}
-	
+
+	@Override
+	public Id findHighestId() {
+		ArrayList<Host> allHosts = (ArrayList<Host>) getAll();
+		if(allHosts.isEmpty())
+			return new HostSequencer().initialize();
+
+		Id highestId = allHosts.get(0).getId();
+		for(Host temp : allHosts){
+			if(temp.getId().getSuffix() > highestId.getSuffix()){
+				highestId = temp.getId();
+			}
+		}
+		return highestId;
+	}
 
 }

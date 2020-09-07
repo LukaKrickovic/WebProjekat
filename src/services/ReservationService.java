@@ -31,8 +31,10 @@ public class ReservationService {
 	public Reservation createReservation(Reservation reservation, User user) {
 		if(user.getRole().equals(Roles.GUEST)) {
 			if(reservation.getGuest().getId().equals(user.getId())) {
-				reservation.setReservationStatus(ReservationStatus.CREATED);
-				return reservationRepository.create(reservation);
+				if(reservation.getStartDate().isBefore(reservation.getEndDate())) {
+					reservation.setReservationStatus(ReservationStatus.CREATED);
+					return reservationRepository.create(reservation);
+				}
 			}
 		}
 		return null;

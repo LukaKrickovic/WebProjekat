@@ -38,13 +38,21 @@ public class UserService {
 	
 	public Host registerHost(Host host) {
 		userValidation.validate(host);
-		hostRepository.create(host);
+		if(hostRepository.getUserByUsername(host.getUsername()) == null && guestRepository.getUserByUsername(host.getUsername()) == null
+		&& administratorRepository.getUserByUsername(host.getUsername()) == null)
+			hostRepository.create(host);
+		else
+			return null;
 		return host;
 	}
 	
 	public Guest registerGuest(Guest guest) {
 		userValidation.validate(guest);
-		guestRepository.create(guest);
+		if(hostRepository.getUserByUsername(guest.getUsername()) == null && guestRepository.getUserByUsername(guest.getUsername()) == null
+				&& administratorRepository.getUserByUsername(guest.getUsername()) == null)
+			guestRepository.create(guest);
+		else
+			return null;
 		return guest;
 	}
 	
@@ -57,11 +65,12 @@ public class UserService {
 		} else {
 			retVal = hostRepository.getUserByUsername(username);
 		}
-		
-		if(retVal.getPassword().equals(password))
-			return retVal;
-		else
-			return null;
+
+		if(retVal != null){
+			if(retVal.getPassword().equals(password))
+				return retVal;
+		}
+		return null;
 	}
 	
 	public void changeData (User user) {
@@ -112,21 +121,23 @@ public class UserService {
 		return retVal;
 	}
 
-	private ArrayList<User> filterByGender(Gender gender, ArrayList<User> retVal) {
+	private ArrayList<User> filterByGender(Gender gender, ArrayList<User> results) {
+		ArrayList<User> retVal = new ArrayList<User>();
 		if(gender != null) {
-			for(User temp : retVal) {
-				if(!temp.getGender().equals(gender))
-					retVal.remove(temp);
+			for(User temp : results) {
+				if(temp.getGender().equals(gender))
+					retVal.add(temp);
 			}
 		}
 		return retVal;
 	}
 
-	private ArrayList<User> filterByRole(Roles role, ArrayList<User> retVal) {
+	private ArrayList<User> filterByRole(Roles role, ArrayList<User> results) {
+		ArrayList<User> retVal = new ArrayList<User>();
 		if(role != null) {
-			for(User temp : retVal) {
-				if(!temp.getRole().equals(role)) {
-					retVal.remove(role);
+			for(User temp : results) {
+				if(temp.getRole().equals(role)) {
+					retVal.add(temp);
 				}
 			}
 		}
@@ -198,7 +209,7 @@ public class UserService {
 	}
 
 	private String[] parseInput(String input) {
-		return input.split(" ");
+		return input.split("\\s+");
 	}
 
 	public Iterable<User> hostSearch(String input) {

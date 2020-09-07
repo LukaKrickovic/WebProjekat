@@ -8,6 +8,7 @@ import java.util.List;
 import converters.UnitConverter;
 import exceptions.IdWriteException;
 import model.*;
+import sequencers.UnitSequencer;
 import stream.Stream;
 
 public class UnitRepository implements IRepository<Unit, Id>{
@@ -108,7 +109,9 @@ public class UnitRepository implements IRepository<Unit, Id>{
 				backup.append("\n");
 			}
 		}
-		backup.deleteCharAt(backup.length()-1);
+
+		if(backup.length() > 0)
+			backup.deleteCharAt(backup.length()-1);
 		stream.blankOutFile(unitFile);
 		stream.writeToFile(backup.toString(), unitFile);
 		
@@ -192,6 +195,18 @@ public class UnitRepository implements IRepository<Unit, Id>{
 		return retVal;
 	}
 
-
+	@Override
+	public Id findHighestId() {
+		ArrayList<Unit> allUnits = (ArrayList<Unit>) getAll();
+		if(allUnits.isEmpty())
+			return new UnitSequencer().initialize();
+		Id highestId = allUnits.get(0).getId();
+		for(Unit temp : allUnits){
+			if(temp.getId().getSuffix() > highestId.getSuffix()){
+				highestId = temp.getId();
+			}
+		}
+		return highestId;
+	}
 
 }
