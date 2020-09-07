@@ -9,6 +9,7 @@ import exceptions.IdWriteException;
 import model.Administrator;
 import model.Guest;
 import model.Id;
+import sequencers.AdministratorSequencer;
 import stream.Stream;
 
 public class AdministratorRepository implements IRepository<Administrator, Id>, IUserRepository<Administrator, Id>{
@@ -90,6 +91,21 @@ public class AdministratorRepository implements IRepository<Administrator, Id>, 
 	public void delete(Administrator entity) {
 		entity.Delete();
 		update(entity);
+	}
+
+	@Override
+	public Id findHighestId() {
+		ArrayList<Administrator> allAdministrators = (ArrayList<Administrator>) getAll();
+		if(allAdministrators.isEmpty()){
+			return new AdministratorSequencer().initialize();
+		}
+		Id highestId = allAdministrators.get(0).getId();
+		for(Administrator temp : allAdministrators){
+			if(temp.getId().getSuffix() > highestId.getSuffix()){
+				highestId = temp.getId();
+			}
+		}
+		return highestId;
 	}
 
 	@Override

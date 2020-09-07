@@ -6,10 +6,8 @@ import java.util.ArrayList;
 import converters.GuestConverter;
 import enums.Gender;
 import exceptions.IdWriteException;
-import model.Administrator;
-import model.Guest;
-import model.Id;
-import model.Unit;
+import model.*;
+import sequencers.GuestSequencer;
 import stream.Stream;
 
 public class GuestRepository implements IRepository<Guest, Id>, IUserRepository<Guest, Id>{	
@@ -163,6 +161,21 @@ public class GuestRepository implements IRepository<Guest, Id>, IUserRepository<
 		}
 		
 		return retVal;
+	}
+
+	@Override
+	public Id findHighestId() {
+		ArrayList<Guest> allGuests = (ArrayList<Guest>) getAll();
+		if(allGuests.isEmpty())
+			return new GuestSequencer().initialize();
+
+		Id highestId = allGuests.get(0).getId();
+		for(Guest temp : allGuests){
+			if(temp.getId().getSuffix() > highestId.getSuffix()){
+				highestId = temp.getId();
+			}
+		}
+		return highestId;
 	}
 
 }

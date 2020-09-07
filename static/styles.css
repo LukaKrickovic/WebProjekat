@@ -698,7 +698,9 @@ section{
     }
 }
 
-
+.li.hidden{
+    visibility: hidden;
+}
 
 
 

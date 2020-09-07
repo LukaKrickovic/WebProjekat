@@ -1,6 +1,7 @@
 let emailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
 let passwordRegex = new RegExp(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/);
 let usernameRegex = new RegExp(/^(?=.{8,20}$)(?![_.])(?!.*[_.]{2})[a-zA-Z0-9._]+(?<![_.])$/);
+const instance = axios.create({baseURL: 'http://localhost:8080'})
 
 var app = new Vue({
 	el: '#container',
@@ -17,6 +18,7 @@ var app = new Vue({
 		usernameRegistration: "",
 		passwordRegistration: "",
 		gender: "",
+		errorSpan: "",
 		rightPanel: false
 	},
 
@@ -26,9 +28,20 @@ var app = new Vue({
 
 	methods: {
     	login : function() {
-			axios.
-				post('/login', this.username, this.password, this.role.toUpperCase())
-				.then(response => alert(this.username + this.password + this.role.toUpperCase()));
+			instance.
+				post('/login', {}, { params: {
+					username: this.username,
+					password: this.password,
+					role: this.role
+				}})
+				.then(response => {
+					if(response.data.localeCompare("ok") === 0){
+					window.location.replace("/index.html");
+				} else if(response.data.localeCompare("failed") === 0){
+					alert("Username or password are incorrect!");
+				}
+			})
+				.catch(err => console.error(err));
 		},
 
 		shiftPanels : function(){
@@ -60,8 +73,23 @@ var app = new Vue({
 		},
 
 		register : function(){
-			axios.
-				post('/register', this.username, this.password, this.role.toUpperCase())
+			instance.
+				post('/register', {}, { params: {
+					role: this.roleRegistration,
+					name: this.name,
+					surname: this.surname,
+					gender: this.gender,
+					username: this.usernameRegistration,
+					password: this.passwordRegistration
+				}})
+				.then(response => {
+					if(response.data.localeCompare("ok") === 0){
+					window.location.replace("/index.html");
+				} else if(response.data.localeCompare("failed") === 0){
+					alert("Credentials are not valid or username is already in use!");
+				}
+			})
+				.catch(err => console.error(err));
 		}
     },
 	filters: {

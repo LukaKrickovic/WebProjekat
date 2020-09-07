@@ -13,7 +13,7 @@
 </head>
 <body>
     <header class="header">
-        <div class="container">
+        <div class="container" id="container">
             <nav class="nav">
                 <a href="index.html" class="logo">
                     LOGO<!-- <img src="./images/logo.png" alt=""> -->
@@ -45,7 +45,7 @@
                         <a href="#" class="nav-link">Contact</a>
                     </li>
                     
-                    <li class="nav-item">
+                    <li class="nav-item" v-bind:class="{ hidden: user !== null }">
                         <a href="login.html" class="nav-link">Login/Register</a>
                     </li>
                 </ul>
@@ -327,5 +327,6 @@
         </div>
     </footer>
     <script src="main.js"></script>
+    <script src="vue.js"></script>
 </body>
 </html>

@@ -4,14 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" type="text/css" href="styleLogin.css">
-    <script src="jquery.min.js"></script>
     <title>Login</title>
 </head>
 <body>
     <div class="container" id="container" v-bind:class="{ rightpanelactive: rightPanel }">
         <div class="form-container sign-up-container">
         
-        <form action="#">
+        <form method="POST">
             <h1>Register</h1>
             <label id="roleLabel">Role:</label>
             <select name="roles" v-model="roleRegistration">
@@ -33,7 +32,7 @@
         </form>
         </div>
         <div class="form-container sign-in-container" >
-            <form>
+            <form  method="POST">
             <h1>Log in</h1>
             <input type="text" name="username" placeholder="Username" v-model="username">
             <input type="password" name="password" placeholder="Password" v-model="password">
@@ -63,7 +62,7 @@
         </div>
 
         <script src="vue.js"></script>
-        <script src="axios.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script type="text/javascript" src="login.js"></script>
 </body>
 </html>

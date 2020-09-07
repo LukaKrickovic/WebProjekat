@@ -69,7 +69,7 @@ form {
 	text-align: center;
 }
 
-input, select {
+input, select, span {
 	background-color: #eee;
 	border: none;
 	padding: 12px 15px;

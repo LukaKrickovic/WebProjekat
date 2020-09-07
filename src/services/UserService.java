@@ -38,13 +38,21 @@ public class UserService {
 	
 	public Host registerHost(Host host) {
 		userValidation.validate(host);
-		hostRepository.create(host);
+		if(hostRepository.getUserByUsername(host.getUsername()) == null && guestRepository.getUserByUsername(host.getUsername()) == null
+		&& administratorRepository.getUserByUsername(host.getUsername()) == null)
+			hostRepository.create(host);
+		else
+			return null;
 		return host;
 	}
 	
 	public Guest registerGuest(Guest guest) {
 		userValidation.validate(guest);
-		guestRepository.create(guest);
+		if(hostRepository.getUserByUsername(guest.getUsername()) == null && guestRepository.getUserByUsername(guest.getUsername()) == null
+				&& administratorRepository.getUserByUsername(guest.getUsername()) == null)
+			guestRepository.create(guest);
+		else
+			return null;
 		return guest;
 	}
 	
@@ -57,11 +65,12 @@ public class UserService {
 		} else {
 			retVal = hostRepository.getUserByUsername(username);
 		}
-		
-		if(retVal.getPassword().equals(password))
-			return retVal;
-		else
-			return null;
+
+		if(retVal != null){
+			if(retVal.getPassword().equals(password))
+				return retVal;
+		}
+		return null;
 	}
 	
 	public void changeData (User user) {
