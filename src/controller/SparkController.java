@@ -68,18 +68,24 @@ public class SparkController {
         post("/login", (req, res) -> {
             //System.out.println(req.queryParams("username") + " " + req.queryParams("password") + " " + req.queryParams("role"));
             Roles requestRole = convertToRole(req.queryParams("role"));
-            User user = userService.login(req.queryParams("username"), req.queryParams("password"), requestRole);
-            if(user != null){
-                System.out.println("User " + user.getUsername() + " just logged in!");
-                //res.cookie("user", user.getId().toString());
-                Session ss = req.session(true);
-                ss.attribute("user", user);
-                return gson.toJson("ok");
-            } else{
-                System.out.println("Invalid credentials!");
-                return gson.toJson("failed");
-            }
+            User user = null;
 
+            Session ss = req.session(true);
+            user = ss.attribute("user");
+
+            if(user == null) {
+                user = userService.login(req.queryParams("username"), req.queryParams("password"), requestRole);
+
+                if (user != null) {
+                    System.out.println("User " + user.getUsername() + " just logged in!");
+                    ss.attribute("user", user);
+                    return gson.toJson("ok");
+                } else {
+                    System.out.println("Invalid credentials!");
+                    return gson.toJson("failed");
+                }
+            } else
+                return gson.toJson("failed");
         });
 
         post("/register", (req, res) -> {
@@ -93,21 +99,24 @@ public class SparkController {
             Gender requestGender = convertToGender(req.queryParams("gender"));
             User user = null;
 
-            if(requestRole.equals(Roles.GUEST)) {
-                user = userService.registerGuest(new Guest(new GuestSequencer().next(guestRepository.findHighestId()),
-                        req.queryParams("username"), req.queryParams("password"), req.queryParams("name"), req.queryParams("surname"), requestGender));
-            }
-            else if(requestRole.equals(Roles.HOST)) {
-                user = userService.registerHost(new Host(new HostSequencer().next(hostRepository.findHighestId()),
-                        req.queryParams("username"), req.queryParams("password"), req.queryParams("name"), req.queryParams("surname"), requestGender));
-            }
+            Session ss = req.session(true);
+            user = ss.attribute("user");
 
-            if(user != null){
-                Session ss = req.session(true);
-                ss.attribute("user", user);
-                return gson.toJson("ok");
-            }
+            if(user == null) {
+                if (requestRole.equals(Roles.GUEST)) {
+                    user = userService.registerGuest(new Guest(new GuestSequencer().next(guestRepository.findHighestId()),
+                            req.queryParams("username"), req.queryParams("password"), req.queryParams("name"), req.queryParams("surname"), requestGender));
+                } else if (requestRole.equals(Roles.HOST)) {
+                    user = userService.registerHost(new Host(new HostSequencer().next(hostRepository.findHighestId()),
+                            req.queryParams("username"), req.queryParams("password"), req.queryParams("name"), req.queryParams("surname"), requestGender));
+                }
 
+                if (user != null) {
+                    ss.attribute("user", user);
+                    return gson.toJson("ok");
+                }
+
+            }
             return gson.toJson("failed");
         });
 
