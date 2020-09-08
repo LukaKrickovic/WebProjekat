@@ -19,7 +19,7 @@
                     <img src="./images/logo.png" alt="">
                 </a>
 
-                <div class="hamburger-menu">
+                <div class="hamburger-menu" v-on:click="activateTheBurger" v-bind:class="{ active: burgerActive }">
                     <i class="fas fa-bars"></i>
                     <i class="fas fa-times"></i>
                 </div>
@@ -36,19 +36,23 @@
                     <li class="nav-item">
                         <a href="#" class="nav-link">Offers</a>
                     </li>
-
-                    <li class="nav-item">
-                        <a href="#" class="nav-link">Register</a>
-                    </li>
-
-                    <li class="nav-item">
-                        <a href="#" class="nav-link">Login</a>
-                    </li>
                     
                     <li class="nav-item" v-bind:class="{ hidden: user !== null }">
                         <a href="login.html" class="nav-link">Login/Register</a>
                     </li>
                 </ul>
+
+                <div class="dropdown-user">
+                    <button class="user-button">
+                        {{ displayName }}
+                        <div class="user-dropdown-content">
+                            <a href="#" class="dropdown-link">Manage your account information</a>
+                            <a href="#" class="dropdown-link">Upcoming reservations</a>
+                            <a href="#" class="dropdown-link" v-bind:class="{ hidden: user.role === 'GUEST' }">Search for users</a>
+                            <a href="#" class="dropdown-link" v-bind:class="{ hidden: user.role === 'GUEST' }">Add a unit</a>
+                        </div>
+                    </button>
+            </div>
             </nav>
         </div>
     </header>
@@ -326,7 +330,8 @@
             </div>
         </div>
     </footer>
-    <script src="main.js"></script>
+    <script type="module" src="main.js"></script>
     <script src="vue.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 </body>
 </html>

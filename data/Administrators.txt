@@ -1,1 +1,0 @@
-{"username":"admin","password":"admin","name":"Luka","surname":"Krickovic","gender":"MALE","role":"ADMINISTRATOR","searchHistory":[],"isDeleted":false,"id":{"prefix":"A","suffix":0}}

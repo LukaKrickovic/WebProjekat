@@ -120,6 +120,17 @@ public class SparkController {
             return gson.toJson("failed");
         });
 
+        get("/index-user", (req, res) -> {
+            Session ss = req.session(true);
+            User user = ss.attribute("user");
+
+            if(user == null){
+                return null;
+            } else {
+                return gson.toJson(user);
+            }
+        });
+
     }
 
     private static void checkRequestParams(Request req) throws BadRequestException {
