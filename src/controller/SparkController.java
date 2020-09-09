@@ -82,6 +82,7 @@ public class SparkController {
                     return gson.toJson("ok");
                 } else {
                     System.out.println("Invalid credentials!");
+
                     return gson.toJson("failed");
                 }
             } else
@@ -120,15 +121,38 @@ public class SparkController {
             return gson.toJson("failed");
         });
 
-        get("/index-user", (req, res) -> {
+        get("/startup-index", (req, res) -> {
             Session ss = req.session(true);
             User user = ss.attribute("user");
 
             if(user == null){
-                return null;
+                return gson.toJson("nouser");
+            } else {
+                return gson.toJson("userfound");
+            }
+        });
+
+        get("/startup-user", (req, res) -> {
+            Session ss = req.session(true);
+            User user = ss.attribute("user");
+
+            if(user == null){
+                return gson.toJson("nouser");
             } else {
                 return gson.toJson(user);
             }
+        });
+
+        get("/logout", (req, res) -> {
+            Session ss = req.session(true);
+            User user = ss.attribute("user");
+
+            if(user == null){
+                return false;
+            }
+
+            ss.invalidate();
+            return true;
         });
 
     }

@@ -43,6 +43,11 @@ ul{
     list-style: none;
 }
 
+ul:last-child{
+    padding-right: 0;
+    margin-right: 0;
+}
+
 section{
     padding: 5rem 0;
 }
@@ -71,6 +76,8 @@ section{
 .dropdown-user{
     display: inline-block;
     position: relative;
+    margin: 0%;
+    padding: 0%;
 }
 
 .user-button{
@@ -87,6 +94,10 @@ section{
 
 .user-button:hover{
     background-color: turquoise;
+}
+
+.dropdown-user.hidden{
+    display: none;
 }
 
 .user-dropdown-content{
@@ -274,7 +285,7 @@ section{
 
 /* Booking section styles */
 .booking{
-    background-image: var(--gradient-color);
+    background-image: var(--gradient-color-alt);
 }
 
 .input-group{

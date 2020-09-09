@@ -1,7 +1,7 @@
 let emailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
 let passwordRegex = new RegExp(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/);
 let usernameRegex = new RegExp(/^(?=.{8,20}$)(?![_.])(?!.*[_.]{2})[a-zA-Z0-9._]+(?<![_.])$/);
-const instance = axios.create({baseURL: 'http://localhost:8080'})
+const instance = axios.create({baseURL: 'http://localhost:8080'});
 
 var app = new Vue({
 	el: '#container',

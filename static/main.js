@@ -1,4 +1,4 @@
-const instance = axios.create({baseURL: 'http://localhost:8080'})
+const instance = axios.create({baseURL: 'http://localhost:8080'});
 
 //Selectors
 let header = document.querySelector('.header');
@@ -19,24 +19,46 @@ var app = new Vue({
 	data: {
 		user: null,
 		displayName: "",
-		burgerActive: false
+		activateTheBurger: false,
+		hideFromGuest: false
 	},
 
 	mounted() {
 		instance
-			.get('/index-user')
+			.get('/startup-index')
 			.then(res => {
-					if(res.data !== null){
-						this.user = res.data;
+					if(res.data.localeCompare('nouser') === 1){
+						instance
+							.get('/startup-user')
+							.then(res => {
+								this.user = res.data;
+								this.displayName = this.user.name;
+								if(this.user.role.localeCompare('GUEST') === 0){
+									this.hideFromGuest = true;
+								}
+							});
+					} else {
+						alert(res.data);
 					}
-					alert(this.user.role);
-					this.displayName = this.user.name;
+
+					
 				});
 	},
 
 	methods: {
-		activateTheBurger : function(){
-			this.burgerActive = !this.burgerActive;
+		burgerActive : function(){
+			
+		},
+
+		logout : function(){
+			instance
+				.get('/logout')
+				.then(res => {
+					alert(res.data);
+					if(res.data){
+						window.location.replace("/index.html");
+					}
+				});
 		}
 	},
 	filters: {

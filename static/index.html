@@ -42,14 +42,15 @@
                     </li>
                 </ul>
 
-                <div class="dropdown-user">
+                <div class="dropdown-user" v-bind:class="{ hidden: user === null }">
                     <button class="user-button">
                         {{ displayName }}
                         <div class="user-dropdown-content">
                             <a href="#" class="dropdown-link">Manage your account information</a>
                             <a href="#" class="dropdown-link">Upcoming reservations</a>
-                            <a href="#" class="dropdown-link" v-bind:class="{ hidden: user.role === 'GUEST' }">Search for users</a>
-                            <a href="#" class="dropdown-link" v-bind:class="{ hidden: user.role === 'GUEST' }">Add a unit</a>
+                            <a href="#" class="dropdown-link" v-bind:class="{ hidden: hideFromGuest }">Search for users</a>
+                            <a href="#" class="dropdown-link" v-bind:class="{ hidden: hideFromGuest }">Add a unit</a>
+                            <a href="#" class="dropdown-link" v-on:click="logout">Logout</a>
                         </div>
                     </button>
             </div>
