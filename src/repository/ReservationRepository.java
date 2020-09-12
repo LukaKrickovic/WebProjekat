@@ -19,11 +19,15 @@ public class ReservationRepository implements IRepository<Reservation, Id>{
 	private File reservationFile;
 	private UnitRepository unitRepository;
 	private GuestRepository guestRepository;
+	private HostRepository hostRepository;
+	private AdministratorRepository administratorRepository;
 	
-	public ReservationRepository(Stream stream, UnitRepository unitRepository, GuestRepository guestRepository) {
+	public ReservationRepository(Stream stream, UnitRepository unitRepository, GuestRepository guestRepository, HostRepository hostRepository, AdministratorRepository administratorRepository) {
 		this.stream = stream;
 		this.unitRepository = unitRepository;
 		this.guestRepository = guestRepository;
+		this.hostRepository = hostRepository;
+		this.administratorRepository = administratorRepository;
 		reservationConverter = new ReservationConverter();
 		reservationFile = new File(reservationFilePath);
 	}
@@ -52,6 +56,20 @@ public class ReservationRepository implements IRepository<Reservation, Id>{
 		ArrayList<Reservation> retVal = new ArrayList<Reservation>();
 		for(Reservation temp : allReservations) {
 			temp.setGuest(guestRepository.getById(temp.getGuest().getId()));
+			retVal.add(temp);
+		}
+		return retVal;
+	}
+
+	private Iterable<Reservation> bindWithUsers(Iterable<Reservation> allReservations){
+		ArrayList<Reservation> retVal = new ArrayList<Reservation>();
+		for(Reservation temp : allReservations) {
+			if(temp.getId().getPrefix().equalsIgnoreCase("G"))
+				temp.setUser(guestRepository.getById(temp.getGuest().getId()));
+			else if(temp.getId().getPrefix().equalsIgnoreCase("H"))
+				temp.setUser(hostRepository.getById(temp.getGuest().getId()));
+			else if(temp.getId().getPrefix().equalsIgnoreCase("A"))
+				temp.setUser(administratorRepository.getById(temp.getGuest().getId()));
 			retVal.add(temp);
 		}
 		return retVal;
@@ -166,11 +184,15 @@ public class ReservationRepository implements IRepository<Reservation, Id>{
 	}
 
 	private boolean overlapping(Reservation reservation, LocalDate startDate, LocalDate endDate) {
-		if(reservation.getStartDate().equals(startDate) && (reservation.getEndDate().equals(endDate)))
+		if(reservation.getStartDate().isEqual(startDate) && (reservation.getEndDate().isEqual(endDate)))
 			return true;
 		else if(reservation.getStartDate().isAfter(startDate) && reservation.getEndDate().isBefore(endDate))
 			return true;
-		else if(reservation.getStartDate().equals(startDate))
+		else if(reservation.getStartDate().isBefore(endDate) && reservation.getEndDate().isAfter(startDate))
+			return true;
+		else if(reservation.getEndDate().isEqual(endDate))
+			return true;
+		else if(reservation.getStartDate().isEqual(startDate))
 			return true;
 
 		return false;

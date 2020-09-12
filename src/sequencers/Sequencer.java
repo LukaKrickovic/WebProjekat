@@ -13,11 +13,15 @@ public class Sequencer {
 		defaultSuffix = 0;
 	}
 	
-	public long incrementSuffix(Id id) {
+	public static long incrementSuffix(Id id) {
 		return id.getSuffix() + 1;
 	}
 	
 	public Id next(Id id) {
+		return new Id(id.getPrefix(), incrementSuffix(id));
+	}
+
+	public static Id nextStatic(Id id) {
 		return new Id(id.getPrefix(), incrementSuffix(id));
 	}
 

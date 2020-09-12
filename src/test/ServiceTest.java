@@ -18,7 +18,7 @@ import stream.Stream;
 public class ServiceTest {
 
 	public static void main(String[] args){
-		Stream stream = new Stream();
+/*		Stream stream = new Stream();
 		GuestRepository guestRepository = new GuestRepository(stream);
 		ApartmentCommentRepository apartmentCommentRepository = new ApartmentCommentRepository(stream, guestRepository);
 		AdministratorRepository administratorRepository = new AdministratorRepository(stream);
@@ -95,5 +95,7 @@ public class ServiceTest {
 		System.out.println(unitRepository.getByPeopleCount(5));
 		System.out.println(unitRepository.getByPrice(0, 50));
 		System.out.println(unitRepository.getByRoomCount(0, 10));
+
+ */
 	}
 }

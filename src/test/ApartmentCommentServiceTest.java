@@ -17,7 +17,7 @@ import java.time.LocalTime;
 
 public class ApartmentCommentServiceTest {
     public static void main(String[] args){
-        Stream stream = new Stream();
+ /*       Stream stream = new Stream();
 
         GuestRepository guestRepository = new GuestRepository(stream);
         ApartmentCommentRepository apartmentCommentRepository = new ApartmentCommentRepository(stream, guestRepository);
@@ -52,6 +52,6 @@ public class ApartmentCommentServiceTest {
         apartmentCommentRepository.create(comment1);
         System.out.println(apartmentCommentService.getAllApartmentComments());
 
-
+*/
     }
 }

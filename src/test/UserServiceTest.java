@@ -22,7 +22,7 @@ import java.time.LocalTime;
 
 public class UserServiceTest {
     public static void main(String[] args){
-        Stream stream = new Stream();
+/*        Stream stream = new Stream();
         HostRepository hostRepository = new HostRepository(stream);
         GuestRepository guestRepository = new GuestRepository(stream);
         AdministratorRepository administratorRepository = new AdministratorRepository(stream);
@@ -57,5 +57,9 @@ public class UserServiceTest {
         System.out.println(unitService.getAllActiveUnits());
         System.out.println(unitService.getAllInactiveUnits());
         System.out.println("Search " + unitService.searchByCriteria(new UnitSearchCriteria(LocalDate.of(2020, 9, 1), LocalDate.of(2020, 9, 8), "", "", "", "", "", "", "")));
+        */
+
     }
+
+
 }

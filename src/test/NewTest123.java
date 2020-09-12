@@ -24,7 +24,7 @@ import sequencers.UnitSequencer;
 import stream.Stream;
 
 public class NewTest123 {
-
+/*
 	Stream stream = new Stream();
 	HostRepository hostRepository = new HostRepository(stream);
 	GuestRepository guestRepository = new GuestRepository(stream);
@@ -43,6 +43,6 @@ public class NewTest123 {
 	
 	//UnitAndReservationRepository urr = new UnitAndReservationRepository(stream, hostRepository, apartmentCommentRepository, guestRepository);
 	
-	
+	*/
 	
 }

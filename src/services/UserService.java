@@ -72,6 +72,19 @@ public class UserService {
 		}
 		return null;
 	}
+	public User login(String username, String password) {
+		User retVal = administratorRepository.getUserByUsername(username);
+		if(retVal == null)
+			retVal = guestRepository.getUserByUsername(username);
+		if(retVal == null)
+			retVal = hostRepository.getUserByUsername(username);
+
+		if(retVal != null){
+			if(retVal.getPassword().equals(password))
+				return retVal;
+		}
+		return null;
+	}
 	
 	public void changeData (User user) {
 		try {
@@ -161,6 +174,16 @@ public class UserService {
 		return unique(results);
 	}
 	
+
+	public User getByUsername(String username){
+		User user = hostRepository.getUserByUsername(username);
+		if(user == null)
+			user = guestRepository.getUserByUsername(username);
+		if(user == null)
+			user = administratorRepository.getUserByUsername(username);
+		return user;
+	}
+
 
 	private User getUserByUsername(String temp) {
 		ArrayList<User> retVal = new ArrayList<User>(); 

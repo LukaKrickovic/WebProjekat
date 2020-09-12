@@ -32,7 +32,7 @@
         </form>
         </div>
         <div class="form-container sign-in-container" >
-            <form  method="POST">
+            <div class="form">
             <h1>Log in</h1>
             <input type="text" name="username" placeholder="Username" v-model="username">
             <input type="password" name="password" placeholder="Password" v-model="password">
@@ -43,7 +43,7 @@
                 <option value="ADMINISTRATOR">Administrator</option>
               </select>
             <button v-on:click="login">Log in</button>
-            </form>
+        </div>
         </div>
         <div class="overlay-container">
             <div class="overlay">

@@ -13,6 +13,7 @@ public class User extends Model{
 	private Gender gender;
 	private Roles role;
 	private ArrayList<User> searchHistory;
+	private String JWTToken;
 	
 	public User() {
 		super();
@@ -97,5 +98,12 @@ public class User extends Model{
 	public void setSearchHistory(ArrayList<User> searchHistory) {
 		this.searchHistory = searchHistory;
 	}
-	
+
+	public String getJWTToken() {
+		return JWTToken;
+	}
+
+	public void setJWTToken(String JWTToken) {
+		this.JWTToken = JWTToken;
+	}
 }

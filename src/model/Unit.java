@@ -19,6 +19,7 @@ public class Unit extends Model{
 	private Status status;
 	private List<Amenity> amenities;
 	private List<String> imageSources;
+	private String name;
 	
 	
 	public Unit() {
@@ -29,9 +30,10 @@ public class Unit extends Model{
 		super(id);
 	}
 	
-	public Unit(RoomType roomType, int numOfRooms, int numOfGuests, Location location, Host host, double pricePerNight,
+	public Unit(String name, RoomType roomType, int numOfRooms, int numOfGuests, Location location, Host host, double pricePerNight,
 			LocalTime checkinTime, LocalTime checkoutTime, Status status, List<Amenity> amenities, List<String> imageSources) {
 		super();
+		this.name = name;
 		this.roomType = roomType;
 		this.numOfRooms = numOfRooms;
 		this.numOfGuests = numOfGuests;
@@ -45,9 +47,10 @@ public class Unit extends Model{
 		this.imageSources = imageSources;
 	}
 	
-	public Unit(RoomType roomType, int numOfRooms, int numOfGuests, Location location, Host host, double pricePerNight,
+	public Unit(String name, RoomType roomType, int numOfRooms, int numOfGuests, Location location, Host host, double pricePerNight,
 			Status status, List<Amenity> amenities, List<String> imageSources) {
 		super();
+		this.name = name;
 		this.roomType = roomType;
 		this.numOfRooms = numOfRooms;
 		this.numOfGuests = numOfGuests;
@@ -61,9 +64,10 @@ public class Unit extends Model{
 		this.imageSources = imageSources;
 	}
 	
-	public Unit(Id id, RoomType roomType, int numOfRooms, int numOfGuests, Location location, Host host, double pricePerNight,
+	public Unit(Id id, String name, RoomType roomType, int numOfRooms, int numOfGuests, Location location, Host host, double pricePerNight,
 			LocalTime checkinTime, LocalTime checkoutTime, Status status, List<Amenity> amenities, List<String> imageSources) {
 		super(id);
+		this.name = name;
 		this.roomType = roomType;
 		this.numOfRooms = numOfRooms;
 		this.numOfGuests = numOfGuests;
@@ -77,9 +81,10 @@ public class Unit extends Model{
 		this.imageSources = imageSources;
 	}
 	
-	public Unit(Id id, RoomType roomType, int numOfRooms, int numOfGuests, Location location, Host host, double pricePerNight,
+	public Unit(Id id, String name, RoomType roomType, int numOfRooms, int numOfGuests, Location location, Host host, double pricePerNight,
 			LocalTime checkinTime, LocalTime checkoutTime, Status status) {
 		super(id);
+		this.name = name;
 		this.roomType = roomType;
 		this.numOfRooms = numOfRooms;
 		this.numOfGuests = numOfGuests;
@@ -93,9 +98,10 @@ public class Unit extends Model{
 		this.imageSources = new ArrayList<String>();
 	}
 	
-	public Unit(Id id, RoomType roomType, int numOfRooms, int numOfGuests, Location location, Host host, double pricePerNight,
+	public Unit(Id id, String name, RoomType roomType, int numOfRooms, int numOfGuests, Location location, Host host, double pricePerNight,
 			Status status, List<Amenity> amenities, List<String> imageSources) {
 		super(id);
+		this.name = name;
 		this.roomType = roomType;
 		this.numOfRooms = numOfRooms;
 		this.numOfGuests = numOfGuests;
@@ -194,5 +200,13 @@ public class Unit extends Model{
 	}
 	public void setAmenities(List<Amenity> amenities) {
 		this.amenities = amenities;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
 	}
 }

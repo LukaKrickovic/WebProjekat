@@ -20,7 +20,12 @@ var app = new Vue({
 		user: null,
 		displayName: "",
 		activateTheBurger: false,
-		hideFromGuest: false
+		hideFromGuest: false,
+		destination: "",
+		checkIn: "",
+		checkOut: "",
+		adultCount: "",
+		childrenCount: ""
 	},
 
 	mounted() {
@@ -56,9 +61,58 @@ var app = new Vue({
 				.then(res => {
 					alert(res.data);
 					if(res.data){
-						window.location.replace("/index.html");
+						location.replace("/index.html");
 					}
 				});
+		},
+
+		searchUnits : function(){
+			alert(this.adultCount + " " + this.childrenCount);
+			alert(this.destination);
+
+			if(this.childrenCount === null){
+				this.childrenCount = 0;
+			}
+			if(this.adultCount === null){
+				this.adultCount = 0;
+			}
+
+			if(this.checkIn !== null && this.checkOut !== null){
+				var checkInDate = new Date(this.checkIn);
+				var checkOutDate = new Date(this.checkOut);
+				if(checkInDate.getTime() < checkOutDate.getTime()){
+					alert("Set dates correctly!")
+					return;
+				}
+
+				if(checkInDate.getTime() < Date.now){
+					alert("Set dates correctly!")
+					return;
+				}
+
+				if(checkOutDate.getTime() < Date.now){
+					alert("Set dates correctly!")
+					return;
+				}
+			}
+
+			instance
+				.get('/book-form', { params: {
+					destination: this.destination,
+					checkIn: this.checkIn,
+					checkOut: this.checkOut,
+					adults: this.adultCount,
+					children: this.childrenCount
+				}})
+				.then(res => {
+					alert(res.data);
+					
+					if(res.data.localeCompare("ok") === 0){
+						location.replace("/search-results.html");
+					}
+					
+				});
+
 		}
 	},
 	filters: {

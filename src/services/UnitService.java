@@ -1,7 +1,9 @@
 package services;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 
 import enums.Roles;
 import enums.Status;
@@ -76,15 +78,44 @@ public class UnitService {
 		}
 		return null;
 	}
-	
+
+	public ArrayList<Unit> copy(ArrayList<Unit> source){
+		ArrayList<Unit> retVal = new ArrayList<Unit>();
+
+		for(Unit temp : source){
+			retVal.add(temp);
+		}
+
+		return retVal;
+	}
+
 	public Iterable<Unit> searchByCriteria(UnitSearchCriteria unitSearchCriteria){
 		ArrayList<Unit> retVal = new ArrayList<Unit>();
-		
-		retVal = checkDate(unitSearchCriteria, retVal);
+		ArrayList<Unit> backup = new ArrayList<Unit>();
+		ArrayList<Unit> backup2 = new ArrayList<Unit>();
+
 		retVal = checkLocation(unitSearchCriteria, retVal);
-		retVal = checkPrice(unitSearchCriteria, retVal);
-		retVal = checkRoomCount(unitSearchCriteria, retVal);
-		retVal = checkPeopleCount(unitSearchCriteria, retVal);
+		backup= copy(retVal);
+		backup2 = new ArrayList<Unit>();
+		if (unitSearchCriteria.getStartDate() != null && unitSearchCriteria.getEndDate() != null) {
+			retVal = and(backup, checkDate(unitSearchCriteria, backup2));
+			backup = copy(retVal);
+			backup2 = new ArrayList<Unit>();
+		}
+		if(unitSearchCriteria.getPriceLower() != 0.0 && unitSearchCriteria.getPriceUpper() != 0.0) {
+			retVal = and(backup, checkPrice(unitSearchCriteria, backup2));
+			backup = copy(retVal);
+			backup2 = new ArrayList<Unit>();
+		}
+
+		if(unitSearchCriteria.getRoomCountLower() != 0 && unitSearchCriteria.getRoomCountUpper() != 0) {
+			retVal = and(backup, checkRoomCount(unitSearchCriteria, backup2));
+			backup = copy(retVal);
+			backup2 = new ArrayList<Unit>();
+		}
+		if(unitSearchCriteria.getPeopleCount() != 0) {
+			retVal = and(backup, checkPeopleCount(unitSearchCriteria, backup2));
+		}
 		
 		return unique(retVal);
 	}
@@ -106,18 +137,34 @@ public class UnitService {
 		return retVal;
 	}
 
+	private boolean containsUnit(Unit temp, ArrayList<Unit> list){
+		for(Unit u : list){
+			if(u.getId().equals(temp.getId()))
+				return true;
+		}
+
+		return false;
+	}
+
 	private ArrayList<Unit> and(ArrayList<Unit> previousResult, ArrayList<Unit> newList) {
 		ArrayList<Unit> result = new ArrayList<Unit>();
 		if(previousResult.isEmpty())
-			return newList;
+			return new ArrayList<Unit>();
 		if(newList.isEmpty())
-			return previousResult;
+			return new ArrayList<Unit>();
 		
 		for(Unit temp : newList) {
-			if(previousResult.contains(temp)) {
+			if(containsUnit(temp, previousResult)) {
 				result.add(temp);
 			}
 		}
+
+		for(Unit temp : previousResult){
+			if(!newList.contains(temp)){
+				result.remove(temp);
+			}
+		}
+
 		return result;
 	}
 
@@ -147,6 +194,10 @@ public class UnitService {
 			retVal.addAll(reservationRepository.getUnitsByDate(unitSearchCriteria.getStartDate(), unitSearchCriteria.getEndDate()));
 		}
 		return retVal;
+	}
+
+	private Iterable<Unit> getUnitByName(String name){
+		return unitRepository.getUnitByName(name);
 	}
 	
 }

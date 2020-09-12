@@ -15,6 +15,7 @@ public class Reservation extends Model{
 	private double price;
 	private String message;
 	private Guest guest;
+	private User user;
 	private ReservationStatus reservationStatus;
 
 	
@@ -75,6 +76,19 @@ public class Reservation extends Model{
 		this.price = price;
 		this.message = message;
 		this.guest = guest;
+		this.reservationStatus = reservationStatus;
+	}
+
+	public Reservation(Id id, Unit unit, LocalDate startDate, LocalDate endDate, double price, String message, User guest,
+			ReservationStatus reservationStatus) {
+		super(id);
+		this.unit = unit;
+		this.startDate = startDate;
+		this.endDate = endDate;
+		this.length = (int)ChronoUnit.DAYS.between(startDate, endDate);
+		this.price = price;
+		this.message = message;
+		this.user = guest;
 		this.reservationStatus = reservationStatus;
 	}
 
@@ -142,5 +156,12 @@ public class Reservation extends Model{
 	public void setReservationStatus(ReservationStatus reservationStatus) {
 		this.reservationStatus = reservationStatus;
 	}
-	
+
+	public User getUser() {
+		return user;
+	}
+
+	public void setUser(User user) {
+		this.user = user;
+	}
 }

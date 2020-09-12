@@ -209,4 +209,17 @@ public class UnitRepository implements IRepository<Unit, Id>{
 		return highestId;
 	}
 
+	public Iterable<Unit> getUnitByName(String name){
+		ArrayList<Unit> allUnits = (ArrayList<Unit>) getAll();
+		ArrayList<Unit> retVal = new ArrayList<Unit>();
+		if(allUnits.isEmpty())
+			return null;
+		for(Unit temp : allUnits){
+			if(temp.getName().trim().equalsIgnoreCase(name.trim()))
+				retVal.add(temp);
+		}
+
+		return retVal;
+	}
+
 }

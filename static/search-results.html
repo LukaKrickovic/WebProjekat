@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css?family=Nunito&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Aldrich&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css">
+    <link rel="stylesheet" href="stylesSearch.css">
+    <title>Search results</title>
+</head>
+<body>
+    <div id="container">
+        <header class="header">
+            <div class="container">
+                <nav class="nav">
+                    <a href="index.html" class="logo">
+                        <img src="./images/logo.png" alt="">
+                    </a>
+    
+                    <div class="hamburger-menu" v-on:click="activateTheBurger" v-bind:class="{ active: burgerActive }">
+                        <i class="fas fa-bars"></i>
+                        <i class="fas fa-times"></i>
+                    </div>
+    
+                    <ul class="nav-list">
+                        <li class="nav-item">
+                            <a href="index.html" class="nav-link">Home</a>
+                        </li>
+    
+                        <li class="nav-item">
+                            <a href="#" class="nav-link">About</a>
+                        </li>
+    
+                        <li class="nav-item">
+                            <a href="#" class="nav-link">Offers</a>
+                        </li>
+                        
+                        <li class="nav-item" v-bind:class="{ hidden: user !== null }">
+                            <a href="login.html" class="nav-link">Login/Register</a>
+                        </li>
+                    </ul>
+    
+                    <div class="dropdown-user" v-bind:class="{ hidden: user === null }">
+                        <button class="user-button">
+                            {{ displayName }}
+                            <div class="user-dropdown-content">
+                                <a href="#" class="dropdown-link">Manage your account information</a>
+                                <a href="#" class="dropdown-link">Upcoming reservations</a>
+                                <a href="#" class="dropdown-link" v-bind:class="{ hidden: hideFromGuest }">Search for users</a>
+                                <a href="#" class="dropdown-link" v-bind:class="{ hidden: hideFromGuest }">Add a unit</a>
+                                <a href="#" class="dropdown-link" v-on:click="logout">Logout</a>
+                            </div>
+                        </button>
+                </div>
+                </nav>
+            </div>
+        </header>
+
+        <main>
+            <div class="list" v-if="empty === false">
+                <div class="head">
+                    <span>{{searchResults.length}} units have been found</span>
+                    <h2>Stays</h2>
+                </div>
+                <ul>
+                    <a href="#">
+                    <li v-for="item in searchResults"><div class="search-result">
+                        <hr>
+                        
+                        <span class="roomType">{{item.roomType}}</span><br>
+                        <span class="roomName">{{item.name}}</span><br>
+                        <span class="roomGuests"><em>{{item.numOfGuests}}</em> guests - <em>{{item.numOfRooms}}</em> rooms</span><br>
+                        <span class="pricePerNight"><b>{{item.pricePerNight}}$</b>/Night</span>
+                    </div></li></a>
+                </ul>
+            </div>
+
+        </main>
+        <footer class="footer">
+            <div class="container">
+                <div class="footer-content">
+                    <!-- <div class="footer-content-brand">
+                        <a href="index.html" class="logo">
+                            <img src="./images/logo.png" class="logo-image" alt="">
+                        </a>
+                        <div class="paragraph">
+                            Lorem ipsum dolor sit amet consectetur adipisicing 
+                        </div> 
+                    </div> -->
+                    <div class="social-media-wrap">
+                        <h4 class="footer-heading">Follow us</h4>
+                        <div class="social-media">
+                            <a href="#" class="sm-link"><i class="fab fa-twitter"></i></a>
+                            <a href="#" class="sm-link"><i class="fab fa-facebook-square"></i></a>
+                            <a href="#" class="sm-link"><i class="fab fa-instagram"></i></a>
+                            <a href="#" class="sm-link"><i class="fab fa-pinterest"></i></a>
+                            <a href="#" class="sm-link"><i class="fab fa-tripadvisor"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </div>
+    <script src="vue.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script type="text/javascript" src="search.js"></script>
+</body>
+</html>
