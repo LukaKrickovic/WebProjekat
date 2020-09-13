@@ -3,8 +3,6 @@ package model;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 
-import com.sun.scenario.effect.impl.sw.java.JSWBlend_SRC_OUTPeer;
-import com.sun.xml.internal.ws.api.model.wsdl.WSDLOutput;
 import enums.ReservationStatus;
 
 public class Reservation extends Model{

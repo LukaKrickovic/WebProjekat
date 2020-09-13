@@ -1,0 +1,13 @@
+/model/
+/test/
+/repository/
+/controller/
+/converters/
+/enums/
+/exceptions/
+/sequencers/
+/services/
+/stream/
+/util/
+/validations/
+/ws/
