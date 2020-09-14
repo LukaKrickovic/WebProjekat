@@ -48,6 +48,17 @@ public class ApartmentCommentRepository implements IRepository<ApartmentComment,
 	}
 	*/
 
+	public Iterable<ApartmentComment> getAllApprovedComments(){
+		ArrayList<ApartmentComment> retVal = new ArrayList<ApartmentComment>();
+
+		for(ApartmentComment comment : getAll()){
+			if(comment.isApproved()){
+				retVal.add(comment);
+			}
+		}
+
+		return retVal;
+	}
 
 	@Override
 	public ApartmentComment create(ApartmentComment entity) {

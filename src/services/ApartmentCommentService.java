@@ -7,6 +7,7 @@ import enums.ReservationStatus;
 import enums.Roles;
 import model.ApartmentComment;
 import model.Reservation;
+import model.Unit;
 import model.User;
 import repository.ApartmentCommentRepository;
 import repository.ReservationRepository;
@@ -40,5 +41,39 @@ public class ApartmentCommentService {
 		//provera za admina??
 		public Iterable<ApartmentComment> getAllApartmentComments(){
 			return apartmentCommentRepository.getAll();
+		}
+
+		public Iterable<ApartmentComment> getAllApprovedCommentsByUnit(Unit unit){
+			ArrayList<ApartmentComment> allComments = (ArrayList<ApartmentComment>) apartmentCommentRepository.getAllApprovedComments();
+			ArrayList<ApartmentComment> retVal = new ArrayList<ApartmentComment>();
+
+			if(allComments != null){
+				if(!allComments.isEmpty()){
+					for(ApartmentComment temp : allComments){
+						if(temp.getUnit().getId().equals(unit.getId())){
+							retVal.add(temp);
+						}
+					}
+				}
+			}
+
+			return retVal;
+		}
+
+		public Iterable<ApartmentComment> getAllApartmentCommentsByUnit(Unit unit){
+			ArrayList<ApartmentComment> allComments = (ArrayList<ApartmentComment>) apartmentCommentRepository.getAll();
+			ArrayList<ApartmentComment> retVal = new ArrayList<ApartmentComment>();
+
+			if(allComments != null){
+				if(!allComments.isEmpty()){
+					for(ApartmentComment temp : allComments){
+						if(temp.getUnit().getId().equals(unit.getId())){
+							retVal.add(temp);
+						}
+					}
+				}
+			}
+
+			return retVal;
 		}
 }

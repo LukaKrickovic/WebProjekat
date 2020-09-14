@@ -1,11 +1,18 @@
 Vue.component("units",{ 
     data: function(){
         return {
-
+            user: null,
+            displayName: "",
+            activateTheBurger: false,
+            hideFromGuest: false,
+            empty: true,
+            units: []
         }
     },
     
-    template: `        <header class="headerUnit">
+    template: `        
+    <div>
+    <header class="headerUnit">
     <div class="container" id="container">
         <nav class="nav">
             <a href="index.html" class="logo">
@@ -58,23 +65,112 @@ Vue.component("units",{
             <a href="#" class="btn btn-gradient btnUnit">&#10010; Add unit </a>
         </h5>
         
-        <ul>
-            <li v-for="item in units">
-                <div class="grid rooms-grid">
-                    <div class="grid-item featured-rooms">
-                        <div class="image-wrap image-wrapUnit">
-                            <img src="./images/room_1.jpg" alt="" class="room-image">
-                            <h5 class="room-name">Astro Hotel</h5>
-                        </div>
-                        <div class="room-info-wrap">
-                            <a href="#" class="btn rooms-btnUnit">Edit &#9998;</a><br>
-                            <a href="#" class="btn rooms-btnUnit">Delete &#10006;</a><br>
-                            <a href="#" class="btn rooms-btnUnit">show more </a><br>
+        <div v-if="empty === false">
+            <ul>
+                <li v-for="item in units">
+                    <div class="grid rooms-grid">
+                        <div class="grid-item featured-rooms">
+                            <div class="image-wrap image-wrapUnit">
+                                <img src="./images/room_1.jpg" alt="" class="room-image">
+                                <h5 class="room-name">{{item.name}}</h5>
+                            </div>
+                            <div class="room-info-wrap">
+                                <button class="btn rooms-btnUnit">Edit &#9998;</button><br>
+                                <router-link to="/units"
+                                    <button v-on:click="deleteUnit(item)" class="btn rooms-btnUnit">Delete &#10006;</button><br>
+                                </router-link>
+                                <a href="#" class="btn rooms-btnUnit">show more </a><br>
+                            </div>
                         </div>
                     </div>
-            </li>
-        </ul>
+                </li>
+            </ul>
+        </div>
 
     </div>
-</section>`
-})
+    </section>
+    </div>`,
+    mounted(){
+        var jwt = window.localStorage.getItem('jwt');
+        if(jwt){
+            axios
+            .get('/rest/getLoggedInUser', { params:
+                { 
+                    Auth: 'Sender ' + jwt
+                }
+            })
+            .then(res => {
+                    this.user = res.data;
+                    if(this.user !== null){
+                        this.displayName = this.user.name;
+                        if(this.user.role.localeCompare('GUEST') === 0){
+                            this.hideFromGuest = true;
+                        }
+                    }
+                    alert(this.user);
+                });
+        }
+
+        axios
+            .get('/rest/get-units-for-host', { params: 
+                {
+                    Auth: 'Sender ' + jwt
+                }
+            })
+            .then(res => {
+                this.units = res.data;
+
+                if(this.units !== null){
+                    if(this.units.length > 0){
+                        this.empty = false;
+                    }
+                }
+
+                this.units = res.data;
+                alert(this.units.length);
+            });
+        
+    },
+    methods: {
+        burgerActive : function(){
+                
+        },
+
+        deleteUnit: function(item){
+            axios
+                .delete('/rest/delete-unit', { params:
+                    {
+                        unit: item,
+                        user: this.user
+                    }
+                })
+                .then(res => {
+                    alert(res);
+                    if(res.data === true){
+                        alert("Unit deleted successfully!");
+                    } else {
+                        alert("Failed to delete unit!");
+                    }
+                });
+        },
+
+        logout : function(){
+            alert("LOGOUT");
+            var jwt = window.localStorage.getItem('jwt');
+            alert(jwt);
+            if(jwt){
+                window.localStorage.removeItem('jwt');
+                axios
+                .get('/rest/logout', { params: {
+                    Auth: 'Sender: ' + jwt
+                }})
+                .then(res => {
+                    if(res.data === true){
+                        alert("Successfully logged out");
+                        window.location.reload();
+                    }
+                });
+            }
+        },
+    }
+});

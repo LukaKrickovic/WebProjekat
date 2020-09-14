@@ -55,7 +55,9 @@ public class ReservationRepository implements IRepository<Reservation, Id>{
 	private Iterable<Reservation> bindWithGuests(Iterable<Reservation> allReservations){
 		ArrayList<Reservation> retVal = new ArrayList<Reservation>();
 		for(Reservation temp : allReservations) {
-			temp.setGuest(guestRepository.getById(temp.getGuest().getId()));
+			if(temp.getGuest() != null) {
+				temp.setGuest(guestRepository.getById(temp.getGuest().getId()));
+			}
 			retVal.add(temp);
 		}
 		return retVal;

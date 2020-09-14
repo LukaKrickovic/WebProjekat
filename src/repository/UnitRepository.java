@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.gson.Gson;
 import converters.UnitConverter;
 import exceptions.IdWriteException;
 import model.*;
@@ -67,14 +68,26 @@ public class UnitRepository implements IRepository<Unit, Id>{
 	}
 
 	public Iterable<Unit> getAllUnbound() {
-		ArrayList<String> allUnitsString = (ArrayList)stream.readFromFile(unitFile);
+		//ArrayList<String> allUnitsString = (ArrayList)stream.readFromFile(unitFile);
+		String allUnitsString = stream.readFullFile(unitFile);
+		ArrayList<Unit> retVal= new ArrayList<Unit>();
 		ArrayList<Unit> allUnits= new ArrayList<Unit>();
-		for(String temp : allUnitsString) {
+		allUnits = unitConverter.ConvertFromJSON(allUnitsString);
+
+		/*for(String temp : allUnitsString) {
 			if(!unitConverter.ConvertFromJSON(temp).isDeleted()) {
 				allUnits.add(unitConverter.ConvertFromJSON(temp));
 			}
 		}
-		return allUnits;
+
+		 */
+
+		for(Unit temp : allUnits){
+			if(!temp.isDeleted()){
+				retVal.add(temp);
+			}
+		}
+		return retVal;
 	}
 	
 	@Override
@@ -99,6 +112,8 @@ public class UnitRepository implements IRepository<Unit, Id>{
 	@Override
 	public void update(Unit entity) {
 		ArrayList<Unit> allUnits= (ArrayList)getAll();
+		ArrayList<Unit> editedUnits= new ArrayList<Unit>();
+		/*
 		StringBuilder backup = new StringBuilder();
 		for(Unit temp : allUnits) {
 			if(!temp.getId().equals(entity.getId())) {
@@ -108,13 +123,24 @@ public class UnitRepository implements IRepository<Unit, Id>{
 				backup.append(unitConverter.ConvertToJSON(entity));
 				backup.append("\n");
 			}
-		}
+		}*/
 
+		for(Unit temp : allUnits){
+			if(temp.getId().equals(entity.getId())){
+				editedUnits.add(entity);
+			} else {
+				editedUnits.add(temp);
+			}
+		}
+		stream.blankOutFile(unitFile);
+		String toFlush = new Gson().toJson(editedUnits);
+		stream.writeToFile(toFlush, unitFile);
+/*
 		if(backup.length() > 0)
 			backup.deleteCharAt(backup.length()-1);
 		stream.blankOutFile(unitFile);
 		stream.writeToFile(backup.toString(), unitFile);
-		
+*/
 	}
 
 	@Override
@@ -222,4 +248,17 @@ public class UnitRepository implements IRepository<Unit, Id>{
 		return retVal;
 	}
 
+    public Iterable<Unit> getUnitsByHost(Host user) {
+		ArrayList<Unit> retVal = new ArrayList<Unit>();
+
+		if(getAllUnbound() != null) {
+			for (Unit temp : getAllUnbound()) {
+				if (temp.getHost().getId().equals(user.getId())) {
+					retVal.add(temp);
+				}
+			}
+		}
+
+		return retVal;
+    }
 }

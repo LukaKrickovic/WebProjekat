@@ -7,6 +7,7 @@ public class ApartmentComment extends Model{
 	private Unit unit;
 	private String text;
 	private double grade;
+	private boolean isApproved;
 
 	//	Constructors
 	
@@ -24,6 +25,7 @@ public class ApartmentComment extends Model{
 		this.unit = unit;
 		this.text = text;
 		this.grade = grade;
+		this.isApproved = false;
 	}
 	
 	public ApartmentComment(Id id, Guest guest, Unit unit, String text, double grade) {
@@ -32,6 +34,7 @@ public class ApartmentComment extends Model{
 		this.unit = unit;
 		this.text = text;
 		this.grade = grade;
+		this.isApproved = false;
 	}
 
 	//	Getters and Setters
@@ -67,5 +70,12 @@ public class ApartmentComment extends Model{
 	public void setGrade(double grade) {
 		this.grade = grade;
 	}
-	
+
+	public boolean isApproved() {
+		return isApproved;
+	}
+
+	public void setApproved(boolean approved) {
+		isApproved = approved;
+	}
 }

@@ -60,6 +60,23 @@ public class Stream{
 		}
 		return lines;
 	}
+
+	public String readFullFile(File file){
+		checkIfFileExists(file);
+		ArrayList<String> lines = new ArrayList<String>();
+		StringBuilder allLines = new StringBuilder();
+		try {
+			BufferedReader br = new BufferedReader(new FileReader(file.getAbsolutePath()));
+			String line;
+			while((line = br.readLine()) != null) {
+				allLines.append(line);
+			}
+			br.close();
+		} catch (Exception e) {
+			System.out.println("Could not read file!");
+		}
+		return allLines.toString();
+	}
 	
 	private void checkIfFileExists(File file) {
 		if(!file.exists())

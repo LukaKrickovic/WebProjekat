@@ -98,12 +98,34 @@ public class SparkController {
         unitRepository.create(unit1);
 
          */
+        Host hostLuka = new Host(new HostSequencer().next(hostRepository.findHighestId()), "lukakrickovic", "Host1234!", "Luka", "Krickovic", Gender.MALE);
+        Location location = new Location("44.000", "55.000", new Address("Tolstojeva", "15", "Novi Sad", "21000", "Srbija"));
+        Unit unit1 = new Unit(new UnitSequencer().next(unitRepository.findHighestId()), "gajba", RoomType.APARTMENT, 5, 5, location, hostLuka, 40, LocalTime.of(14, 0), LocalTime.of(15,0),
+                Status.ACTIVE);
+
+        //hostRepository.create(hostLuka);
+        //unitRepository.create(unit1);
         /*
         get("/home", (req, res) -> {
             return index.html;
         });*/
 
+        delete("/rest/delete-unit", (req, res) -> {
+            res.type("application/json");
+            Unit unit = gson.fromJson(req.queryParams("unit"), Unit.class);
+            User user = gson.fromJson(req.queryParams("user"), User.class);
+            unitService.delete(unit, user);
+            return true;
+        });
 
+        get("/rest/get-units-for-host", (req, res) -> {
+            String username = getUser(req.queryParams("Auth"));
+            User user = userService.getByUsername(username);
+            res.type("application/json");
+
+            System.out.println(((ArrayList<Unit>)unitService.getUnitsByHost((Host) user)).size());
+            return gson.toJson(unitService.getUnitsByHost((Host) user));
+        });
 
         get("/book-form", (req, res) -> {
             Session ss = req.session(true);

@@ -7,6 +7,7 @@ import java.util.Collections;
 
 import enums.Roles;
 import enums.Status;
+import model.Host;
 import model.Id;
 import model.Unit;
 import model.User;
@@ -63,7 +64,7 @@ public class UnitService {
 	
 	
 	public void delete(Unit unit, User user) {
-		if(user.getRole().equals(Roles.ADMINISTRATOR))
+		if(user.getId().getPrefix().equalsIgnoreCase("A"))
 			unitRepository.delete(unit);
 		else if(unit.getHost().getId().equals(user.getId())) {
 			unitRepository.delete(unit);
@@ -198,6 +199,10 @@ public class UnitService {
 
 	private Iterable<Unit> getUnitByName(String name){
 		return unitRepository.getUnitByName(name);
+	}
+
+	public Iterable<Unit> getUnitsByHost(Host user){
+		return unitRepository.getUnitsByHost(user);
 	}
 	
 }
