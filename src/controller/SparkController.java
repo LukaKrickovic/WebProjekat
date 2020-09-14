@@ -103,8 +103,8 @@ public class SparkController {
         Unit unit1 = new Unit(new UnitSequencer().next(unitRepository.findHighestId()), "gajba", RoomType.APARTMENT, 5, 5, location, hostLuka, 40, LocalTime.of(14, 0), LocalTime.of(15,0),
                 Status.ACTIVE);
 
-        //hostRepository.create(hostLuka);
-        //unitRepository.create(unit1);
+        hostRepository.create(hostLuka);
+        unitRepository.create(unit1);
         /*
         get("/home", (req, res) -> {
             return index.html;

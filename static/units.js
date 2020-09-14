@@ -6,7 +6,21 @@ Vue.component("units",{
             activateTheBurger: false,
             hideFromGuest: false,
             empty: true,
-            units: []
+            units: [],
+            editDialogOpen: false,
+            selectedUnitForEditing: null,
+            roomType: "",
+	        numOfRooms: "",
+	        numOfGuests: "",
+	        location: "",
+	        host: "",
+	        pricePerNight: "",
+	        checkinTime: "",
+	        checkoutTime: "",
+	        status: "",
+	        amenities: [],
+	        imageSources: [],
+	        name: ""
         }
     },
     
@@ -65,6 +79,25 @@ Vue.component("units",{
             <a href="#" class="btn btn-gradient btnUnit">&#10010; Add unit </a>
         </h5>
         
+        <div id="editModalDialog" class="modal-booking" v-if="editDialogOpen === true">
+
+            <!-- Modal content -->
+            <div class="modal-booking-content">
+            <button class="close-x" v-on:click="closeEditingDialog">   
+                <span class="close-booking">&times;</span>
+            </button>
+            <h2 class="modal-headers">Please confirm your details!</h2>
+            <h4 class="modal-headers">Editing -> {{selectedUnitForEditing.name}}</h4>
+            <input type="text" name="name" placeholder="Name" v-model="name">
+            <input type="text" name="roomType" placeholder="RoomType" v-model="roomType">
+            <input type="number" name="numOfRooms" placeholder="NumOfRooms" v-model="numOfRooms">
+            <input type="number" name="numOfGuests" placeholder="NumOfGuests" v-model="numOfGuests">
+            <input type="number" name="pricePerNight" placeholder="PricePerNight" v-model="pricePerNight">
+            <button v-on:click="editUnit">Confirm</button>
+            </div>
+
+        </div>
+
         <div v-if="empty === false">
             <ul>
                 <li v-for="item in units">
@@ -75,7 +108,7 @@ Vue.component("units",{
                                 <h5 class="room-name">{{item.name}}</h5>
                             </div>
                             <div class="room-info-wrap">
-                                <button class="btn rooms-btnUnit">Edit &#9998;</button><br>
+                                <button v-on:click="openEditingDialog(item)" class="btn rooms-btnUnit">Edit &#9998;</button><br>
                                 <router-link to="/units"
                                     <button v-on:click="deleteUnit(item)" class="btn rooms-btnUnit">Delete &#10006;</button><br>
                                 </router-link>
@@ -90,6 +123,7 @@ Vue.component("units",{
     </div>
     </section>
     </div>`,
+
     mounted(){
         var jwt = window.localStorage.getItem('jwt');
         if(jwt){
@@ -134,6 +168,51 @@ Vue.component("units",{
     methods: {
         burgerActive : function(){
                 
+        },
+
+        editUnit: function(){
+            axios
+            .post('/rest/edit-unit', {}, { params: {
+                roomType: this.roomType,
+                numOfRooms: this.numOfRooms,
+                numOfGuests: this.numOfGuests,
+                pricePerNight: this.selectedUnitForEditing.pricePerNight,
+                status: this.status,
+                amenities: [],
+                imageSources: [],
+                name: this.name,
+                
+                
+                user: this.user,
+                unit: this.selectedUnitForEditing
+            } })
+            .then(res => {
+                if(res.data === true){
+                    alert("Editing for " + this.selectedUnitForEditing.name + " was successful!");
+                    window.location.replace('index.html');
+                } else {
+                    alert("Failed to edit " + this.selectedUnitForEditing.name + "!");
+                }
+            });
+        },
+
+        openEditingDialog: function(unit){
+            if(window.localStorage.getItem('jwt')){
+                this.editDialogOpen = true;
+                this.selectedUnitForEditingt = unit;
+                this.roomType = this.unit.roomType;
+                this.numOfRooms = this.unit.numOfRooms;
+                this.numOfGuests = this.unit.numOfGuests;
+                this.pricePerNight = this.unit.pricePerNight;
+                this.status = this.unit.status;
+                this.amenities = this.unit.amenities;
+                this.imageSources = this.unit.imageSources;
+                this.name = this.unit.name;
+            }
+        },
+
+        closeEditingDialog: function(){
+            this.editDialogOpen = false;
         },
 
         deleteUnit: function(item){
