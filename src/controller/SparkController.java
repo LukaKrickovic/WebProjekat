@@ -145,8 +145,8 @@ public class SparkController {
         //unitRepository.create(unit1);
 
 
-        //hostRepository.create(hostLuka);
-        //unitRepository.create(unit1);
+        hostRepository.create(hostLuka);
+        unitRepository.create(unit1);
         /*
         get("/home", (req, res) -> {
             return index.html;
