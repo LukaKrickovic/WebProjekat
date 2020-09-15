@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import converters.ReservationConverter;
+import enums.ReservationStatus;
 import exceptions.IdWriteException;
 import model.*;
 import sequencers.ReservationSequencer;
@@ -186,6 +187,8 @@ public class ReservationRepository implements IRepository<Reservation, Id>{
 	}
 
 	private boolean overlapping(Reservation reservation, LocalDate startDate, LocalDate endDate) {
+		if(reservation.getReservationStatus().equals(ReservationStatus.CANCELLED))
+			return false;
 		if(reservation.getStartDate().isEqual(startDate) && (reservation.getEndDate().isEqual(endDate)))
 			return true;
 		else if(reservation.getStartDate().isAfter(startDate) && reservation.getEndDate().isBefore(endDate))
@@ -267,4 +270,17 @@ public class ReservationRepository implements IRepository<Reservation, Id>{
 		return highestId;
 	}
 
+    public Iterable<Reservation> getReservationsByUser(User guest) {
+		List<Reservation> retVal = new ArrayList<Reservation>();
+		for(Reservation temp : getAll()){
+			if(temp.getUser() != null) {
+				if (temp.getUser().getId().equals(guest.getId()))
+					retVal.add(temp);
+			}else if(temp.getGuest() != null) {
+				if (temp.getGuest().getId().equals(guest.getId()))
+					retVal.add(temp);
+			}
+		}
+		return retVal;
+    }
 }

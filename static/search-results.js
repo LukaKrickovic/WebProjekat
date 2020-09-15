@@ -1,4 +1,7 @@
 Vue.component("search",{ 
+    components: {
+        VueGallerySlideshow
+      },
     data: function(){
         return {
 		user: null,
@@ -21,9 +24,13 @@ Vue.component("search",{
         adultCountParam: "",
         childrenCountParam: "",
         bookingMessage: "",
+        displayImages: [],
+        index: null,
+        imagesDialogOpen: false,
         searchResults: []
         }
     },
+    
     template: `
     <div id="result-container">
         <header class="header">
@@ -102,6 +109,24 @@ Vue.component("search",{
 
                         </div>
 
+                        <div id="imagesModalDialog" class="modal-booking" v-if="imagesDialogOpen === true">
+
+                        <!-- Modal content -->
+                        <div class="modal-booking-content">
+                        <button class="close-x" v-on:click="closeImagesDialog">   
+                            <span class="close-booking">&times;</span>
+                        </button>
+                        <h2 class="modal-headers">Images for {{selectedUnit.name}}</h2>
+                        
+                        <img v-for="(image, i) in displayImages" :src="image" :key="i" @click="index = i">
+                        <vue-gallery-slideshow :images="displayImages" :index="index" @close="index = null"></vue-gallery-slideshow>
+                        </div>
+
+                        </div>
+
+
+                        <img v-bind:src="item.imageSources[0]" width="200px" v-if="item.imageSources !== null"></img>
+                        <br>
                         <span class="roomType">{{item.roomType}}</span><br>
                         <span class="roomName">{{item.name}}</span><br>
                         <span class="roomGuests"><em>{{item.numOfGuests}}</em> guests - <em>{{item.numOfRooms}}</em> rooms</span><br>
@@ -115,6 +140,8 @@ Vue.component("search",{
                             </ul>
                             <br>
                             <button class="additional-info-button" v-on:click="makeBooking(item)">Book now!</button>
+                            <br>
+                            <button class="additional-info-button" v-on:click="showImages(item)">Show images</button>
                             <br>
                             <button class="additional-info-button" v-on:click="hide">Hide</button>
                             <br>
@@ -206,7 +233,41 @@ Vue.component("search",{
 
     methods: {
 
+        /*showImages: function(item){
+            if(item.imageSources !== null){
+                if(item.imageSources.length > 0){
+                    for(img in item.imageSources){
+                        axios
+                            .get('/rest/get-image', { params:{
+                                imgPath = img
+                            } })
+                            .then(res => {
+                                if(res.data != null){
+                                    this.displayImages.push(res.data);
+                                }
+                            })  
+                    }
+            }
+        }
+        },*/
+
+        showImages: function(item){
+            if(item.imageSources !== null){
+                if(item.imageSources.length > 0){
+                    this.selectedUnit = item;
+                    this.displayImages = item.imageSources;
+                    this.imagesDialogOpen = true;
+                }
+            }
+        },
+
+        closeImagesDialog: function(){
+            this.imagesDialogOpen = false;
+            this.displayImages = [];
+        },
+
         confirmBooking: function(){
+            if(this.user !== null){
             axios
             .post('/rest/make-reservation', {}, { params: {
                 user: this.user,
@@ -224,6 +285,10 @@ Vue.component("search",{
                     alert("Failed to book " + this.selectedUnit.name + "!");
                 }
             });
+        }
+        else {
+            alert("Please log in first!");
+        }
             
         } ,
 

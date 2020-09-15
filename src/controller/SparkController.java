@@ -1,6 +1,7 @@
 package controller;
 
 import com.google.gson.Gson;
+import com.sun.xml.internal.ws.policy.privateutil.PolicyUtils;
 import enums.*;
 import exceptions.BadRequestException;
 import io.jsonwebtoken.Claims;
@@ -9,11 +10,9 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import model.*;
+import org.apache.commons.io.FilenameUtils;
 import repository.*;
-import sequencers.GuestSequencer;
-import sequencers.HostSequencer;
-import sequencers.ReservationSequencer;
-import sequencers.UnitSequencer;
+import sequencers.*;
 import services.ApartmentCommentService;
 import services.ReservationService;
 import services.UnitService;
@@ -24,7 +23,13 @@ import stream.Stream;
 import util.UnitSearchCriteria;
 import ws.WsHandler;
 
+import javax.imageio.ImageIO;
+import javax.servlet.http.HttpServletResponse;
+import java.awt.image.RenderedImage;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.security.Key;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -52,8 +57,9 @@ public class SparkController {
         AdministratorRepository administratorRepository = new AdministratorRepository(stream);
         GuestRepository guestRepository = new GuestRepository(stream);
         HostRepository hostRepository = new HostRepository(stream);
-        ApartmentCommentRepository apartmentCommentRepository = new ApartmentCommentRepository(stream, guestRepository);
+
         UnitRepository unitRepository = new UnitRepository(stream, hostRepository);
+        ApartmentCommentRepository apartmentCommentRepository = new ApartmentCommentRepository(stream, guestRepository, hostRepository, administratorRepository, unitRepository);
         ReservationRepository reservationRepository = new ReservationRepository(stream, unitRepository, guestRepository, hostRepository, administratorRepository);
 
         //  Services
@@ -97,11 +103,47 @@ public class SparkController {
         unit1.setAmenities(amenities);
         unitRepository.create(unit1);
 
+
+
          */
         Host hostLuka = new Host(new HostSequencer().next(hostRepository.findHighestId()), "lukakrickovic", "Host1234!", "Luka", "Krickovic", Gender.MALE);
         Location location = new Location("44.000", "55.000", new Address("Tolstojeva", "15", "Novi Sad", "21000", "Srbija"));
         Unit unit1 = new Unit(new UnitSequencer().next(unitRepository.findHighestId()), "gajba", RoomType.APARTMENT, 5, 5, location, hostLuka, 40, LocalTime.of(14, 0), LocalTime.of(15,0),
                 Status.ACTIVE);
+        Amenity am1 = new Amenity("Air conditioning", true);
+        Amenity am2 = new Amenity("Free parking on site", true);
+        Amenity am3 = new Amenity("Swimming pool", true);
+        Amenity am4 = new Amenity("Sauna", true);
+
+        ArrayList<Amenity> amenities = new ArrayList<Amenity>();
+        amenities.add(am1);
+        amenities.add(am2);
+        amenities.add(am3);
+        amenities.add(am4);
+
+        unit1.setAmenities(amenities);
+
+        List<String> images = new ArrayList<String>();
+        images.add("data/images/UN1/room_1.jpg");
+        images.add("data/images/UN1/room_2.jpg");
+        images.add("data/images/UN1/room_3.jpg");
+        images.add("data/images/UN1/room_4.jpg");
+        images.add("data/images/UN1/room_5.jpg");
+        images.add("data/images/UN1/room_6.jpg");
+        images.add("data/images/UN1/room_7.jpg");
+        images.add("data/images/UN1/room_8.jpg");
+        images.add("data/images/UN1/room_9.jpg");
+        images.add("data/images/UN1/room_10.jpg");
+
+        unit1.setImageSources(images);
+
+        ApartmentComment ac1 = new ApartmentComment(new ApartmentCommentSequencer().next(apartmentCommentRepository.findHighestId()), hostLuka, unit1, "Bilo super", 5);
+        ApartmentComment ac2 = new ApartmentComment(new ApartmentCommentSequencer().next(apartmentCommentRepository.findHighestId()), hostLuka, unit1, "Bilo super realno", 5);
+
+        //apartmentCommentRepository.create(ac1);
+        //apartmentCommentRepository.create(ac2);
+        //unitRepository.create(unit1);
+
 
         //hostRepository.create(hostLuka);
         //unitRepository.create(unit1);
@@ -118,6 +160,73 @@ public class SparkController {
             return true;
         });
 
+        delete("/rest/cancel-reservation", (req, res) -> {
+            res.type("application/json");
+            Reservation reservation = gson.fromJson(req.queryParams("reservation"), Reservation.class);
+            User user = gson.fromJson(req.queryParams("user"), User.class);
+            reservation.setReservationStatus(ReservationStatus.CANCELLED);
+            reservationService.update(reservation);
+            return true;
+        });
+
+        get("/rest/get-comments-for-apartment-guest", (req, res)->{
+            res.type("application/json");
+            Unit unit = gson.fromJson(req.queryParams("unit"), Unit.class);
+            return gson.toJson(apartmentCommentService.getAllApprovedCommentsByUnit(unit));
+        });
+        get("/rest/get-comments-for-apartment-host", (req, res)->{
+            //System.out.println(gson.fromJson(req.queryParams("unit"), Unit.class).getName());
+            res.type("application/json");
+            Unit unit = gson.fromJson(req.queryParams("unit"), Unit.class);
+            User user = gson.fromJson(req.queryParams("user"), User.class);
+            System.out.println(unit.getId());
+            if(user != null) {
+                if (user.getRole().equals(Roles.HOST)) {
+                    if (user.getId().equals(unit.getHost().getId())) {
+                        ArrayList<ApartmentComment> comms = (ArrayList<ApartmentComment>)apartmentCommentService.getAllApartmentCommentsByUnit(unit);
+                        return gson.toJson(comms);
+                    }
+                }
+            }
+            return gson.toJson(apartmentCommentService.getAllApprovedCommentsByUnit(unit));
+        });
+
+        post("/rest/approve-comment", (req, res)->{
+            User user = gson.fromJson(req.queryParams("user"), User.class);
+            ApartmentComment comment = gson.fromJson(req.queryParams("aptComment"), ApartmentComment.class);
+
+            return apartmentCommentService.approveComment(comment, user);
+        });
+
+        get("/rest/get-comments-for-host", (req, res)->{
+            User user = gson.fromJson(req.queryParams("user"), User.class);
+            Unit unit = gson.fromJson(req.queryParams("unit"), Unit.class);
+
+            if(user.getId().equals(unit.getHost().getId()))
+                return gson.toJson(apartmentCommentService.getAllApartmentCommentsByUnit(unit));
+            else{
+                res.status(403);
+                return gson.toJson(new ArrayList<ApartmentComment>());
+            }
+        });
+
+        post("/rest/post-comment", (req, res)->{
+            User user = gson.fromJson(req.queryParams("user"), User.class);
+            Unit unit = gson.fromJson(req.queryParams("unit"), Unit.class);
+
+            String grade = req.queryParams("grade");
+            String comment = req.queryParams("comment");
+            ApartmentComment ac = new ApartmentComment(new ApartmentCommentSequencer().next(apartmentCommentRepository.findHighestId()), user, unit, comment, Double.parseDouble(grade));
+
+            if(user.getRole().equals(Roles.ADMINISTRATOR))
+                ac.setApproved(true);
+            else if(user.getId().equals(unit.getHost().getId()))
+                ac.setApproved(true);
+
+            apartmentCommentService.leaveComment(ac, user);
+            return true;
+        });
+
         get("/rest/get-units-for-host", (req, res) -> {
             String username = getUser(req.queryParams("Auth"));
             User user = userService.getByUsername(username);
@@ -127,43 +236,51 @@ public class SparkController {
             return gson.toJson(unitService.getUnitsByHost((Host) user));
         });
 
-        get("/book-form", (req, res) -> {
-            Session ss = req.session(true);
-            List<Unit> results = (ArrayList<Unit>) ss.attribute("searchResults");
 
-            if(results == null) {
-                System.out.println(req.queryParams("checkIn"));
-                System.out.println(req.queryParams("checkOut"));
-                System.out.println(req.queryParams("children"));
-                System.out.println(req.queryParams("adults"));
 
-                LocalDate checkIn = LocalDate.parse(req.queryParams("checkIn"));
-                LocalDate checkOut = LocalDate.parse(req.queryParams("checkOut"));
+        get("/rest/get-image", (req, res) ->{
 
-                if(checkIn.isAfter(checkOut))
-                    return gson.toJson("failed");
+            String temp = req.queryParams("imgPath");
+                File file = new File(temp);
+                RenderedImage rI = ImageIO.read(file);
+                String ext = FilenameUtils.getExtension(temp);
+                if(ext.equalsIgnoreCase("jpg"))
+                    res.type("image/jpeg");
+                else
+                    res.type("image/"+ext);
+                /*try {
+                    OutputStream out = res.raw().getOutputStream();
+                    String ext = FilenameUtils.getExtension(temp);
+                    ImageIO.write(rI, ext, out);
+                    HttpServletResponse raw = res.raw();
+                    res.header("Content-Disposition", "attachment; filename=image."+ext);
+                    //raw.getOutputStream().write(getData(image));
+                    raw.getOutputStream().flush();
+                    raw.getOutputStream().close();
+                    return raw;
 
-                if(checkIn.isBefore(LocalDate.now()))
-                    return gson.toJson("failed");
+                } catch (IOException ex) {
+                    halt();
 
-                if(checkOut.isBefore(LocalDate.now()))
-                    return gson.toJson("failed");
+                }*/
+                byte[] rawImage = null;
+                try(ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
+                    ImageIO.write( rI, ext, baos );
 
-                String city = "";
-                String country = "";
-                String[] returns = processLocationParameter(req, city, country);
-                city = returns[0];
-                country = returns[1];
-                System.out.println(city + " " + country);
-                UnitSearchCriteria usc = new UnitSearchCriteria(req.queryParams("checkIn"), req.queryParams("checkOut"), city, country,
-                        "", "", "", "", processPeopleCountParameter(req.queryParams("children"), req.queryParams("adults")));
-                results = (ArrayList<Unit>) unitService.searchByCriteria(usc);
-                ss.attribute("searchResults", results);
-                //res.redirect("/search-results.html");
-                return gson.toJson("ok");
-            }
+                    baos.flush();
+                    rawImage = baos.toByteArray();
+                }
 
-            return gson.toJson("failed");
+                return rawImage;
+
+        });
+
+        get("/rest/get-bookings-for-user", (req, res)->{
+            res.type("application/json");
+            String username = getUser(req.queryParams("Auth"));
+            User user = userService.getByUsername(username);
+
+            return gson.toJson(reservationService.getAllReservationsOfUser(user));
         });
 
         get("rest/search-units", (req, res) -> {
@@ -203,73 +320,7 @@ public class SparkController {
 
         });
 
-        get("rest/search-units/:destination:checkIn:checkOut:adultCount:childrenCount", (req, res) -> {
-            List<Unit> results = new ArrayList<Unit>();
 
-            System.out.println(req.params("checkIn"));
-            System.out.println(req.params("checkOut"));
-            System.out.println(req.params("children"));
-            System.out.println(req.params("adults"));
-
-            LocalDate checkIn = LocalDate.parse(req.queryParams("checkIn"));
-            LocalDate checkOut = LocalDate.parse(req.queryParams("checkOut"));
-
-            if(checkIn.isAfter(checkOut))
-                return gson.toJson("failed");
-
-            if(checkIn.isBefore(LocalDate.now()))
-                return gson.toJson("failed");
-
-            if(checkOut.isBefore(LocalDate.now()))
-                return gson.toJson("failed");
-
-            String city = "";
-            String country = "";
-            String[] returns = processLocationParameter(req, city, country);
-            city = returns[0];
-            country = returns[1];
-            System.out.println(city + " " + country);
-            UnitSearchCriteria usc = new UnitSearchCriteria(req.queryParams("checkIn"), req.queryParams("checkOut"), city, country,
-                    "", "", "", "", processPeopleCountParameter(req.queryParams("children"), req.queryParams("adults")));
-            results = (ArrayList<Unit>) unitService.searchByCriteria(usc);
-
-            if(results == null)
-                return new ArrayList<Unit>();
-            //res.redirect("/search-results.html");
-            return gson.toJson(results);
-
-        });
-
-
-        get("/do-results-exist", (req, res) -> {
-            Session ss = req.session(true);
-            List<Unit> results = (ArrayList<Unit>) ss.attribute("searchResults");
-
-            if(results == null)
-                return "noresults";
-            if(results.isEmpty())
-                return "noresults";
-            return "ok";
-        });
-
-        get("/read-form-results", (req, res) -> {
-            Session ss = req.session(true);
-            List<Unit> results = (ArrayList<Unit>) ss.attribute("searchResults");
-
-            if(results == null){
-                return new ArrayList<Unit>();
-            }
-
-            if(results.size() > 0) {
-                for (Unit temp : results) {
-                    System.out.println(temp.getId());
-                }
-            }
-
-            ss.attribute("searchResults", null);
-            ss.removeAttribute("searchResults");
-            return gson.toJson(results);
-        });
 
         get("/rest/getLoggedInUser", (req, res)->{
             String username = getUser(req.queryParams("Auth"));

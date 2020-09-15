@@ -17,12 +17,18 @@ public class ApartmentCommentRepository implements IRepository<ApartmentComment,
 	private String apartmentCommentFilePath = "data/ApartmentComments.dat";
 	private File apartmentCommentFile;
 	private GuestRepository guestRepository;
-	
-	public ApartmentCommentRepository(Stream stream, GuestRepository guestRepository) {
+	private HostRepository hostRepository;
+	private AdministratorRepository administratorRepository;
+	private UnitRepository unitRepository;
+
+	public ApartmentCommentRepository(Stream stream, GuestRepository guestRepository, HostRepository hostRepository, AdministratorRepository administratorRepository, UnitRepository unitRepository) {
 		this.stream = stream;
 		apartmentCommentConverter = new ApartmentCommentConverter();
 		apartmentCommentFile = new File(apartmentCommentFilePath);
 		this.guestRepository = guestRepository;
+		this.hostRepository = hostRepository;
+		this.administratorRepository = administratorRepository;
+		this.unitRepository = unitRepository;
 
 	}
 	
@@ -31,8 +37,18 @@ public class ApartmentCommentRepository implements IRepository<ApartmentComment,
 	private Iterable<ApartmentComment> bindWithGuest(Iterable<ApartmentComment> allComments){
 		ArrayList<ApartmentComment> retVal = new ArrayList<ApartmentComment>();
 		for(ApartmentComment temp : allComments) {
-			temp.setGuest(guestRepository.getById(temp.getGuest().getId()));
-			retVal.add(temp);
+			if(temp.getGuest() != null) {
+				temp.setGuest(guestRepository.getById(temp.getGuest().getId()));
+				retVal.add(temp);
+			} else if(temp.getUser() != null){
+				if(temp.getUser().getId().getPrefix().equalsIgnoreCase("H")){
+					temp.setUser(hostRepository.getById(temp.getUser().getId()));
+					retVal.add(temp);
+				} else if(temp.getUser().getId().getPrefix().equalsIgnoreCase("A")){
+					temp.setUser(administratorRepository.getById(temp.getUser().getId()));
+					retVal.add(temp);
+				}
+			}
 		}
 		return retVal;
 	}
@@ -96,7 +112,17 @@ public class ApartmentCommentRepository implements IRepository<ApartmentComment,
 	public Iterable<ApartmentComment> getAll() {
 		ArrayList<ApartmentComment> allComments = (ArrayList)getAllUnbound();
 		allComments = (ArrayList) bindWithGuest(allComments);
+		allComments = (ArrayList) bindWithUnit(allComments);
 		return allComments;
+	}
+
+	private Iterable<ApartmentComment> bindWithUnit(ArrayList<ApartmentComment> allComments) {
+		ArrayList<ApartmentComment> retVal = new ArrayList<ApartmentComment>();
+		for(ApartmentComment temp : allComments){
+			temp.setUnit(unitRepository.getById(temp.getUnit().getId()));
+			retVal.add(temp);
+		}
+		return retVal;
 	}
 
 	public Iterable<ApartmentComment> getAllUnbound() {

@@ -31,10 +31,7 @@ public class UnitRepository implements IRepository<Unit, Id>{
 	private Iterable<Unit> bindWithHost(Iterable<Unit> allUnits){
 		ArrayList<Unit> retVal = new ArrayList<Unit>();
 		for(Unit temp : allUnits) {
-			Host tempHost = temp.getHost();
-			Id tempId = tempHost.getId();
-			tempHost = hostRepository.getById(tempId);
-			temp.setHost(tempHost);
+			temp.setHost(hostRepository.getById(temp.getHost().getId()));
 			retVal.add(temp);
 		}
 		return retVal;
@@ -82,11 +79,14 @@ public class UnitRepository implements IRepository<Unit, Id>{
 
 		 */
 
-		for(Unit temp : allUnits){
-			if(!temp.isDeleted()){
-				retVal.add(temp);
+		if(allUnits != null) {
+			for (Unit temp : allUnits) {
+				if (!temp.isDeleted()) {
+					retVal.add(temp);
+				}
 			}
 		}
+
 		return retVal;
 	}
 	
@@ -224,6 +224,9 @@ public class UnitRepository implements IRepository<Unit, Id>{
 	@Override
 	public Id findHighestId() {
 		ArrayList<Unit> allUnits = (ArrayList<Unit>) getAll();
+		if(allUnits == null){
+			return new UnitSequencer().initialize();
+		}
 		if(allUnits.isEmpty())
 			return new UnitSequencer().initialize();
 		Id highestId = allUnits.get(0).getId();
@@ -251,8 +254,8 @@ public class UnitRepository implements IRepository<Unit, Id>{
     public Iterable<Unit> getUnitsByHost(Host user) {
 		ArrayList<Unit> retVal = new ArrayList<Unit>();
 
-		if(getAllUnbound() != null) {
-			for (Unit temp : getAllUnbound()) {
+		if(getAll() != null) {
+			for (Unit temp : getAll()) {
 				if (temp.getHost().getId().equals(user.getId())) {
 					retVal.add(temp);
 				}

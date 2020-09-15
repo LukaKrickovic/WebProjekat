@@ -35,6 +35,23 @@ public class ApartmentCommentService {
 						}
 					}
 				}
+			} else if(user.getRole().equals(Roles.HOST)){
+				if(apartmentComment.getUnit().getHost().getId().equals(user.getId())){
+					apartmentCommentRepository.create(apartmentComment);
+				} else{
+					if(apartmentComment.getUser().getId().equals(user.getId())) {
+
+						List<Reservation> reservations = (ArrayList<Reservation>)reservationRepository.getReservationsByUser(apartmentComment.getUser());
+
+						for(Reservation res : reservations) {
+							if((res.getReservationStatus().equals(ReservationStatus.DECLINED)) || (res.getReservationStatus().equals(ReservationStatus.COMPLETED))) {
+								apartmentCommentRepository.create(apartmentComment);
+							}
+						}
+					}
+				}
+			} else if(user.getRole().equals(Roles.ADMINISTRATOR)){
+				apartmentCommentRepository.create(apartmentComment);
 			}
 		}
 		
@@ -75,5 +92,14 @@ public class ApartmentCommentService {
 			}
 
 			return retVal;
+		}
+
+		public boolean approveComment(ApartmentComment comment, User user){
+			if(user.getId().equals(comment.getUnit().getHost().getId())){
+				comment.setApproved(true);
+				apartmentCommentRepository.update(comment);
+				return true;
+			}
+			return false;
 		}
 }

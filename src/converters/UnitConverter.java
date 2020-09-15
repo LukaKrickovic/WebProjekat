@@ -30,7 +30,13 @@ public class UnitConverter {
 
 	public ArrayList<Unit> ConvertFromJSON(String JSON) {
 		Type listType = new TypeToken<ArrayList<Unit>>(){}.getType();
-		return (new Gson().fromJson(JSON, listType));
+		if(JSON.charAt(0) == '[')
+			return (new Gson().fromJson(JSON, listType));
+		else {
+			ArrayList<Unit> retVal = new ArrayList<Unit>();
+			retVal.add(new Gson().fromJson(JSON, Unit.class));
+			return retVal;
+		}
 	}
 
 }

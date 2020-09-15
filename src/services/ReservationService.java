@@ -52,6 +52,10 @@ public class ReservationService {
 	public Iterable<Reservation> getAllReservationsOfGuest(Guest guest) {
 		return reservationRepository.getReservationsByGuest(guest);
 	}
+
+	public Iterable<Reservation> getAllReservationsOfUser(User guest) {
+		return reservationRepository.getReservationsByUser(guest);
+	}
 	
 	public void cancelReservationByGuest(Reservation reservation, User user) {
 		if(user.getRole().equals(Roles.GUEST)) {
@@ -134,5 +138,8 @@ public class ReservationService {
 		}
 	}
 
-	
+
+	public void update(Reservation reservation) {
+		reservationRepository.update(reservation);
+	}
 }

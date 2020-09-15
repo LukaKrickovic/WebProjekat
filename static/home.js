@@ -54,7 +54,7 @@ Vue.component("home",{
                         {{ displayName }}
                         <div class="user-dropdown-content">
                             <a href="#" class="dropdown-link">Edit your account information</a>
-                            <a href="#" class="dropdown-link">Upcoming bookings</a>
+                            <router-link to="/bookings" class="dropdown-link">Bookings</router-link>
                             <a href="#" class="dropdown-link" v-bind:class="{ hidden: hideFromGuest }">Search for users</a>
                             <a href="#" class="dropdown-link" v-bind:class="{ hidden: hideFromGuest }">Add a unit</a>
                             <a href="index.html" class="dropdown-link" v-on:click="logout">Logout</a>
@@ -66,32 +66,6 @@ Vue.component("home",{
     </header>
 
     <main>
-    <div id="upcomingBookingsModalDialog" class="modal-upcoming-booking" v-if="bookingDialogOpen === true">
-
-                        <!-- Modal content -->
-                        <div class="modal-booking-content">
-                        <button class="close-x" v-on:click="closeBookingDialog">   
-                            <span class="close-booking">&times;</span>
-                        </button>
-                        <div v-if="noBookings === false">
-                        <h2 class="modal-headers">These are your upcoming bookings!</h2>
-                        <h4 class="modal-headers">You can cancel any one of them by clicking the 'cancel' option.</h4>
-                        <ul>
-
-                            <li v-for="booking in upcomingBookings">
-                                <span>Unit: {{booking.unit.name}}, in {{booking.unit.location.address.city}}, {{booking.unit.location.address.country}}</span>
-                                <br>
-                                <span>Check in date: {{booking.startDate}}, check out date: {{booking.endDate}}.</span>
-                                <span>The unit is reserved for <em>{{booking.peopleCount}}</em> people.</span>
-                                <button v-on:click="cancel(booking)">Cancel</button>
-                            </li>
-                        </ul>
-                        </div>
-
-                        <h2 v-else>It seems like you still don't have any reservations with us, <br>feel free to look up your next travel destination!</h2>
-                        </div>
-
-                        </div>
         <div class="hero">
             <div class="container">
                 <div class="main-heading">

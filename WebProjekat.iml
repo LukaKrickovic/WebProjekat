@@ -243,5 +243,21 @@
         <SOURCES />
       </library>
     </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/commons-io-2.4.jar!/" />
+          <root url="jar://$MODULE_DIR$/lib/commons-io-2.8.0-tests.jar!/" />
+          <root url="jar://$MODULE_DIR$/lib/commons-io-2.8.0.jar!/" />
+        </CLASSES>
+        <JAVADOC>
+          <root url="jar://$MODULE_DIR$/lib/commons-io-2.8.0-javadoc.jar!/" />
+        </JAVADOC>
+        <SOURCES>
+          <root url="jar://$MODULE_DIR$/lib/commons-io-2.8.0-sources.jar!/" />
+          <root url="jar://$MODULE_DIR$/lib/commons-io-2.8.0-test-sources.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
   </component>
 </module>

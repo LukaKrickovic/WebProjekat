@@ -6,6 +6,12 @@ Vue.component("units",{
             activateTheBurger: false,
             hideFromGuest: false,
             empty: true,
+            selectedUnit: null,
+            comments: [],
+            viewComments: false,
+            commentsDialogOpen: false,
+            newComment: "",
+            newGrade: 0,
             units: []
         }
     },
@@ -65,6 +71,35 @@ Vue.component("units",{
             <a href="#" class="btn btn-gradient btnUnit">&#10010; Add unit </a>
         </h5>
         
+        <div id="commentsModalDialog" class="modal-booking" v-if="viewComments === true">
+
+        <!-- Modal content -->
+        <div class="modal-booking-content">
+        <button class="close-x" v-on:click="closecommentsDialog">   
+            <span class="close-booking">&times;</span>
+        </button>
+        <h2 class="modal-headers">Comments for {{selectedUnit.name}}</h2>
+        <br><br>
+        <ul>
+        
+            <li v-for="comment in comments">
+                <span>"{{comment.text}}", grade: {{comment.grade}}&#9733;</span>
+                <span v-if="comment.user!==null">, <em>{{comment.user.name}}</em></span>
+                <span v-else>, <em>{{comment.guest.name}}</em></span>
+                <button v-if="comment.isApproved === false" v-on:click="approveComment(comment)">Approve</button>
+            </li>
+            <br><br>
+            
+        </ul>
+        <div class="leaveComment">
+        <input type="text" placeholder="Leave comment" v-model="newComment"></input>
+        <input type="number" placeholder="Grade" v-model="newGrade"></input>
+        <button v-on:click="postComment">Post</button>
+        </div>
+        </div>
+
+        </div>
+
         <div v-if="empty === false">
             <ul>
                 <li v-for="item in units">
@@ -79,6 +114,7 @@ Vue.component("units",{
                                 <router-link to="/units"
                                     <button v-on:click="deleteUnit(item)" class="btn rooms-btnUnit">Delete &#10006;</button><br>
                                 </router-link>
+                                <button v-on:click="showComments(item)">Show comments</button>
                                 <a href="#" class="btn rooms-btnUnit">show more </a><br>
                             </div>
                         </div>
@@ -134,6 +170,65 @@ Vue.component("units",{
     methods: {
         burgerActive : function(){
                 
+        },
+
+        closecommentsDialog: function(){
+            this.viewComments = false;
+        },
+
+        postComment: function(){
+            alert(this.selectedUnit.name);
+            axios
+            .post('/rest/post-comment', {}, {params: {
+                user: this.user,
+                comment: this.newComment,
+                grade: this.newGrade,
+                unit: this.selectedUnit
+            }})
+            .then(res => {
+                if(res.data === true){
+                    alert("Comment successfully posted!");
+                    this.closecommentsDialog();
+
+                }
+            });
+        },
+
+        showComments: function(item){
+            this.newComment = "";
+            this.newGrade = 0;
+            alert('Tu sam');
+                axios
+                .get('/rest/get-comments-for-host', { params: {
+                    unit: item,
+                    user: this.user
+                }})
+                .then(res => {
+                    if(res.data !== null){
+                        this.comments = res.data;
+                        this.commentsDialogOpen = true;
+                        this.viewComments = true;
+                        this.selectedUnit = item;
+                    }
+                });
+    
+                
+            
+        },
+
+        approveComment: function(comment){
+            axios
+            .post('/rest/approve-comment', {}, {params: {
+                user: this.user,
+                aptComment: comment
+            }})
+            .then(res=>{
+                if(res.data === true){
+                    alert("Successfully approved comment!");
+                } else {
+                    alert("Failed to approve comment!");
+                }
+            });
         },
 
         deleteUnit: function(item){

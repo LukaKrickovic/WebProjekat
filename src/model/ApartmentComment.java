@@ -1,9 +1,11 @@
 package model;
+import enums.Roles;
 import model.Guest;
 
 public class ApartmentComment extends Model{
 
 	private Guest guest;
+	private User user;
 	private Unit unit;
 	private String text;
 	private double grade;
@@ -28,9 +30,15 @@ public class ApartmentComment extends Model{
 		this.isApproved = false;
 	}
 	
-	public ApartmentComment(Id id, Guest guest, Unit unit, String text, double grade) {
+
+	public ApartmentComment(Id id, User user, Unit unit, String text, double grade) {
 		super(id);
-		this.guest = guest;
+		if(user.getId().getPrefix().equalsIgnoreCase("G"))
+			this.guest = (Guest) user;
+		else {
+			this.user = user;
+		}
+		this.user = user;
 		this.unit = unit;
 		this.text = text;
 		this.grade = grade;
@@ -77,5 +85,13 @@ public class ApartmentComment extends Model{
 
 	public void setApproved(boolean approved) {
 		isApproved = approved;
+	}
+
+	public User getUser() {
+		return user;
+	}
+
+	public void setUser(User user) {
+		this.user = user;
 	}
 }
