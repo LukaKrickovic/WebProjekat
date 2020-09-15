@@ -145,8 +145,8 @@ public class SparkController {
         //unitRepository.create(unit1);
 
 
-        hostRepository.create(hostLuka);
-        unitRepository.create(unit1);
+        //hostRepository.create(hostLuka);
+        //unitRepository.create(unit1);
         /*
         get("/home", (req, res) -> {
             return index.html;
@@ -160,12 +160,46 @@ public class SparkController {
             return true;
         });
 
+        delete("/rest/remove-amenity", (req, res) -> {
+            Unit unit = gson.fromJson(req.queryParams("unit"), Unit.class);
+            User user = gson.fromJson(req.queryParams("user"), User.class);
+            Amenity amenity = gson.fromJson(req.queryParams("amenity"), Amenity.class);
+            List<Amenity> ams = unit.getAmenities();
+            ams = removeFromList(amenity, ams);
+            unit.setAmenities(ams);
+            unitService.update(unit, user);
+            return true;
+        });
+
         delete("/rest/cancel-reservation", (req, res) -> {
             res.type("application/json");
             Reservation reservation = gson.fromJson(req.queryParams("reservation"), Reservation.class);
             User user = gson.fromJson(req.queryParams("user"), User.class);
             reservation.setReservationStatus(ReservationStatus.CANCELLED);
             reservationService.update(reservation);
+            return true;
+        });
+
+        post("/rest/edit-unit", (req, res)->{
+            Unit unit = gson.fromJson(req.queryParams("unit"), Unit.class);
+            User user = gson.fromJson(req.queryParams("user"), User.class);
+            RoomType type = getRoomTypeFromRequest(req.queryParams("roomType"));
+            unit.setRoomType(type);
+            Status status = getStatusFromRequest(req.queryParams("status"));
+            unit.setStatus(status);
+            unit.setNumOfRooms(Integer.parseInt(req.queryParams("numOfRooms")));
+            unit.setNumOfGuests(Integer.parseInt(req.queryParams("numOfGuests")));
+            unit.setPricePerNight(Double.parseDouble(req.queryParams("pricePerNight")));
+            unit.setName(req.queryParams("name"));
+            //  TODO: dodati konvertor adresa -> koordinate na frontendu
+            unit.setLocation(new Location(unit.getLocation().getLatitude(), unit.getLocation().getLongitude(), new Address(
+                    req.queryParams("street"), req.queryParams("buildingNumber"), req.queryParams("city"), req.queryParams("zipCode"), req.queryParams("country")
+            )));
+            List<Amenity> ams = getAmenitiesFromRequest(req.queryParams("newAmenities"));
+            List<Amenity> amsBackup = unit.getAmenities();
+            amsBackup.addAll(ams);
+            unit.setAmenities(amsBackup);
+            unitService.update(unit, user);
             return true;
         });
 
@@ -449,6 +483,46 @@ public class SparkController {
            }
            return gson.toJson(false);
         });
+
+    }
+
+    private static List<Amenity> removeFromList(Amenity amenity, List<Amenity> ams) {
+        ArrayList<Amenity> result = new ArrayList<Amenity>();
+        for(Amenity temp : ams){
+            if(!temp.getDescription().trim().equalsIgnoreCase(amenity.getDescription().trim())){
+                result.add(temp);
+            }
+        }
+        return result;
+    }
+
+
+    private static List<Amenity> getAmenitiesFromRequest(String newAmenities) {
+        ArrayList<Amenity> retVal = new ArrayList<Amenity>();
+        if(newAmenities != null){
+            if(!newAmenities.isEmpty()){
+                String[] bits = newAmenities.split(",");
+                for(String bit : bits){
+                    retVal.add(new Amenity(bit.trim(), true));
+                }
+            }
+        }
+        return retVal;
+    }
+
+    private static Status getStatusFromRequest(String status) {
+        if(status.equalsIgnoreCase("ACTIVE"))
+            return Status.ACTIVE;
+        else
+            return Status.INACTIVE;
+
+    }
+
+    private static RoomType getRoomTypeFromRequest(String roomType) {
+        if(roomType.equalsIgnoreCase("APARTMENT"))
+            return RoomType.APARTMENT;
+        else
+            return RoomType.ROOM;
 
     }
 

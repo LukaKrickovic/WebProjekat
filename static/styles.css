@@ -817,9 +817,6 @@ section{
     display: inline;
 }
 
-
-
-
-
-
-
+.amenity-editing-list{
+    columns: 3;
+}

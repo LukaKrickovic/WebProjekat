@@ -18,12 +18,17 @@ Vue.component("units",{
             roomType: "",
 	        numOfRooms: "",
 	        numOfGuests: "",
-	        location: "",
+            location: "",
+            zipCode: "",
 	        host: "",
 	        pricePerNight: "",
 	        checkinTime: "",
 	        checkoutTime: "",
-	        status: "",
+            status: "",
+            street: "",
+            buildingNumber: "",
+            city: "",
+            newAmenities: [],
 	        amenities: [],
 	        imageSources: [],
 	        name: ""
@@ -112,6 +117,7 @@ Vue.component("units",{
         <button v-on:click="postComment">Post</button>
         </div>
         </div>
+        </div>
 
         <div id="editModalDialog" class="modal-booking" v-if="editDialogOpen === true">
 
@@ -120,13 +126,39 @@ Vue.component("units",{
             <button class="close-x" v-on:click="closeEditingDialog">   
                 <span class="close-booking">&times;</span>
             </button>
-            <h2 class="modal-headers">Please confirm your details!</h2>
+            <h2 class="modal-headers">Enter unit information here!</h2>
             <h4 class="modal-headers">Editing -> {{selectedUnitForEditing.name}}</h4>
+            <br><br>
+            <label>Name:</label>
             <input type="text" name="name" placeholder="Name" v-model="name">
+            <label>Room type:</label>
             <input type="text" name="roomType" placeholder="RoomType" v-model="roomType">
+            <label>Number of rooms:</label>
             <input type="number" name="numOfRooms" placeholder="NumOfRooms" v-model="numOfRooms">
+            <label>Number of guests:</label>
             <input type="number" name="numOfGuests" placeholder="NumOfGuests" v-model="numOfGuests">
+            <label>Price per night:</label>
             <input type="number" name="pricePerNight" placeholder="PricePerNight" v-model="pricePerNight">
+            <label>Street:</label>
+            <input type="text" name="street" placeholder="Street" v-model="street">
+            <label>Building number:</label>
+            <input type="text" name="buildingNumber" placeholder="Building number" v-model="buildingNumber">
+            <label>City:</label>
+            <input type="text" name="city" placeholder="City" v-model="city">
+            <label>ZipCode:</label>
+            <input type="text" name="zipCode" placeholder="ZipCode" v-model="zipCode">
+            <label>Amenities:</label>
+            <label>Please separate them with commas! (ie. air conditioning, free parking)</label>
+            <input type="text" name="newAmenities" placeholder="Amenities" v-model="newAmenities">
+            <label>Already added amenities:</label>
+            <div>
+            <ul>
+                <li clas="amenity-editing-list" v-for="am in selectedUnitForEditing.amenities">
+                    <span>{{am.description}}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><button v-on:click="removeAmenity(am)">x</button>
+                </li>
+            </ul>
+            </div>
+            <br><br>
             <button v-on:click="editUnit">Confirm</button>
             </div>
 
@@ -156,7 +188,8 @@ Vue.component("units",{
             </ul>
         </div>
 
-    </div>
+        </div>
+    
     </section>
     </div>`,
 
@@ -211,6 +244,22 @@ Vue.component("units",{
             this.viewComments = false;
         },
 
+        removeAmenity: function(am){
+            axios
+            .delete('/rest/remove-amenity', {params: {
+                amenity: am,
+                user: this.user,
+                unit: this.selectedUnitForEditing
+            }})
+            .then(res =>{
+                if(res.data === true){
+                    this.selectedUnitForEditing.amenities.removeItem(am);
+                } else {
+                    alert("Failed to remove amenity");
+                }
+            });
+        },
+
         postComment: function(){
             alert(this.selectedUnit.name);
             axios
@@ -237,18 +286,19 @@ Vue.component("units",{
                 numOfGuests: this.numOfGuests,
                 pricePerNight: this.selectedUnitForEditing.pricePerNight,
                 status: this.status,
-                amenities: [],
-                imageSources: [],
                 name: this.name,
-                
-                
+                street: this.street,
+                buildingNumber: this.buildingNumber,
+                city: this.city,
+                zipCode: this.zipCode,
+                newAmenities: this.newAmenities,
                 user: this.user,
                 unit: this.selectedUnitForEditing
             } })
             .then(res => {
                 if(res.data === true){
                     alert("Editing for " + this.selectedUnitForEditing.name + " was successful!");
-                    window.location.replace('index.html');
+                    this.closeEditingDialog();
                 } else {
                     alert("Failed to edit " + this.selectedUnitForEditing.name + "!");
                 }
@@ -292,18 +342,23 @@ Vue.component("units",{
             });
         },
 
-        openEditingDialog: function(unit){
+        openEditingDialog: function(item){
             if(window.localStorage.getItem('jwt')){
+                this.street = item.location.address.street,
+                this.buildingNumber = item.location.address.number,
+                this.city = item.location.address.city,
+                this.country = item.location.address.country,
+                this.zipCode = item.location.address.zipCode,
                 this.editDialogOpen = true;
-                this.selectedUnitForEditingt = unit;
-                this.roomType = this.unit.roomType;
-                this.numOfRooms = this.unit.numOfRooms;
-                this.numOfGuests = this.unit.numOfGuests;
-                this.pricePerNight = this.unit.pricePerNight;
-                this.status = this.unit.status;
-                this.amenities = this.unit.amenities;
-                this.imageSources = this.unit.imageSources;
-                this.name = this.unit.name;
+                this.selectedUnitForEditing = item;
+                this.roomType = item.roomType;
+                this.numOfRooms = item.numOfRooms;
+                this.numOfGuests = item.numOfGuests;
+                this.pricePerNight = item.pricePerNight;
+                this.status = item.status;
+                this.amenities = item.amenities;
+                this.imageSources = item.imageSources;
+                this.name = item.name;
             }
         },
 
