@@ -20,57 +20,62 @@ Vue.component("bookings",{
     
     template: `        
     <div>
-    <header class="headerUnit">
-    <div class="container" id="container">
-        <nav class="nav">
-            <a href="index.html" class="logo">
-                <img src="./images/logo.png" alt="">
-            </a>
+    <header class="header">
+        <div class="container">
+            <nav class="nav">
+                <a href="index.html" class="logo">
+                    <img src="./images/logo.png" alt="">
+                </a>
 
-            <div class="hamburger-menu" v-on:click="activateTheBurger" v-bind:class="{ active: burgerActive }">
-                <i class="fas fa-bars"></i>
-                <i class="fas fa-times"></i>
+                <div class="hamburger-menu" v-on:click="activateTheBurger" v-bind:class="{ active: burgerActive }">
+                    <i class="fas fa-bars"></i>
+                    <i class="fas fa-times"></i>
+                </div>
+
+                <ul class="nav-list">
+                    <li class="nav-item">
+                        <a href="index.html" class="nav-link">Home</a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a href="#" class="nav-link">About</a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a href="#" class="nav-link">Offers</a>
+                    </li>
+                    
+                    <li class="nav-item" v-bind:class="{ hidden: user !== null }">
+                        <router-link to="/login" class="nav-link">Login/Register</router-link>
+                    </li>
+                </ul>
+
+                <div class="dropdown-user" v-bind:class="{ hidden: user === null }">
+                    <button class="user-button">
+                        {{ displayName }}
+                        <div class="user-dropdown-content">
+                            <router-link to="/bookings" class="dropdown-link">Bookings</router-link>
+                            <a href="#" class="dropdown-link" v-bind:class="{ hidden: hideFromGuest }">Search for users</a>
+                            <router-link to="/units" class="dropdown-link" v-bind:class="{ hidden: hideFromGuest }">Units</router-link>
+                            <a href="index.html" class="dropdown-link" v-on:click="logout">Logout</a>
+                        </div>
+                    </button>
             </div>
-
-            <ul class="nav-list">
-                <li class="nav-item">
-                    <a href="index.html" class="nav-link">Home</a>
-                </li>
-
-                <li class="nav-item">
-                    <a href="#" class="nav-link">About</a>
-                </li>
-
-                <li class="nav-item">
-                    <a href="#" class="nav-link">Offers</a>
-                </li>
-                
-                <li class="nav-item" v-bind:class="{ hidden: user !== null }">
-                    <a href="login.html" class="nav-link">Login/Register</a>
-                </li>
-            </ul>
-
-            <div class="dropdown-user" v-bind:class="{ hidden: user === null }">
-                <button class="user-button">
-                    {{ displayName }}
-                    <div class="user-dropdown-content">
-                        <a href="#" class="dropdown-link">Manage your account information</a>
-                        <a href="#" class="dropdown-link">Upcoming reservations</a>
-                        <a href="#" class="dropdown-link" v-bind:class="{ hidden: hideFromGuest }">Search for users</a>
-                        <a href="#" class="dropdown-link" v-bind:class="{ hidden: hideFromGuest }">Add a unit</a>
-                        <a href="#" class="dropdown-link" v-on:click="logout">Logout</a>
-                    </div>
-                </button>
+            </nav>
         </div>
-        </nav>
-    </div>
-</header>
+    </header>
 
 <section class="roomsUnit">
     <div class="container">
         <h5 class="section-headUnit">
             <span class="heading">All my bookings</span>
         </h5>
+        <br><br>
+        <div class="buttons-sort">
+            <button v-on:click="sortDesc">Sort by price descending</button><br><br>
+            <button v-on:click="sortAsc">Sort by price ascending</button>
+            <br><br><br>
+        </div>
 
         <div id="commentsModalDialog" class="modal-booking" v-if="viewComments === true">
 
@@ -168,6 +173,30 @@ Vue.component("bookings",{
     methods: {
         burgerActive : function(){
                 
+        },
+
+        sortDesc: function(){
+            this.searchResults.sort(function (result1, result2) {
+
+                // Sort by price
+                // If the first item has a higher number, move it down
+                // If the first item has a lower number, move it up
+                if (parseFloat(result1.pricePerNight) > parseFloat(result2.pricePerNight)) return -1;
+                if (parseFloat(result1.pricePerNight) < parseFloat(result2.pricePerNight)) return 1;
+            
+            });
+        },
+
+        sortAsc: function(){
+            this.searchResults.sort(function (result1, result2) {
+
+                // Sort by price
+                // If the first item has a higher number, move it down
+                // If the first item has a lower number, move it up
+                if (parseFloat(result1.pricePerNight) < parseFloat(result2.pricePerNight)) return -1;
+                if (parseFloat(result1.pricePerNight) > parseFloat(result2.pricePerNight)) return 1;
+            
+            });
         },
 
         enableComments : function(item){

@@ -820,3 +820,8 @@ section{
 .amenity-editing-list{
     columns: 3;
 }
+
+.buttons-sort{
+    justify-content: center;
+    text-align: center;
+}

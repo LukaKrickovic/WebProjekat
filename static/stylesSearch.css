@@ -124,6 +124,7 @@ main{
 /* Reusable styles */
 
 .result-container{
+    overflow-y: auto;
     width: 100%;
     max-width: 120rem;
     padding: 0 1.5rem;

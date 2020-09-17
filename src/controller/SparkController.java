@@ -1,6 +1,7 @@
 package controller;
 
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.sun.xml.internal.ws.policy.privateutil.PolicyUtils;
 import enums.*;
 import exceptions.BadRequestException;
@@ -10,7 +11,11 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import model.*;
+import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.fileupload.disk.DiskFileItemFactory;
+import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.io.IOUtils;
 import repository.*;
 import sequencers.*;
 import services.ApartmentCommentService;
@@ -20,22 +25,20 @@ import services.UserService;
 import spark.Request;
 import spark.Session;
 import stream.Stream;
-import util.UnitSearchCriteria;
+import util.*;
 import ws.WsHandler;
 
 import javax.imageio.ImageIO;
+import javax.servlet.MultipartConfigElement;
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.Part;
 import java.awt.image.RenderedImage;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.IOException;
-import java.io.OutputStream;
+import java.io.*;
 import java.security.Key;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 import static spark.Spark.*;
 import static spark.Spark.get;
@@ -70,6 +73,9 @@ public class SparkController {
 
         // GSON
         Gson gson = new Gson();
+
+        // Image upload directory
+        String dir = "images/";
 
         //  TEST
         /*
@@ -152,6 +158,72 @@ public class SparkController {
             return index.html;
         });*/
 
+        get("/rest/reservation-map", (req, res)->{
+            res.type("application/json");
+            String username = getUser(req.queryParams("Auth"));
+
+            User user = userService.getByUsername(username);
+
+            if(!user.getId().getPrefix().equalsIgnoreCase("H")){
+                res.status(403);
+                System.out.println("Forbidden access for non hosts!");
+                return gson.toJson(new ArrayList<UnitReservationDTO>());
+            }
+
+            ArrayList<UnitReservationDTO> returnMap = unitService.getNewReservationCount((Host)user);
+            if(returnMap != null){
+                return gson.toJson(returnMap);
+            }
+            else{
+                return gson.toJson(new ArrayList<UnitReservationDTO>());
+            }
+        });
+        get("/rest/new-reservations", (req, res)->{
+            res.type("application/json");
+            String username = getUser(req.queryParams("Auth"));
+
+            User user = userService.getByUsername(username);
+
+            Unit unit = gson.fromJson(req.queryParams("unit"), Unit.class);
+
+            if(!user.getId().getPrefix().equalsIgnoreCase("H")){
+                res.status(403);
+                System.out.println("Forbidden access for non hosts!");
+                return gson.toJson(new ArrayList<Reservation>());
+            }
+
+            ArrayList<Reservation> unitReservations = (ArrayList<Reservation>) reservationRepository.getNewReservationsByUnit(unit);
+            if(unitReservations != null){
+                return gson.toJson(unitReservations);
+            }
+            else{
+                return gson.toJson(new ArrayList<Reservation>());
+            }
+        });
+
+        post("/rest/alter-res-status", (req, res)->{
+            System.out.println(req.queryParams("reservation"));
+            Reservation reservation = gson.fromJson(req.queryParams("reservation"), Reservation.class);
+            String username = getUser(req.queryParams("Auth"));
+
+            User user = userService.getByUsername(username);
+
+            if(!user.getRole().equals(Roles.HOST)){
+                res.status(403);
+                System.out.println("Forbidden access for non hosts!");
+            }
+            String status = req.queryParams("status");
+            if(status != null){
+                if(status.trim().equalsIgnoreCase("conf"))
+                    reservation.setReservationStatus(ReservationStatus.ACCEPTED);
+                else
+                    reservation.setReservationStatus(ReservationStatus.DECLINED);
+            }
+
+            reservationRepository.update(reservation);
+            return true;
+        });
+
         delete("/rest/delete-unit", (req, res) -> {
             res.type("application/json");
             Unit unit = gson.fromJson(req.queryParams("unit"), Unit.class);
@@ -177,6 +249,292 @@ public class SparkController {
             User user = gson.fromJson(req.queryParams("user"), User.class);
             reservation.setReservationStatus(ReservationStatus.CANCELLED);
             reservationService.update(reservation);
+            return true;
+        });
+
+        post("/rest/create-unit", (req,res)->{
+            Unit unit = new Unit(new UnitSequencer().next(unitRepository.findHighestId()));
+            User user = gson.fromJson(req.queryParams("user"), User.class);
+            Host host = null;
+            if(user.getId().getPrefix().equalsIgnoreCase("H")){
+                host = gson.fromJson(req.queryParams("user"), Host.class);
+            }
+            RoomType type = getRoomTypeFromRequest(req.queryParams("roomType"));
+            unit.setRoomType(type);
+            Status status = getStatusFromRequest(req.queryParams("status"));
+            unit.setStatus(status);
+            if(req.queryParams("checkInTime") != null){
+                unit.setCheckinTime(LocalTime.parse(req.queryParams("checkInTime")));
+            } else {
+                unit.setCheckinTime(LocalTime.of(14,0));
+            }
+            if(req.queryParams("checkOutTime") != null){
+                unit.setCheckinTime(LocalTime.parse(req.queryParams("checkInTime")));
+            }else {
+                unit.setCheckoutTime(LocalTime.of(8,0));
+            }
+
+            unit.setNumOfRooms(Integer.parseInt(req.queryParams("numOfRooms")));
+            unit.setNumOfGuests(Integer.parseInt(req.queryParams("numOfGuests")));
+            unit.setPricePerNight(Double.parseDouble(req.queryParams("pricePerNight")));
+            unit.setName(req.queryParams("name"));
+            String latitude = req.queryParams("latitude");
+            String longitude = req.queryParams("longitude");
+            unit.setLocation(new Location(latitude, longitude,new Address(
+                    req.queryParams("street"), req.queryParams("buildingNumber"), req.queryParams("city"), req.queryParams("zipCode"), req.queryParams("country")
+            )));
+            List<Amenity> ams = getAmenitiesFromRequest(req.queryParams("newAmenities"));
+            unit.setAmenities(ams);
+            if(host != null){
+                unit.setHost(host);
+                unitService.create(unit, user);
+                return gson.toJson(unit);
+            }
+            else {
+                return gson.toJson(new Unit());
+            }
+        });
+
+        post("/rest/upload-image", (req, res)->{
+            MultipartConfigElement multipartConfigElement = new MultipartConfigElement("/tmp" + NameGenerator.getAlphaNumericString(5));
+            req.raw().setAttribute("org.eclipse.jetty.multipartConfig", multipartConfigElement);
+
+            File directory = new File("data/images");
+            if (!directory.exists() && !directory.mkdirs()) {
+                throw new RuntimeException("Failed to create directory " + directory.getAbsolutePath());
+            }
+
+            String suffix = NameGenerator.getAlphaNumericString(10);
+            Part filePart = req.raw().getPart("image");
+            Unit unit = gson.fromJson(req.queryParams("unit"), Unit.class);
+            try (InputStream inputStream = filePart.getInputStream()) {
+                OutputStream outputStream = new FileOutputStream("static/data/images/" + suffix + filePart.getSubmittedFileName());
+                IOUtils.copy(inputStream, outputStream);
+                outputStream.close();
+            }
+            List<String> srces = unit.getImageSources();
+            if(srces != null) {
+                srces.add("data/images/" + suffix + filePart.getSubmittedFileName());
+            } else {
+                srces = new ArrayList<String>();
+                srces.add("data/images/" + suffix + filePart.getSubmittedFileName());
+            }
+            unit.setImageSources(srces);
+            Host host = gson.fromJson(req.queryParams("host"), Host.class);
+            unitRepository.update(unit);
+            return true;
+        });
+
+        post("/rest/update-user-info", (req,res)->{
+            String username = getUser(req.queryParams("Auth"));
+            User user = userService.getByUsername(username);
+
+            String newName = req.queryParams("name");
+            String newSurname = req.queryParams("surname");
+            String newPassword = req.queryParams("password");
+
+            if(newName != null){
+                if(!newName.equals(user.getName())){
+                    if(newName.matches(Regexes.nameAndSurnamePattern))
+                        user.setName(newName);
+                }
+            }
+
+            if(newSurname != null){
+                if(!newSurname.equals(user.getName())){
+                    if(newSurname.matches(Regexes.nameAndSurnamePattern))
+                        user.setSurname(newSurname);
+                }
+            }
+
+            if(newPassword != null){
+                if(!newPassword.equals(user.getPassword())){
+                    if(newPassword.matches(Regexes.passwordPattern))
+                        user.setPassword(newPassword);
+                }
+            }
+
+            userService.changeData(user);
+            return true;
+        });
+
+        get("/rest/filter-by-criteria", (req,res)->{
+            res.type("application/json");
+            String roomTypeFilter = req.queryParams("roomType");
+            String bottomPrice = req.queryParams("bottomPrice");
+            String topRC = req.queryParams("topRC");
+            String bottomRC = req.queryParams("bottomRC");
+            String topPrice = req.queryParams("topPrice");
+            String wifiFilter = req.queryParams("wifi");
+            String acFilter = req.queryParams("airConditioning");
+            String swimmingPoolFilter = req.queryParams("swimmingPool");
+            String freeParkingFilter = req.queryParams("freeParking");
+            System.out.println(req.queryParams("searchResults"));
+            if(req.queryParams("searchResults") != null) {
+                ArrayList<Unit> allResults = gson.fromJson(req.queryParams("searchResults"), new TypeToken<List<Unit>>() {
+                }.getType());
+                ArrayList<Unit> backup = new ArrayList<Unit>();
+                backup.addAll(allResults);
+
+                if (wifiFilter != null) {
+                    if (!wifiFilter.isEmpty()) {
+                        for(Unit temp : allResults){
+                            if(!hasWifi(temp)){
+                                backup.remove(temp);
+                            }
+                        }
+                    }
+                }
+
+                allResults = new ArrayList<Unit>();
+                allResults.addAll(backup);
+
+                if (acFilter != null) {
+                    if (!acFilter.isEmpty()) {
+                        for(Unit temp : allResults){
+                            if(!hasAc(temp)){
+                                backup.remove(temp);
+                            }
+                        }
+                    }
+                }
+
+
+                allResults = new ArrayList<Unit>();
+                allResults.addAll(backup);
+                if (freeParkingFilter != null) {
+                    if (!freeParkingFilter.isEmpty()) {
+                        for(Unit temp : allResults){
+                            if(!hasFreeParking(temp)){
+                                backup.remove(temp);
+                            }
+                        }
+                    }
+                }
+
+
+                allResults = new ArrayList<Unit>();
+                allResults.addAll(backup);
+                if (swimmingPoolFilter != null) {
+                    if (!swimmingPoolFilter.isEmpty()) {
+                        for(Unit temp : allResults){
+                            if(!hasSwimmingPool(temp)){
+                                backup.remove(temp);
+                            }
+                        }
+                    }
+                }
+
+                allResults = new ArrayList<Unit>();
+                allResults.addAll(backup);
+                if (roomTypeFilter != null) {
+                    if (!roomTypeFilter.isEmpty()) {
+                        for(Unit temp : allResults){
+                            if(!isTheRoomType(temp, roomTypeFilter)){
+                                backup.remove(temp);
+                            }
+                        }
+                    }
+                }
+                allResults = new ArrayList<Unit>();
+                allResults.addAll(backup);
+                if (topPrice != null || bottomPrice != null) {
+                    if (!topPrice.isEmpty()) {
+                        if(Double.parseDouble(topPrice) > 0) {
+                            for (Unit temp : allResults) {
+                                if (temp.getPricePerNight() >= Double.parseDouble(topPrice)) {
+                                    backup.remove(temp);
+                                }
+                            }
+                        }
+                    }
+                    if(!bottomPrice.isEmpty()){
+                        if(Double.parseDouble(bottomPrice) > 0) {
+                            for (Unit temp : allResults) {
+                                if (temp.getPricePerNight() <= Double.parseDouble(bottomPrice)) {
+                                    backup.remove(temp);
+                                }
+                            }
+                        }
+                    }
+                }
+
+                allResults = new ArrayList<Unit>();
+                allResults.addAll(backup);
+
+                if (topRC != null || bottomRC != null) {
+                    if (!topRC.isEmpty()) {
+                        if(Integer.parseInt(topRC) > 0) {
+                            for (Unit temp : allResults) {
+                                if (temp.getNumOfRooms() >= Integer.parseInt(topRC)) {
+                                    backup.remove(temp);
+                                }
+                            }
+                        }
+                    }
+                    if(!bottomRC.isEmpty()){
+                        if(Integer.parseInt(bottomRC) > 0) {
+                            for (Unit temp : allResults) {
+                                if (temp.getNumOfRooms() <= Integer.parseInt(bottomRC)) {
+                                    backup.remove(temp);
+                                }
+                            }
+                        }
+                    }
+                }
+
+                allResults = new ArrayList<Unit>();
+                allResults.addAll(backup);
+                return gson.toJson(allResults);
+            } else {
+                return gson.toJson(new ArrayList<Unit>());
+            }
+        });
+
+        post("/rest/upload-images", (req, res)->{
+            MultipartConfigElement multipartConfigElement = new MultipartConfigElement("/tmp" + NameGenerator.getAlphaNumericString(5));
+            req.raw().setAttribute("org.eclipse.jetty.multipartConfig", multipartConfigElement);
+
+            final File upload = new File("upload");
+            if (!upload.exists() && !upload.mkdirs()) {
+                throw new RuntimeException("Failed to create directory " + upload.getAbsolutePath());
+            }
+
+            Part filePart = req.raw().getPart("images");
+
+            try (InputStream inputStream = filePart.getInputStream()) {
+                OutputStream outputStream = new FileOutputStream("D:/tmp/" + filePart.getSubmittedFileName());
+                IOUtils.copy(inputStream, outputStream);
+                outputStream.close();
+            }
+
+            return true;
+        });
+
+
+        post("/rest/create-new-unit", (req,res) ->{
+            res.type("application/json");
+            String payload = req.body();
+            Unit unit = gson.fromJson(payload, Unit.class);
+
+            ArrayList<String> convertedImages = new ArrayList<String>();
+            int i=1;
+            for(String s: unit.getImageSources()){
+                String path ="images/units/"+unit.getId().toString()+i+".jpg";
+                System.out.println(path);
+                Base64ToImage decoder = new Base64ToImage();
+                decoder.Base64DecodeAndSave(s, path);
+                path = unit.getId().toString()+i+".jpg";
+                convertedImages.add(path);
+                System.out.println(convertedImages.size());
+                i++;
+            }
+            System.out.println(convertedImages.size());
+
+            unit.setImageSources(convertedImages);
+            System.out.println(unit.getImageSources());
+            unit.setId(new UnitSequencer().next(unitRepository.findHighestId()));
+            unitRepository.create(unit);
             return true;
         });
 
@@ -316,6 +674,8 @@ public class SparkController {
 
             return gson.toJson(reservationService.getAllReservationsOfUser(user));
         });
+
+
 
         get("rest/search-units", (req, res) -> {
             List<Unit> results = new ArrayList<Unit>();
@@ -484,6 +844,62 @@ public class SparkController {
            return gson.toJson(false);
         });
 
+    }
+
+    private static boolean isTheRoomType(Unit temp, String roomType) {
+        if (roomType.trim().equalsIgnoreCase("ROOM")) {
+            if (temp.getRoomType().equals(RoomType.ROOM)) {
+                return true;
+            }
+        } else {
+            if (roomType.trim().equalsIgnoreCase("APARTMENT")) {
+                if (temp.getRoomType().equals(RoomType.APARTMENT)) {
+                    return true;
+                }
+            }
+
+        }
+        return false;
+    }
+
+
+    private static boolean hasFreeParking(Unit temp) {
+        for(Amenity amenity : temp.getAmenities()){
+            if(amenity.getDescription().trim().equalsIgnoreCase("free parking")){
+                return true;
+            }
+        }
+
+        return false;
+    }
+    private static boolean hasSwimmingPool(Unit temp) {
+        for(Amenity amenity : temp.getAmenities()){
+            if(amenity.getDescription().trim().equalsIgnoreCase("swimming pool")){
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private static boolean hasAc(Unit temp) {
+        for(Amenity amenity : temp.getAmenities()){
+            if(amenity.getDescription().trim().equalsIgnoreCase("air conditioning")){
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private static boolean hasWifi(Unit temp) {
+        for(Amenity amenity : temp.getAmenities()){
+            if(amenity.getDescription().trim().equalsIgnoreCase("free wifi")){
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private static List<Amenity> removeFromList(Amenity amenity, List<Amenity> ams) {

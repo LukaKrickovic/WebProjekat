@@ -39,13 +39,13 @@ public class ReservationService {
 		}
 
 		if(user.getRole().equals(Roles.GUEST)) {
-			if(reservation.getGuest().getId().equals(user.getId())) {
+//			if(reservation.getGuest().getId().equals(user.getId())) {
 				if(reservation.getStartDate().isBefore(reservation.getEndDate())) {
 					reservation.setReservationStatus(ReservationStatus.CREATED);
 					return reservationRepository.create(reservation);
 				}
 			}
-		}
+//		}
 		return null;
 	}
 	

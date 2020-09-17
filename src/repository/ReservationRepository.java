@@ -7,6 +7,7 @@ import java.util.List;
 
 import converters.ReservationConverter;
 import enums.ReservationStatus;
+import enums.Status;
 import exceptions.IdWriteException;
 import model.*;
 import sequencers.ReservationSequencer;
@@ -165,6 +166,29 @@ public class ReservationRepository implements IRepository<Reservation, Id>{
 			}
 		}
 		return retVal;
+	}
+
+
+	public List<Reservation> getNewReservationsByUnit(Unit unit) {
+		ArrayList<Reservation> retVal = new ArrayList<Reservation>();
+		ArrayList<Reservation> backup = new ArrayList<Reservation>();
+		for(Reservation temp : getAll()) {
+			if(temp.getUnit().getId().equals(unit.getId())) {
+				retVal.add(temp);
+			}
+		}
+
+		if(retVal != null){
+			if(!retVal.isEmpty()){
+				for(Reservation temp : retVal){
+					if(temp.getReservationStatus().equals(ReservationStatus.CREATED)){
+						backup.add(temp);
+					}
+				}
+			}
+		}
+
+		return backup;
 	}
 
 	public List<Unit> getUnitsByDate(LocalDate startDate, LocalDate endDate){

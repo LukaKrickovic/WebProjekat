@@ -28,15 +28,8 @@ public class UnitConverter {
 		return new Host(host.getId());
 	}
 
-	public ArrayList<Unit> ConvertFromJSON(String JSON) {
-		Type listType = new TypeToken<ArrayList<Unit>>(){}.getType();
-		if(JSON.charAt(0) == '[')
-			return (new Gson().fromJson(JSON, listType));
-		else {
-			ArrayList<Unit> retVal = new ArrayList<Unit>();
-			retVal.add(new Gson().fromJson(JSON, Unit.class));
-			return retVal;
-		}
+	public Unit ConvertFromJSON(String JSON) {
+		return new Gson().fromJson(JSON, Unit.class);
 	}
 
 }
