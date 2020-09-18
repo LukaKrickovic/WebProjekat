@@ -270,7 +270,6 @@ Vue.component("search",{
                             this.hideFromGuest = true;
                         }
                     }
-                    alert(this.user);
                 });
         }
 
@@ -334,7 +333,21 @@ Vue.component("search",{
         showMapDialog: function(item){
             this.mapDialogOpen = true;
             this.selectedUnit = item;
-            var map = new ol.Map({
+
+            const map = new ol.Map({
+                view: new ol.View({
+                    center: [0, 0],
+                    zoom: 2
+                }),
+                layers:[
+                    new ol.layer.Tile({
+                        source: new ol.source.OSM()
+                    })
+                ],
+                target: 'map'
+            });
+
+            /*var map = new ol.Map({
                 target: 'map',
                 layers: [
                   new ol.layer.Tile({
@@ -342,10 +355,29 @@ Vue.component("search",{
                   })
                 ],
                 view: new ol.View({
-                  center: ol.proj.fromLonLat([parseFloat(item.location.longitude), parseFloat(item.location.latitude)]),
+                  //center: ol.proj.fromLonLat([0,0]),
+                  center: [0, 0],
                   zoom: 4
                 })
-              });
+              });*/
+
+              /*
+              new Map({
+                target: 'map',
+                layers: [
+                  new ol.layer.TileLayer({
+                    source: new ol.layer.XYZ({
+                      url: 'https://{a-c}.tile.openstreetmap.org/{z}/{x}/{y}.png'
+                    })
+                  })
+                ],
+                view: new ol.layer.View({
+                  center: [0, 0],
+                  zoom: 2
+                })
+            })*/
+
+              
         },
 
         closeMapDialog: function(){
@@ -482,7 +514,7 @@ Vue.component("search",{
            if(this.airConditioningChecked){
                airConditioning="YES";
            }
-           alert(this.searchResults.length);
+           
 
            axios
            .get('/rest/filter-by-criteria', {params:{
@@ -577,9 +609,9 @@ Vue.component("search",{
         
 
 		logout : function(){
-            alert("LOGOUT");
+            
             var jwt = window.localStorage.getItem('jwt');
-            alert(jwt);
+            
             if(jwt){
                 axios
                 .get('/rest/logout', { params: {

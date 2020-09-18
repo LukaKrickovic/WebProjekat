@@ -244,8 +244,13 @@ public class ReservationRepository implements IRepository<Reservation, Id>{
 	public Iterable<Reservation> getReservationsByGuest(Guest guest){
 		List<Reservation> retVal = new ArrayList<Reservation>();
 		for(Reservation temp : getAll()){
-			if(temp.getGuest().getId().equals(guest.getId()))
-				retVal.add(temp);
+			if(temp.getGuest() != null) {
+				if (temp.getGuest().getId().equals(guest.getId()))
+					retVal.add(temp);
+			} else {
+				if (temp.getUser().getId().equals(guest.getId()))
+					retVal.add(temp);
+			}
 		}
 		return retVal;
 	}

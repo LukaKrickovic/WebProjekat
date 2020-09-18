@@ -552,7 +552,7 @@ Vue.component("units",{
                     <div class="grid rooms-grid">
                         <div class="grid-item featured-rooms">
                             <div class="image-wrap image-wrapUnit">
-                                <img src="./images/room_1.jpg" alt="" class="room-image">
+                                <img v-bind:src="item.imageSources[0]" alt="" class="room-image">
                                 <h5 class="room-name">{{item.name}}</h5>
                             </div>
                             <div class="room-info-wrap">
@@ -592,7 +592,7 @@ Vue.component("units",{
                             this.hideFromGuest = true;
                         }
                     }
-                    alert(this.user);
+                    
                 });
         }
 
@@ -612,7 +612,7 @@ Vue.component("units",{
                 }
 
                 this.units = res.data;
-                alert(this.units.length);
+                
             });
 
         axios
@@ -639,7 +639,7 @@ Vue.component("units",{
 
         alterResStatus: function(res, stat){
             var jwt = window.localStorage.getItem('jwt');
-            alert(res);
+            
             axios
             .post('/rest/alter-res-status', {},{params: {
                 reservation: res,
@@ -697,7 +697,7 @@ Vue.component("units",{
             .post('/rest/upload-image', fd)
             .then(res => {
                 if(res.data === true){
-                    alert("Worked!");
+                    alert("Upoaded image!");
                     this.closeImagesModalDialog();
                 }
             });
@@ -762,7 +762,6 @@ Vue.component("units",{
         },
 
         postComment: function(){
-            alert(this.selectedUnit.name);
             axios
             .post('/rest/post-comment', {}, {params: {
                 user: this.user,
@@ -1043,7 +1042,7 @@ Vue.component("units",{
         showComments: function(item){
             this.newComment = "";
             this.newGrade = 0;
-            alert('Tu sam');
+            
                 axios
                 .get('/rest/get-comments-for-host', { params: {
                     unit: item,
@@ -1110,7 +1109,6 @@ Vue.component("units",{
                     }
                 })
                 .then(res => {
-                    alert(res);
                     if(res.data === true){
                         alert("Unit deleted successfully!");
                     } else {
@@ -1120,9 +1118,9 @@ Vue.component("units",{
         },
 
         logout : function(){
-            alert("LOGOUT");
+            
             var jwt = window.localStorage.getItem('jwt');
-            alert(jwt);
+            
             if(jwt){
                 window.localStorage.removeItem('jwt');
                 axios
@@ -1132,7 +1130,7 @@ Vue.component("units",{
                 .then(res => {
                     if(res.data === true){
                         alert("Successfully logged out");
-                        window.location.reload();
+                        window.location.replace("index.html");
                     }
                 });
             }

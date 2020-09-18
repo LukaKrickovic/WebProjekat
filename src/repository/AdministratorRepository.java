@@ -9,6 +9,7 @@ import exceptions.IdWriteException;
 import model.Administrator;
 import model.Guest;
 import model.Id;
+import model.User;
 import sequencers.AdministratorSequencer;
 import stream.Stream;
 

@@ -1,4 +1,1 @@
-{"username":"hosthosthost","password":"Host1234!","name":"Luka","surname":"Krickovic","gender":"MALE","role":"HOST","searchHistory":[],"isDeleted":false,"id":{"prefix":"H","suffix":1}}
-{"username":"hosthosthost1234","password":"Host1234!","name":"Luka","surname":"Krickovic","gender":"MALE","role":"HOST","searchHistory":[],"isDeleted":false,"id":{"prefix":"H","suffix":2}}
-{"username":"lukakrickovic","password":"Host12345!","name":"Luka","surname":"Krickovic","gender":"MALE","role":"HOST","searchHistory":[],"isDeleted":false,"id":{"prefix":"H","suffix":3}}
-{"username":"jarulja98","password":"Jarulja98!","name":"Mihajlo","surname":"Jaric","gender":"MALE","role":"HOST","searchHistory":[],"isDeleted":false,"id":{"prefix":"H","suffix":5}}
+{"username":"lukakrickovicHost","password":"Host1234!","name":"Luka","surname":"Krickovic","gender":"MALE","role":"HOST","searchHistory":[],"isDeleted":false,"id":{"prefix":"H","suffix":1}}

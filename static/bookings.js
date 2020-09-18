@@ -85,19 +85,21 @@ Vue.component("bookings",{
                             <span class="close-booking">&times;</span>
                         </button>
                         <h2 class="modal-headers">Comments for {{selectedUnit.name}}</h2>
+                        <br><br>
                         <ul>
                         
                             <li v-for="comment in comments">
-                                <span>"{{comment.text}}", grade: {{comment.grade}}</span>
+                                <span>"{{comment.text}}", grade: {{comment.grade}}&#9733;</span>
                                 <span v-if="comment.user!==null">, <em>{{comment.user.name}}</em></span>
                                 <span v-else>, <em>{{comment.guest.name}}</em></span>
                             </li>
                             
                         </ul>
+                        <br><br>
                         <div class="leaveComment">
                         <input type="text" placeholder="Leave comment" v-model="newComment"></input>
                         <input type="number" placeholder="Grade" v-model="newGrade"></input>
-                        <button v-on:click="postComment(item)">Post</button>
+                        <button v-on:click="postComment">Post</button>
                         </div>
                         </div>
 
@@ -146,7 +148,7 @@ Vue.component("bookings",{
                             this.hideFromGuest = true;
                         }
                     }
-                    alert(this.user);
+                    
                 });
         }
 
@@ -166,7 +168,7 @@ Vue.component("bookings",{
                 }
 
                 this.bookings = res.data;
-                alert(this.bookings.length);
+                
             });
         
     },
@@ -202,7 +204,7 @@ Vue.component("bookings",{
         enableComments : function(item){
             this.viewComments = true;
             this.selectedUnit = item.unit;
-            alert(this.comments.length);
+            
         },
 
         cancelReservation: function(item){
@@ -214,7 +216,7 @@ Vue.component("bookings",{
                     }
                 })
                 .then(res => {
-                    alert(res);
+                    
                     if(res.data === true){
                         alert("Reservation cancelled successfully!");
                     } else {
@@ -225,6 +227,8 @@ Vue.component("bookings",{
 
         closecommentsDialog: function(){
             this.viewComments = false;
+            this.newComment = "";
+            this.newGrade = 0;
         },
 
         postComment : function(item){
@@ -233,7 +237,7 @@ Vue.component("bookings",{
                 user: this.user,
                 comment: this.newComment,
                 grade: this.newGrade,
-                unit: this.unit
+                unit: this.selectedUnit
             }})
             .then(res => {
                 if(res.data === true){
@@ -266,25 +270,17 @@ Vue.component("bookings",{
                 .then(res => {
                     if(res.data !== null){
                         this.comments = res.data;
-                        alert(res.data.length);
-                        alert("Ucitalo je commentse!!");
-                        alert(this.comments.length);
                         this.commentsDialogOpen = true;
                     }
                 });
     
                 } 
             this.viewComments = true;
-            alert(item.unit);
             this.selectedUnit = item.unit;
-            alert("You just selected: " + this.selectedUnit);
-            alert(this.comments.length);
         },
 
         logout : function(){
-            alert("LOGOUT");
             var jwt = window.localStorage.getItem('jwt');
-            alert(jwt);
             if(jwt){
                 window.localStorage.removeItem('jwt');
                 axios
