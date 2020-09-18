@@ -335,7 +335,7 @@ Vue.component("home",{
                                 this.hideFromGuest = true;
                             }
                         }
-                        alert(this.user);
+                        
                     });
             }
             
@@ -347,9 +347,9 @@ Vue.component("home",{
             },
     
             logout : function(){
-                alert("LOGOUT");
+                
                 var jwt = window.localStorage.getItem('jwt');
-                alert(jwt);
+                
                 if(jwt){
                     window.localStorage.removeItem('jwt');
                     axios
@@ -365,10 +365,7 @@ Vue.component("home",{
                 }
             },
     
-            searchUnits : function(){
-                alert(this.adultCount + " " + this.childrenCount);
-                alert(this.destination);
-    
+            searchUnits : function(){  
                 if(this.childrenCount === null){
                     this.childrenCount = 0;
                 }

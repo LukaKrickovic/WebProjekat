@@ -30,7 +30,7 @@ public class ApartmentCommentService {
 					List<Reservation> reservations = (ArrayList<Reservation>)reservationRepository.getReservationsByGuest(apartmentComment.getGuest());
 					
 					for(Reservation res : reservations) {
-						if((res.getReservationStatus().equals(ReservationStatus.DECLINED)) || (res.getReservationStatus().equals(ReservationStatus.COMPLETED))) {
+						if((res.getReservationStatus().equals(ReservationStatus.ACCEPTED)) || (res.getReservationStatus().equals(ReservationStatus.COMPLETED))) {
 							apartmentCommentRepository.create(apartmentComment);
 						}
 					}

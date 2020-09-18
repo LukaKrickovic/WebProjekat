@@ -202,7 +202,6 @@ Vue.component("search",{
                             this.hideFromGuest = true;
                         }
                     }
-                    alert(this.user);
                 });
         }
 
@@ -250,6 +249,226 @@ Vue.component("search",{
             }
         }
         },*/
+
+        sortByPriceAsc: function(){
+            this.searchResults.sort(function (result1, result2) {
+
+                // Sort by price
+                // If the first item has a higher number, move it down
+                // If the first item has a lower number, move it up
+                if (parseFloat(result1.pricePerNight) > parseFloat(result2.pricePerNight)) return -1;
+                if (parseFloat(result1.pricePerNight) < parseFloat(result2.pricePerNight)) return 1;
+            
+            });
+        },
+
+        showMapDialog: function(item){
+            this.mapDialogOpen = true;
+            this.selectedUnit = item;
+
+            const map = new ol.Map({
+                view: new ol.View({
+                    center: [0, 0],
+                    zoom: 2
+                }),
+                layers:[
+                    new ol.layer.Tile({
+                        source: new ol.source.OSM()
+                    })
+                ],
+                target: 'map'
+            });
+
+            /*var map = new ol.Map({
+                target: 'map',
+                layers: [
+                  new ol.layer.Tile({
+                    source: new ol.source.OSM()
+                  })
+                ],
+                view: new ol.View({
+                  //center: ol.proj.fromLonLat([0,0]),
+                  center: [0, 0],
+                  zoom: 4
+                })
+              });*/
+
+              /*
+              new Map({
+                target: 'map',
+                layers: [
+                  new ol.layer.TileLayer({
+                    source: new ol.layer.XYZ({
+                      url: 'https://{a-c}.tile.openstreetmap.org/{z}/{x}/{y}.png'
+                    })
+                  })
+                ],
+                view: new ol.layer.View({
+                  center: [0, 0],
+                  zoom: 2
+                })
+            })*/
+
+              
+        },
+
+        closeMapDialog: function(){
+            this.mapDialogOpen = false;
+        },
+
+        showFilters: function(){
+            this.filtersHidden = false;
+        },
+        hideFilters: function(){
+            this.filtersHidden = true;
+        },
+
+        sortByPriceDesc: function(){
+            this.searchResults.sort(function (result1, result2) {
+
+                // Sort by price
+                // If the first item has a higher number, move it down
+                // If the first item has a lower number, move it up
+                if (parseFloat(result1.pricePerNight) < parseFloat(result2.pricePerNight)) return -1;
+                if (parseFloat(result1.pricePerNight) > parseFloat(result2.pricePerNight)) return 1;
+            
+            });
+        },
+
+/*
+        unitHasAC(unit){
+            for(amenity in unit.amenities){
+                if(amenity.description.trim().toLowerCase() == 'air conditioning'){
+                    return true;
+                }
+            }
+
+            return false;
+        },
+        
+        unitHasSwimmingPool(unit){
+            for(amenity in unit.amenities){
+                if(amenity.description.trim().toLowerCase() == 'swimming pool'){
+                    return true;
+                }
+            }
+
+            return false;
+        },
+        
+        unitHasFreeParking(unit){
+            for(amenity in unit.amenities){
+                if(amenity.description.trim().toLowerCase() == 'free parking'){
+                    return true;
+                }
+            }
+
+            return false;
+        },
+        
+        unitHasWifi: function(unit){
+            for(amenity in unit.amenities){
+                if(amenity.description.trim().toLowerCase() == 'free wifi'){
+                    return true;
+                }
+            }
+
+            return false;
+        },*/
+
+        applyFilters: function(){
+            var backup = this.searchResults;
+            var backup2 = this.searchResults;
+ /*           if(this.airConditioningChecked === true){
+                for(unit in backup){
+                    if(!this.unitHasAC(unit)){
+                        backup2.removeItem(unit);
+                    }
+                }
+            }
+
+            backup = backup2;
+            if(this.freeParkingChecked === true){
+                for(unit in backup){
+                    if(!this.unitHasFreeParking(unit)){
+                        backup2.removeItem(unit);
+                    }
+                }
+            }
+            backup = backup2;
+            if(this.swimmingPoolChecked === true){
+                for(unit in backup){
+                    if(!this.unitHasSwimmingPool(unit)){
+                        backup2.removeItem(unit);
+                    }
+                }
+            }
+            backup = backup2;
+            if(this.wifiChecked === true){
+                for(unit in backup){
+                    if(!this.unitHasWifi(unit)){
+                        backup2.removeItem(unit);
+                    }
+                }
+            }
+
+            if(this.wifiChecked){
+                backup = backup.filter(function(value, index, arr){return this.unitHasWifi(value);});
+            }
+
+            if(this.swimmingPoolChecked){
+                backup = backup.filter(function(value, index, arr){return this.unitHasSwimmingPool(value);});
+            }
+
+            if(this.freeParkingChecked){
+                backup = backup.filter(function(value, index, arr){return this.unitHasFreeParking(value);});
+            }
+
+            if(this.airConditioningChecked){
+                backup = backup.filter(function(value, index, arr){return this.unitHasAC(value);});
+            }
+
+            this.searchResults = backup;
+            */
+           var wifi = "";
+           var airConditioning = "";
+           var freeParking = "";
+           var swimmingPool = "";
+           if(this.wifiChecked){
+               wifi="YES";
+           }
+           if(this.swimmingPoolChecked){
+               swimmingPool="YES";
+           }
+           if(this.freeParkingChecked){
+               freeParking="YES";
+           }
+           if(this.airConditioningChecked){
+               airConditioning="YES";
+           }
+           
+
+           axios
+           .get('/rest/filter-by-criteria', {params:{
+               wifi: wifi,
+               airConditioning: airConditioning,
+               freeParking: freeParking,
+               swimmingPool: swimmingPool,
+               searchResults: JSON.stringify(this.searchResults),
+               roomType: this.roomTypeFilter,
+               bottomPrice: this.bottomPrice,
+               topPrice: this.topPrice,
+               bottomRC: this.bottomRC,
+               topRC: this.topRC
+           }})
+           .then(res => {
+                if(res.data !== null){
+                    if(res.data.length > 0){
+                        this.searchResults = res.data;
+                    }
+                }
+           });
+        },
 
         showImages: function(item){
             if(item.imageSources !== null){
@@ -322,9 +541,9 @@ Vue.component("search",{
         
 
 		logout : function(){
-            alert("LOGOUT");
+            
             var jwt = window.localStorage.getItem('jwt');
-            alert(jwt);
+            
             if(jwt){
                 axios
                 .get('/rest/logout', { params: {

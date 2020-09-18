@@ -93,7 +93,7 @@ Vue.component("login",{
 				.catch(err => console.error(err));
 		},
     	registerLog : function(usernameInput, passwordInput) {
-			alert("Logujem se posle registracije");
+			
 			axios.
 				post('/rest/login', {}, { params: {
 					username: usernameInput,
@@ -140,7 +140,6 @@ Vue.component("login",{
 		},
 
 		register : function(){
-			alert("Registrujem se");
 			axios.
 				post('/rest/register', {}, { params: {
 					role: this.roleRegistration,

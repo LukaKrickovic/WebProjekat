@@ -92,13 +92,13 @@ public class UserService {
 	public void changeData (User user) {
 		try {
 		if(user.getRole().equals(Roles.ADMINISTRATOR)) {
-			userUpdateValidation.validateAdministratorUpdatedInformation((Administrator)user);
-			administratorRepository.update((Administrator)user);
+			userUpdateValidation.validateAdministratorUpdatedInformation(user);
+			administratorRepository.update((Administrator) user);
 		} else if(user.getRole().equals(Roles.GUEST)) {
-			userUpdateValidation.validateGuestUpdatedInformation((Guest)user);
+			userUpdateValidation.validateGuestUpdatedInformation(user);
 			guestRepository.update((Guest)user);
 		} else {
-			userUpdateValidation.validateHostUpdatedInformation((Host)user);
+			userUpdateValidation.validateHostUpdatedInformation(user);
 			hostRepository.update((Host)user);
 		}
 		} catch (UserUpdateValidationException e) {

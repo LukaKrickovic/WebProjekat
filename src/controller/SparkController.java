@@ -320,18 +320,46 @@ public class SparkController {
 
         post("/rest/post-comment", (req, res)->{
             User user = gson.fromJson(req.queryParams("user"), User.class);
-            Unit unit = gson.fromJson(req.queryParams("unit"), Unit.class);
+            if(user.getRole().equals(Roles.GUEST)){
+                Guest guest = gson.fromJson(req.queryParams("user"), Guest.class);
+                Unit unit = gson.fromJson(req.queryParams("unit"), Unit.class);
 
-            String grade = req.queryParams("grade");
-            String comment = req.queryParams("comment");
-            ApartmentComment ac = new ApartmentComment(new ApartmentCommentSequencer().next(apartmentCommentRepository.findHighestId()), user, unit, comment, Double.parseDouble(grade));
+                String grade = req.queryParams("grade");
+                String comment = req.queryParams("comment");
+                ApartmentComment ac = new ApartmentComment(new ApartmentCommentSequencer().next(apartmentCommentRepository.findHighestId()), guest, unit, comment, Double.parseDouble(grade));
 
-            if(user.getRole().equals(Roles.ADMINISTRATOR))
+                apartmentCommentService.leaveComment(ac, guest);
+            }
+
+            if(user.getRole().equals(Roles.ADMINISTRATOR)){
+                Administrator admin = gson.fromJson(req.queryParams("user"), Administrator.class);
+
+                Unit unit = gson.fromJson(req.queryParams("unit"), Unit.class);
+
+                String grade = req.queryParams("grade");
+                String comment = req.queryParams("comment");
+                ApartmentComment ac = new ApartmentComment(new ApartmentCommentSequencer().next(apartmentCommentRepository.findHighestId()), admin, unit, comment, Double.parseDouble(grade));
+
                 ac.setApproved(true);
-            else if(user.getId().equals(unit.getHost().getId()))
-                ac.setApproved(true);
 
-            apartmentCommentService.leaveComment(ac, user);
+                apartmentCommentService.leaveComment(ac, admin);
+            }
+            if(user.getRole().equals(Roles.HOST)){
+                Host host = gson.fromJson(req.queryParams("user"), Host.class);
+
+                Unit unit = gson.fromJson(req.queryParams("unit"), Unit.class);
+
+                String grade = req.queryParams("grade");
+                String comment = req.queryParams("comment");
+                ApartmentComment ac = new ApartmentComment(new ApartmentCommentSequencer().next(apartmentCommentRepository.findHighestId()), host, unit, comment, Double.parseDouble(grade));
+
+                if(host.getId().equals(unit.getHost().getId()))
+                    ac.setApproved(true);
+
+                apartmentCommentService.leaveComment(ac, host);
+            }
+
+
             return true;
         });
 

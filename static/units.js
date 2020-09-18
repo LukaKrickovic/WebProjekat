@@ -171,7 +171,7 @@ Vue.component("units",{
                     <div class="grid rooms-grid">
                         <div class="grid-item featured-rooms">
                             <div class="image-wrap image-wrapUnit">
-                                <img src="./images/room_1.jpg" alt="" class="room-image">
+                                <img v-bind:src="item.imageSources[0]" alt="" class="room-image">
                                 <h5 class="room-name">{{item.name}}</h5>
                             </div>
                             <div class="room-info-wrap">
@@ -210,7 +210,7 @@ Vue.component("units",{
                             this.hideFromGuest = true;
                         }
                     }
-                    alert(this.user);
+                    
                 });
         }
 
@@ -230,7 +230,7 @@ Vue.component("units",{
                 }
 
                 this.units = res.data;
-                alert(this.units.length);
+                
             });
         
     },
@@ -239,6 +239,109 @@ Vue.component("units",{
                 
         },
 
+        alterResStatus: function(res, stat){
+            var jwt = window.localStorage.getItem('jwt');
+            
+            axios
+            .post('/rest/alter-res-status', {},{params: {
+                reservation: res,
+                status: stat,
+                Auth: 'Sender ' + jwt
+            }})
+            .then(res => {
+                if(res.data !== null){
+                    if(res.data === true){
+                        console.log("Success");
+                        this.closeNewReservationsDialog();
+                    }
+                }
+            })
+        },
+
+        showNewReservations: function(item){
+            var jwt = window.localStorage.getItem('jwt');
+            this.newReservationsDialogOpen = true;
+            axios
+            .get('/rest/new-reservations', {params: {
+                unit: item,
+                Auth: 'Sender ' + jwt
+            }})
+            .then(res => {
+                if(res.data !== null){
+                    if(res.data.length > 0){
+                        this.newReservationsForUnit = res.data;
+                        this.newReservationsForUnitEmpty = false;
+                    } else {
+                        this.newReservationsForUnitEmpty = true;
+                    }
+                }
+            });
+        },
+
+        closeNewReservationsDialog: function(){
+            this.newReservationsDialogOpen = false;
+        },
+
+        openNewUnitDialog: function(){
+            this.newUnitDialogOpen = true;
+        },
+
+        onFileUpload(event){
+            this.selectedFile = event.target.files[0];
+        },
+
+        onUpload: function(){
+            const fd = new FormData();
+            fd.append('image', this.selectedFile, this.selectedFile.name);
+            fd.append('unit', JSON.stringify(this.createdUnit));
+            fd.append('host', JSON.stringify(this.user));
+            axios
+            .post('/rest/upload-image', fd)
+            .then(res => {
+                if(res.data === true){
+                    alert("Upoaded image!");
+                    this.closeImagesModalDialog();
+                }
+            });
+        },
+        /*onFileUpload(event){
+            this.newUnitImageSources = event.target.files;
+            this.uploadedFileNames = event.target.files;
+        },*/
+
+        /*onFileUpload(e){
+            const file = e.target.files[0];
+            alert("IMGADDED");
+            this.createBase64(file, e);
+            this.imageCount++;
+            this.images.push(URL.createObjectURL(file));
+        },
+
+        createBase64(file, e){
+            alert("CreatingB64");
+            //const reader = new FileReader();
+            alert("In reader");
+            let img = e.target.result;
+            img.replace("data:image\/(png|jpg|jpeg);base64","");
+            alert(img);
+            this.newImages.push(img);
+            
+        },*//*
+        createBase64(file){
+            alert("CreatingB64");
+            const reader = new FileReader();
+            reader.onload=(e)=>{
+                alert("In reader");
+                let img = e.target.result;
+                img.replace("data:image\/(png|jpg|jpeg);base64","");
+                alert(img);
+                this.newImages.push(img);
+            }
+        },*/
+
+        closeNewUnitDialog: function(){
+            this.newUnitDialogOpen = false;
+        },
 
         closecommentsDialog: function(){
             this.viewComments = false;
@@ -261,7 +364,6 @@ Vue.component("units",{
         },
 
         postComment: function(){
-            alert(this.selectedUnit.name);
             axios
             .post('/rest/post-comment', {}, {params: {
                 user: this.user,
@@ -308,7 +410,7 @@ Vue.component("units",{
         showComments: function(item){
             this.newComment = "";
             this.newGrade = 0;
-            alert('Tu sam');
+            
                 axios
                 .get('/rest/get-comments-for-host', { params: {
                     unit: item,
@@ -375,7 +477,6 @@ Vue.component("units",{
                     }
                 })
                 .then(res => {
-                    alert(res);
                     if(res.data === true){
                         alert("Unit deleted successfully!");
                     } else {
@@ -385,9 +486,9 @@ Vue.component("units",{
         },
 
         logout : function(){
-            alert("LOGOUT");
+            
             var jwt = window.localStorage.getItem('jwt');
-            alert(jwt);
+            
             if(jwt){
                 window.localStorage.removeItem('jwt');
                 axios
@@ -397,7 +498,7 @@ Vue.component("units",{
                 .then(res => {
                     if(res.data === true){
                         alert("Successfully logged out");
-                        window.location.reload();
+                        window.location.replace("index.html");
                     }
                 });
             }
