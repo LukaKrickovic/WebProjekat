@@ -29,11 +29,6 @@ Vue.component("login",{
         
         <div class="form">
             <h1 class="login-h1">Register</h1>
-            <label id="roleLabel">Role:</label>
-            <select name="roles" v-model="roleRegistration">
-                <option value="GUEST">Guest</option>
-                <option value="HOST">Host</option>
-              </select>
             <input type="text" name="name" placeholder="Name" v-model="name">
             <input type="text" name="surname" placeholder="Surname" v-model="surname">
             <label id="genderLabel">Gender:</label>
@@ -142,7 +137,7 @@ Vue.component("login",{
 		register : function(){
 			axios.
 				post('/rest/register', {}, { params: {
-					role: this.roleRegistration,
+					role: "GUEST",
 					name: this.name,
 					surname: this.surname,
 					gender: this.gender,

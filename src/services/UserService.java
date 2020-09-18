@@ -1,7 +1,6 @@
 package services;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 
 import enums.Gender;
 import enums.Roles;
@@ -18,8 +17,6 @@ import sequencers.GuestSequencer;
 import sequencers.HostSequencer;
 import validations.UserUpdateValidation;
 import validations.UserValidation;
-
-import javax.jws.soap.SOAPBinding;
 
 public class UserService {
 
@@ -115,9 +112,9 @@ public class UserService {
 		return hostRepository.getAll();
 	}
 	
-	public Iterable<Guest> getAllGuests(){ return guestRepository.getAll(); }
-
-
+	public Iterable<Guest> getAllGuests(){
+		return guestRepository.getAll();
+	}
 	
 	public User getUserById(Id id) {
 		if(id.getPrefix().equals(GuestSequencer.guestPrefix))
@@ -246,4 +243,5 @@ public class UserService {
 		}
 		return retVal;
 	}
+	
 }

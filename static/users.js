@@ -20,51 +20,50 @@ Vue.component("users",{
 
     template: `<body>
     <div id="container">
-        <header class="header">
-            <div class="container">
-                <nav class="nav">
-                    <a href="index.html" class="logo">
-                        <img src="./images/logo.png" alt="">
-                    </a>
-    
-                    <div class="hamburger-menu" v-on:click="activateTheBurger" v-bind:class="{ active: burgerActive }">
-                        <i class="fas fa-bars"></i>
-                        <i class="fas fa-times"></i>
-                    </div>
-    
-                    <ul class="nav-list">
-                        <li class="nav-item">
-                            <a href="index.html" class="nav-link">Home</a>
-                        </li>
-    
-                        <li class="nav-item">
-                            <a href="#" class="nav-link">About</a>
-                        </li>
-    
-                        <li class="nav-item">
-                            <a href="#" class="nav-link">Offers</a>
-                        </li>
-                        
-                        <li class="nav-item" v-bind:class="{ hidden: user !== null }">
-                            <a href="login.html" class="nav-link">Login/Register</a>
-                        </li>
-                    </ul>
-    
-                    <div class="dropdown-user" v-bind:class="{ hidden: user === null }">
-                        <button class="user-button">
-                            {{ displayName }}
-                            <div class="user-dropdown-content">
-                                <a href="#" class="dropdown-link">Manage your account information</a>
-                                <a href="#" class="dropdown-link">Upcoming reservations</a>
-                                <a href="#" class="dropdown-link" v-bind:class="{ hidden: hideFromGuest }">Search for users</a>
-                                <a href="#" class="dropdown-link" v-bind:class="{ hidden: hideFromGuest }">Add a unit</a>
-                                <a href="#" class="dropdown-link" v-on:click="logout">Logout</a>
-                            </div>
-                        </button>
-                </div>
-                </nav>
+    <header class="header">
+    <div class="container">
+        <nav class="nav">
+            <a href="index.html" class="logo">
+                <img src="./images/logo.png" alt="">
+            </a>
+
+            <div class="hamburger-menu" v-on:click="activateTheBurger" v-bind:class="{ active: burgerActive }">
+                <i class="fas fa-bars"></i>
+                <i class="fas fa-times"></i>
             </div>
-        </header>
+
+            <ul class="nav-list">
+                <li class="nav-item">
+                    <a href="index.html" class="nav-link">Home</a>
+                </li>
+
+                <li class="nav-item">
+                    <a href="#" class="nav-link">About</a>
+                </li>
+
+                <li class="nav-item">
+                    <a href="#" class="nav-link">Offers</a>
+                </li>
+                
+                <li class="nav-item" v-bind:class="{ hidden: user !== null }">
+                    <router-link to="/login" class="nav-link">Login/Register</router-link>
+                </li>
+            </ul>
+
+            <div class="dropdown-user" v-bind:class="{ hidden: user === null }">
+                <button class="user-button">
+                    {{ displayName }}
+                    <div class="user-dropdown-content">
+                        <router-link to="/bookings" class="dropdown-link">Bookings</router-link>
+                        <router-link to="/users" class="dropdown-link" v-bind:class="{ hidden: hideFromGuest }">Search for users</router-link>
+                        <router-link to="/units" class="dropdown-link" v-bind:class="{ hidden: hideFromGuest }">Units</router-link>
+                        <a href="index.html" class="dropdown-link" v-on:click="logout">Logout</a>
+                    </div>
+                </button>
+        </div>
+        </nav>
+    </div>
+</header>
 
         <section class="admin-users">
             <!-- <div v-if="role === 'ADMINISTRATOR'"> -->
@@ -232,9 +231,8 @@ Vue.component("users",{
         },
 
         logout : function(){
-            alert("LOGOUT");
+
             var jwt = window.localStorage.getItem('jwt');
-            alert(jwt);
             if(jwt){
                 window.localStorage.removeItem('jwt');
                 axios

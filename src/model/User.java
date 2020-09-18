@@ -33,7 +33,7 @@ public class User extends Model{
 		this.gender = gender;
 		this.role = role;
 		this.searchHistory = new ArrayList<User>();
-		this.isBlocked = false;
+		isBlocked = false;
 	}
 
 
@@ -47,7 +47,7 @@ public class User extends Model{
 		this.gender = gender;
 		this.role = role;
 		this.searchHistory = new ArrayList<User>();
-		this.isBlocked = false;
+		isBlocked = false;
 	}
 
 	public String getUsername() {
@@ -92,10 +92,6 @@ public class User extends Model{
 
 	public Roles getRole() {
 		return role;
-	}
-
-	public void setRole(Roles role) {
-		this.role = role;
 	}
 
 	public ArrayList<User> getSearchHistory() {

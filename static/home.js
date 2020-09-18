@@ -13,7 +13,14 @@ Vue.component("home",{
             bookingDialogOpen: false,
             upcomingBookings: [],
             noBookings: true,
-            childrenCount: ""
+            childrenCount: "",
+
+            editDialogOpen: false,
+            newName: "",
+            newSurname: "",
+            currentPassword: "",
+            newPassword: "",
+            confPassword: ""
             }
         },
 
@@ -53,10 +60,10 @@ Vue.component("home",{
                     <button class="user-button">
                         {{ displayName }}
                         <div class="user-dropdown-content">
-                            <a href="#" class="dropdown-link">Edit your account information</a>
+                            <button v-on:click="openEditingDialog" class="dropdown-link">Edit your account information</button>
                             <router-link to="/bookings" class="dropdown-link">Bookings</router-link>
-                            <a href="#" class="dropdown-link" v-bind:class="{ hidden: hideFromGuest }">Search for users</a>
-                            <a href="#" class="dropdown-link" v-bind:class="{ hidden: hideFromGuest }">Add a unit</a>
+                            <router-link to="/users" class="dropdown-link" v-bind:class="{ hidden: hideFromGuest }">Search for users</router-link>
+                            <router-link to="/units" class="dropdown-link" v-bind:class="{ hidden: hideFromGuest }">Units</router-link>
                             <a href="index.html" class="dropdown-link" v-on:click="logout">Logout</a>
                         </div>
                     </button>
@@ -66,6 +73,35 @@ Vue.component("home",{
     </header>
 
     <main>
+
+    <div id="editModalDialog" class="modal-booking" v-if="editDialogOpen === true">
+
+    <!-- Modal content -->
+    <div class="modal-booking-content">
+    <button class="close-x" v-on:click="closeEditingDialog">   
+        <span class="close-booking">&times;</span>
+    </button>
+    <h2 class="modal-headers">Edit your information here!</h2>
+    <h4 class="modal-headers"><span v-if="user.gender == 'MALE'">MR</span><span v-if="user.gender == 'FEMALE'">MRS</span><span v-if="user.gender == 'NONBINARY'">MR/MRS</span>. {{user.name}}</h4>
+    <br><br>
+    <label>Name:</label>
+    <input type="text" name="name" placeholder="Name" v-model="newName">
+    <label>Surname:</label>
+    <input type="text" name="surname" placeholder="Surname" v-model="newSurname">
+    <label>Current password:</label>
+    <input type="password" name="currentPassword" placeholder="Current password" v-model="currentPassword">
+    <label>New password:</label>
+    <input type="password" name="newPassword" placeholder="New password" v-model="newPassword">
+    <label>Confirm new password:</label>
+    <input type="password" name="confPassword" placeholder="Confirm password" v-model="confPassword">
+    
+    <br><br>
+    <button v-on:click="editUser">Confirm</button>
+    </div>
+
+
+    </div>
+
         <div class="hero">
             <div class="container">
                 <div class="main-heading">
@@ -344,6 +380,81 @@ Vue.component("home",{
         methods: {
             burgerActive : function(){
                 
+            },
+
+            editUser: function(){
+                var jwt = window.localStorage.getItem('jwt');
+                if(this.newName !== null && this.newSurname !== null){
+                    if(this.newName !== "" && this.newSurname !== ""){
+                        if(this.newPassword !== null){
+                            if(this.newPassword !== ""){
+                            if(this.currentPassword.localeCompare(this.user.password) === 0){
+                                if(this.newPassword.localeCompare(this.confPassword) === 0){
+                                    if(!/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/.test(String(this.newPassword))){
+                                        alert("Password is invalid!");
+                                        return;
+                                    }
+                                    axios
+                                    .post('/rest/update-user-info', {}, {params: {
+                                        Auth: 'Sender ' + jwt,
+                                        name: this.newName,
+                                        surname: this.newSurname,
+                                        password: this.newPassword
+                                    }})
+                                    .then(res =>{
+                                        if(res.data === true){
+                                            alert("Successfully updated your information!");
+                                        }
+                                    });
+                                } else {
+                                    alert("New password and confirmation password do not match!");
+                                }
+                            } else {
+                                alert("Current password is not correct!");
+                            }
+                        }else {
+                            axios
+                                    .post('/rest/update-user-info', {}, {params: {
+                                        Auth: 'Sender ' + jwt,
+                                        name: this.newName,
+                                        surname: this.newSurname,
+                                    }})
+                                    .then(res =>{
+                                        if(res.data === true){
+                                            alert("Successfully updated your information!");
+                                        }
+                                    });
+                        }
+                        } else {
+                            axios
+                                    .post('/rest/update-user-info', {}, {params: {
+                                        Auth: 'Sender ' + jwt,
+                                        name: this.newName,
+                                        surname: this.newSurname,
+                                    }})
+                                    .then(res =>{
+                                        if(res.data === true){
+                                            alert("Successfully updated your information!");
+                                        }
+                                    });
+                        }
+                    }
+                }
+            },
+
+            openEditingDialog: function(){
+                this.editDialogOpen = true;
+                this.newName = this.user.name;
+                this.newSurname = this.user.surname;
+            },
+
+            closeEditingDialog: function(){
+                this.newName = "";
+                this.newSurname = "";
+                this.currentPassword = "";
+                this.newPassword = "";
+                this.editDialogOpen = false;
+                this.confPassword = "";
             },
     
             logout : function(){

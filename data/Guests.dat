@@ -1,1 +1,2 @@
 {"username":"lukakrickovicGuest","password":"Host1234!","name":"Luka","surname":"Krickovic","gender":"MALE","role":"GUEST","searchHistory":[],"isDeleted":false,"id":{"prefix":"G","suffix":1}}
+{"username":"lukakrickovicGuest2","password":"Host1234!","name":"Luka","surname":"Krickovic","gender":"MALE","role":"GUEST","searchHistory":[],"isDeleted":false,"id":{"prefix":"G","suffix":2}}

@@ -65,20 +65,20 @@ public class UnitRepository implements IRepository<Unit, Id>{
 	}
 
 	public Iterable<Unit> getAllUnbound() {
-		//ArrayList<String> allUnitsString = (ArrayList)stream.readFromFile(unitFile);
-		String allUnitsString = stream.readFullFile(unitFile);
+		ArrayList<String> allUnitsString = (ArrayList)stream.readFromFile(unitFile);
+		//String allUnitsString = stream.readFullFile(unitFile);
 		ArrayList<Unit> retVal= new ArrayList<Unit>();
 		ArrayList<Unit> allUnits= new ArrayList<Unit>();
-		allUnits = unitConverter.ConvertFromJSON(allUnitsString);
+		//allUnits = unitConverter.ConvertFromJSON(allUnitsString);
 
-		/*for(String temp : allUnitsString) {
+		for(String temp : allUnitsString) {
 			if(!unitConverter.ConvertFromJSON(temp).isDeleted()) {
 				allUnits.add(unitConverter.ConvertFromJSON(temp));
 			}
 		}
 
-		 */
 
+/*
 		if(allUnits != null) {
 			for (Unit temp : allUnits) {
 				if (!temp.isDeleted()) {
@@ -86,8 +86,8 @@ public class UnitRepository implements IRepository<Unit, Id>{
 				}
 			}
 		}
-
-		return retVal;
+*/
+		return allUnits;
 	}
 	
 	@Override
@@ -111,8 +111,23 @@ public class UnitRepository implements IRepository<Unit, Id>{
 
 	@Override
 	public void update(Unit entity) {
-		ArrayList<Unit> allUnits= (ArrayList)getAll();
-		ArrayList<Unit> editedUnits= new ArrayList<Unit>();
+		ArrayList<Unit> allUnits= (ArrayList<Unit>)getAll();
+		//ArrayList<Unit> editedUnits= new ArrayList<Unit>();
+		ArrayList<Unit> backup = new ArrayList<Unit>();
+
+		for(Unit temp : getAll()){
+			if(temp.getId().equals(entity.getId())){
+				backup.add(entity);
+			} else {
+				backup.add(temp);
+			}
+		}
+
+		stream.blankOutFile(unitFile);
+		for(Unit temp : backup){
+			create(temp);
+		}
+
 		/*
 		StringBuilder backup = new StringBuilder();
 		for(Unit temp : allUnits) {
@@ -123,7 +138,7 @@ public class UnitRepository implements IRepository<Unit, Id>{
 				backup.append(unitConverter.ConvertToJSON(entity));
 				backup.append("\n");
 			}
-		}*/
+		}
 
 		for(Unit temp : allUnits){
 			if(temp.getId().equals(entity.getId())){
@@ -135,6 +150,8 @@ public class UnitRepository implements IRepository<Unit, Id>{
 		stream.blankOutFile(unitFile);
 		String toFlush = new Gson().toJson(editedUnits);
 		stream.writeToFile(toFlush, unitFile);
+
+		 */
 /*
 		if(backup.length() > 0)
 			backup.deleteCharAt(backup.length()-1);

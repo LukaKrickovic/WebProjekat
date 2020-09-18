@@ -12,7 +12,7 @@ const routes = [
   { path: '/search-results', component: SearchResults},
   { path: '/units', component: Units},
   { path: '/bookings', component: Bookings},
-  { path: '/users', component: Users}
+  { path: '/users', component: Users},
 ]
 Vue.use(VueRouter)
 const router = new VueRouter({

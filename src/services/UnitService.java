@@ -4,6 +4,7 @@ import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 
 import enums.Roles;
 import enums.Status;
@@ -13,6 +14,7 @@ import model.Unit;
 import model.User;
 import repository.ReservationRepository;
 import repository.UnitRepository;
+import util.UnitReservationDTO;
 import util.UnitSearchCriteria;
 
 public class UnitService {
@@ -72,12 +74,7 @@ public class UnitService {
 	}
 	
 	public Unit create(Unit unit, User user) {
-		if(user.getRole().equals(Roles.HOST)) {
-			if(unit.getHost().getId().equals(user.getId())) {
-				return unitRepository.create(unit);
-			}
-		}
-		return null;
+			return unitRepository.create(unit);
 	}
 
 	public ArrayList<Unit> copy(ArrayList<Unit> source){
@@ -204,5 +201,14 @@ public class UnitService {
 	public Iterable<Unit> getUnitsByHost(Host user){
 		return unitRepository.getUnitsByHost(user);
 	}
-	
+
+	public ArrayList<UnitReservationDTO> getNewReservationCount(Host host){
+		ArrayList<UnitReservationDTO> retVal = new ArrayList<UnitReservationDTO>();
+		for(Unit temp : unitRepository.getUnitsByHost(host)){
+			retVal.add(new UnitReservationDTO(temp.getId(), reservationRepository.getReservationsByUnit(temp).size()));
+		}
+
+		return retVal;
+	}
+
 }

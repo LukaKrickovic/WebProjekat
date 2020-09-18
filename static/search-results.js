@@ -11,14 +11,20 @@ Vue.component("search",{
         empty: true,
         destination: "",
         expanded: null,
+        bottomPrice: 0,
+        topPrice: 0,
         bookingDialogOpen: false,
         seletedUnit: null,
+        bottomRC: 0,
+        topRC: 0,
         bookingName: "",
+        filtersHidden: true,
         bookingSurname: "",
         bookingEmail: "",
         bookingAdults: "",
         bookingChildren: "",
         checkInParam: "",
+        mapDialogOpen: false,
         checkOutParam: "",
         destinationParam: "",
         adultCountParam: "",
@@ -27,6 +33,11 @@ Vue.component("search",{
         displayImages: [],
         index: null,
         imagesDialogOpen: false,
+        airConditioningChecked: false,
+        swimmingPoolChecked: false,
+        freeParkingChecked: false,
+        wifiChecked: false,
+        roomTypeFilter: "",
         searchResults: []
         }
     },
@@ -67,11 +78,10 @@ Vue.component("search",{
                         <button class="user-button">
                             {{ displayName }}
                             <div class="user-dropdown-content">
-                                <a href="#" class="dropdown-link">Manage your account information</a>
-                                <a href="#" class="dropdown-link">Upcoming reservations</a>
-                                <a href="#" class="dropdown-link" v-bind:class="{ hidden: hideFromGuest }">Search for users</a>
-                                <a href="#" class="dropdown-link" v-bind:class="{ hidden: hideFromGuest }">Add a unit</a>
-                                <a href="index.html" class="dropdown-link" v-on:click="logout">Logout</a>
+                            <router-link to="/bookings" class="dropdown-link">Bookings</router-link>
+                            <router-link to="/users" class="dropdown-link" v-bind:class="{ hidden: hideFromGuest }">Search for users</router-link>
+                            <router-link to="/units" class="dropdown-link" v-bind:class="{ hidden: hideFromGuest }">Units</router-link>
+                            <a href="index.html" class="dropdown-link" v-on:click="logout">Logout</a>
                             </div>
                         </button>
                 </div>
@@ -80,10 +90,48 @@ Vue.component("search",{
         </header>
 
         <main>
+        
             <div class="list" v-if="empty === false">
                 <div class="head">
                     <span>{{searchResults.length}} units have been found</span>
                     <h2>Stays in {{searchResults[0].location.address.city}}</h2>
+                    <br><br>
+                </div>
+                <div>
+                    
+                        <div v-if="filtersHidden === false">
+                        <label>Sorts:</label>
+                        <ul>
+                        <li><button v-on:click="sortByPriceAsc">Price descending</button></li><br>
+                        <li><button v-on:click="sortByPriceDesc">Price ascending</button></li><br>
+                        </ul>
+                        <label>Filters:</label>
+                        <ul>
+                        <li><select v-model="roomTypeFilter">
+                            <option value="ROOM">Room</option>
+                            <option value="APARTMENT">Apartment</option>
+                        </select></li>
+                        <li><input type="checkbox" v-model="airConditioningChecked">Air conditioning</input></li>
+                        <li><input type="checkbox" v-model="swimmingPoolChecked">Swimming pool</input></li>
+                        <li><input type="checkbox" v-model="freeParkingChecked">Free parking</input></li>
+                        <li><input type="checkbox" v-model="wifiChecked">Free wifi</input></li>
+                        </ul><br>
+                        <label>Bottom and top price ($):</label>
+                        <ul>
+                        <li><input type="number" width="100px" placeholder="Bottom price" v-model="bottomPrice"></input></li>
+                        <li><input type="number" width="100px" placeholder="Top price" v-model="topPrice"></input></li>
+                        <br><br>
+                        <label>Bottom and top room count:</label>
+                        <li><input type="number" width="100px" placeholder="Bottom room count" v-model="bottomRC"></input></li>
+                        <li><input type="number" width="100px" placeholder="Top room count" v-model="topRC"></input></li>
+                        <button v-on:click="applyFilters">Apply filters</button>
+                        <button v-on:click="hideFilters">Hide filters</button>
+                        </ul>
+                        <br>
+                        </div>
+                        <div v-else>
+                            <button v-on:click="showFilters">Show filters</button>
+                        </div>
                 </div>
                 <ul>
                     
@@ -123,6 +171,22 @@ Vue.component("search",{
                         </div>
 
                         </div>
+                        
+                        <div id="mapModalDialog" class="modal-booking" v-if="mapDialogOpen === true">
+
+                        <!-- Modal content -->
+                        <div class="modal-booking-content">
+                        <button class="close-x" v-on:click="closeMapDialog">   
+                            <span class="close-booking">&times;</span>
+                        </button>
+                        <h2 class="modal-headers">Map for {{selectedUnit.name}}</h2>
+                        <div id="map" class="map">
+
+                        </div>
+                        
+                        </div>
+
+                        </div>
 
 
                         <img v-bind:src="item.imageSources[0]" width="200px" v-if="item.imageSources !== null"></img>
@@ -143,6 +207,8 @@ Vue.component("search",{
                             <br>
                             <button class="additional-info-button" v-on:click="showImages(item)">Show images</button>
                             <br>
+                            <button class="additional-info-button" v-on:click="showMapDialog(item)">Show on map</button>
+                            <br>
                             <button class="additional-info-button" v-on:click="hide">Hide</button>
                             <br>
                         </div>
@@ -152,10 +218,12 @@ Vue.component("search",{
                         
                     </div></li>
                 </ul>
+                
             </div>
             <div v-else>
             <h2>Oops! No stays found for the given parameters</h2>
             </div>
+
 
         </main>
         <footer class="footer">
