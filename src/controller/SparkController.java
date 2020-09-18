@@ -1,6 +1,7 @@
 package controller;
 
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.sun.xml.internal.ws.policy.privateutil.PolicyUtils;
 import enums.*;
 import exceptions.BadRequestException;
@@ -151,6 +152,79 @@ public class SparkController {
         get("/home", (req, res) -> {
             return index.html;
         });*/
+
+        get("/rest/get-all-admins", (req, res) -> {
+            String username = getUser(req.queryParams("Auth"));
+            res.type("application/json");
+
+            Iterable<Administrator> allAdmins = gson.fromJson(req.queryParams("admins"), new TypeToken<List<Administrator>>() {}.getType());
+            allAdmins = userService.getAllAdministrators();
+
+            return gson.toJson(allAdmins);
+        });
+
+        get("/rest/get-all-hosts", (req, res) -> {
+            String username = getUser(req.queryParams("Auth"));
+            res.type("application/json");
+
+            Iterable<Host> allHosts = gson.fromJson(req.queryParams("hosts"), new TypeToken<List<Host>>() {}.getType());
+            allHosts = userService.getAllHosts();
+
+            return gson.toJson(allHosts);
+        });
+
+        get("/rest/get-all-guests", (req, res) -> {
+            String username = getUser(req.queryParams("Auth"));
+            res.type("application/json");
+
+            Iterable<Guest> allGuests = gson.fromJson(req.queryParams("guests"), new TypeToken<List<Guest>>() {}.getType());
+            allGuests = userService.getAllGuests();
+
+            return gson.toJson(allGuests);
+        });
+
+        post("/rest/make-host-user", (req, res) -> {
+            res.type("application/json");
+            Guest guest = gson.fromJson(req.queryParams("user"), Guest.class);
+            Host host = new Host(new HostSequencer().next(hostRepository.findHighestId()), guest.getUsername(), guest.getPassword(), guest.getName(), guest.getSurname(), guest.getGender());
+            hostRepository.create(host);
+            guestRepository.delete(guest);
+            return true;
+        });
+
+        post("/rest/block-user", (req, res) -> {
+            res.type("application/json");
+            User user = gson.fromJson(req.queryParams("user"), User.class);
+            if(user.getRole().equals(Roles.GUEST)){
+                Guest guest = gson.fromJson(req.queryParams("user"), Guest.class);
+                guest.setBlocked(true);
+                userService.changeData(guest);
+            }
+
+            if(user.getRole().equals(Roles.HOST)){
+                Host host = gson.fromJson(req.queryParams("user"), Host.class);
+                host.setBlocked(true);
+                userService.changeData(host);
+            }
+            return true;
+        });
+
+        post("/rest/un-block-user", (req, res) -> {
+            res.type("application/json");
+            User user = gson.fromJson(req.queryParams("user"), User.class);
+            if(user.getRole().equals(Roles.GUEST)){
+                Guest guest = gson.fromJson(req.queryParams("user"), Guest.class);
+                guest.setBlocked(false);
+                userService.changeData(guest);
+            }
+
+            if(user.getRole().equals(Roles.HOST)){
+                Host host = gson.fromJson(req.queryParams("user"), Host.class);
+                host.setBlocked(false);
+                userService.changeData(host);
+            }
+            return true;
+        });
 
         delete("/rest/delete-unit", (req, res) -> {
             res.type("application/json");

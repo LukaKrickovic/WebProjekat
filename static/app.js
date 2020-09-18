@@ -3,6 +3,7 @@ const Home = {template: '<home></home>'}
 const SearchResults = {template: '<search></search>'}
 const Units = {template: '<units></units>'}
 const Bookings = {template: '<bookings></bookings>'}
+const Users = {template: '<users></users>'}
 
 const routes = [
   { path: '/login', component: Login},
@@ -10,7 +11,8 @@ const routes = [
   { path: '/home', component: Home},
   { path: '/search-results', component: SearchResults},
   { path: '/units', component: Units},
-  { path: '/bookings', component: Bookings}
+  { path: '/bookings', component: Bookings},
+  { path: '/users', component: Users}
 ]
 Vue.use(VueRouter)
 const router = new VueRouter({

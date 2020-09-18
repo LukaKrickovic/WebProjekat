@@ -14,6 +14,7 @@ public class User extends Model{
 	private Roles role;
 	private ArrayList<User> searchHistory;
 	private String JWTToken;
+	private boolean isBlocked;
 	
 	public User() {
 		super();
@@ -32,6 +33,7 @@ public class User extends Model{
 		this.gender = gender;
 		this.role = role;
 		this.searchHistory = new ArrayList<User>();
+		this.isBlocked = false;
 	}
 
 
@@ -45,6 +47,7 @@ public class User extends Model{
 		this.gender = gender;
 		this.role = role;
 		this.searchHistory = new ArrayList<User>();
+		this.isBlocked = false;
 	}
 
 	public String getUsername() {
@@ -91,6 +94,10 @@ public class User extends Model{
 		return role;
 	}
 
+	public void setRole(Roles role) {
+		this.role = role;
+	}
+
 	public ArrayList<User> getSearchHistory() {
 		return searchHistory;
 	}
@@ -105,5 +112,13 @@ public class User extends Model{
 
 	public void setJWTToken(String JWTToken) {
 		this.JWTToken = JWTToken;
+	}
+
+	public boolean isBlocked() {
+		return isBlocked;
+	}
+
+	public void setBlocked(boolean blocked) {
+		isBlocked = blocked;
 	}
 }

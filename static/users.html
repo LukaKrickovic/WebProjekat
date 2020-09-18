@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link href="https://fonts.googleapis.com/css?family=Nunito&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css?family=Aldrich&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css">
+        <link rel="stylesheet" href="styles.css">
+        <title>Units</title>
+    </head>
+    <body>
+        <div id="container">
+            <header class="header">
+                <div class="container">
+                    <nav class="nav">
+                        <a href="index.html" class="logo">
+                            <img src="./images/logo.png" alt="">
+                        </a>
+        
+                        <div class="hamburger-menu" v-on:click="activateTheBurger" v-bind:class="{ active: burgerActive }">
+                            <i class="fas fa-bars"></i>
+                            <i class="fas fa-times"></i>
+                        </div>
+        
+                        <ul class="nav-list">
+                            <li class="nav-item">
+                                <a href="index.html" class="nav-link">Home</a>
+                            </li>
+        
+                            <li class="nav-item">
+                                <a href="#" class="nav-link">About</a>
+                            </li>
+        
+                            <li class="nav-item">
+                                <a href="#" class="nav-link">Offers</a>
+                            </li>
+                            
+                            <li class="nav-item" v-bind:class="{ hidden: user !== null }">
+                                <a href="login.html" class="nav-link">Login/Register</a>
+                            </li>
+                        </ul>
+        
+                        <div class="dropdown-user" v-bind:class="{ hidden: user === null }">
+                            <button class="user-button">
+                                {{ displayName }}
+                                <div class="user-dropdown-content">
+                                    <a href="#" class="dropdown-link">Manage your account information</a>
+                                    <a href="#" class="dropdown-link">Upcoming reservations</a>
+                                    <a href="#" class="dropdown-link" v-bind:class="{ hidden: hideFromGuest }">Search for users</a>
+                                    <a href="#" class="dropdown-link" v-bind:class="{ hidden: hideFromGuest }">Add a unit</a>
+                                    <a href="#" class="dropdown-link" v-on:click="logout">Logout</a>
+                                </div>
+                            </button>
+                    </div>
+                    </nav>
+                </div>
+            </header>
+
+            <section class="admin-users">
+                <!-- <div v-if="role === 'ADMINISTRATOR'"> -->
+                    <h5 class="section-headUnit">
+                        <span class="heading">All users</span>
+                    </h5>
+                    <div class="container-users">
+                        <div class="input-group-users">
+                            <label class="input-label-users" for="username">Username:</label>
+                            <input type="text" class="input-users" id="username" v-model="username">
+                        </div>
+                        <div class="input-group-users">
+                            <label class="input-label-users" for="name">Name:</label>
+                            <input type="text" class="input-users" id="name" v-model="name">
+                        </div>
+                        <div class="input-group-users">
+                            <label class="input-label-users" for="surname">Surname:</label>
+                            <input type="text" class="input-users" id="surname" v-model="surname">
+                        </div>
+
+                        <button v-on:click="searchUsers" class="btn fa fa-search user-btn-search"></button>
+                    </div>
+                    
+
+                    <ul>
+                        <h6 style="font-size: 1.3rem; margin-left: 1rem;">Administrators</h6>
+                        <li v-for="item in admins">
+                            <div class="grid rooms-grid">
+                                <div class="grid-item featured-rooms">
+                                    <div class="user-wrap">
+                                        <h5 class="user-name">{{item.name}}</h5>
+                                    </div>
+                                    <div class="room-info-wrap">
+                                        <button v-on:click="showReservations(item)" class="btn user-btn">Reservations</button><br>
+                                        <button v-on:click="makeHost(item)" class="btn user-btn">Make host</button><br>
+                                        <button v-on:click="blockUser(item)" class="btn user-btn">Block this user</button>
+                                    </div>
+                                </div> 
+                            </div>
+                        </li>
+
+                        <li v-for="item in users">
+                            <div class="grid rooms-grid">
+                                <div class="grid-item featured-rooms">
+                                    <div class="user-wrap">
+                                        <h5 class="user-name">{{item.name}}</h5>
+                                    </div>
+                                    <div class="room-info-wrap">
+                                        <button v-on:click="showReservations(item)" class="btn user-btn">Reservations</button><br>
+                                        <button v-on:click="makeHost(item)" class="btn user-btn">Make host</button><br>
+                                        <button v-if="item.isBlocked === false" v-on:click="blockUser(item)" class="btn user-btn">Block this user</button>
+                                    </div>
+                                </div> 
+                            </div>
+                        </li>
+
+                        <li v-for="item in users">
+                            <div class="grid rooms-grid">
+                                <div class="grid-item featured-rooms">
+                                    <div class="user-wrap">
+                                        <h5 class="user-name">{{item.name}}</h5>
+                                    </div>
+                                    <div class="room-info-wrap">
+                                        <button v-on:click="showReservations(item)" class="btn user-btn">Reservations</button><br>
+                                        <button v-on:click="makeHost(item)" class="btn user-btn">Make host</button><br>
+                                        <button v-if="item.isBlocked === false" v-on:click="blockUser(item)" class="btn user-btn">Block this user</button>
+                                    </div>
+                                </div> 
+                            </div>
+                        </li>
+                    </ul>
+                <!-- </div> -->
+            </section>
+        </div>
+    </body>
+</html>
